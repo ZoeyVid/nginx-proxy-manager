@@ -1,7 +1,7 @@
 FROM debian:bullseye as nginxbuilder
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
+RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
 #RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx
 #RUN cp -r openresty-1.21.4.1rc3/. .
@@ -64,7 +64,7 @@ FROM jc21/nginx-proxy-manager:latest
 
 COPY --from=nginxbuilder ./ ./build
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
+RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
 RUN cd build && make install
 RUN rm -rf build

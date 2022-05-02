@@ -65,43 +65,6 @@ RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --
 RUN cd build && make install
 RUN rm -rf build
 
-ARG TARGETPLATFORM
-ARG BUILD_VERSION
-ARG BUILD_COMMIT
-ARG BUILD_DATE
-
-ENV SUPPRESS_NO_CONFIG_WARNING=1 \
-	S6_FIX_ATTRS_HIDDEN=1 \
-	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-	NODE_ENV=production \
-	NPM_BUILD_VERSION="${BUILD_VERSION}" \
-	NPM_BUILD_COMMIT="${BUILD_COMMIT}" \
-	NPM_BUILD_DATE="${BUILD_DATE}"
-
-RUN echo "fs.file-max = 65535" > /etc/sysctl.conf \
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends jq logrotate \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
-
-COPY scripts/install-s6 /tmp/install-s6
-RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6
-
-EXPOSE 80 81 443
-
-COPY backend       /app
-COPY frontend/dist /app/frontend
-COPY global        /app/global
-
-WORKDIR /app
-RUN yarn install
-
-COPY docker/rootfs /
-
-RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf
-
-RUN chmod 644 /etc/logrotate.d/nginx-proxy-manager
-
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]
 

@@ -4,5 +4,5 @@
   ],
   "includeForks": true,
   "automerge": true,
-  "baseBranches": ["main", "Stable", "master", "old"]
+  "baseBranches": ["develop", "latest"]
 }

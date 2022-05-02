@@ -35,7 +35,7 @@ jobs:
           file: ./quici.Dockerfile
           platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quici
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quici
 
       - name: Build-pagespeed
         uses: docker/build-push-action@v2

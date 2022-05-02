@@ -1,7 +1,6 @@
 FROM ubuntu:18.04 as nginxbuilder
   
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
-
 #RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx
 #RUN cp -r openresty-1.21.4.1rc3/. .
 RUN curl "https://nginx.org/download/nginx-1.21.6.tar.gz" | tar zx
@@ -13,7 +12,6 @@ RUN git clone --recursive https://github.com/cloudflare/quiche && cd quiche && g
 RUN curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-1.19.7.patch -o ./quiche/nginx/nginx-http3-1.19.7.patch
 RUN patch -p01 < quiche/nginx/nginx-1.16.patch; exit 0
 RUN patch -p01 < quiche/nginx/nginx-http3-1.19.7.patch; exit 0
-
 RUN ./configure \
     --prefix=$PWD \
     --build="quiche-$(git --git-dir=./quiche/.git rev-parse --short HEAD)" \
@@ -58,8 +56,8 @@ RUN ./configure \
 #    --add-module=./incubator-pagespeed-ngx-master \
     --add-module=./ngx_brotli \
     --with-openssl=./quiche/quiche/deps/boringssl \
-    --with-quiche=./quiche && \
-    make -j2
+    --with-quiche=./quiche \
+    && make -j2
     
 FROM jc21/nginx-proxy-manager:latest
 

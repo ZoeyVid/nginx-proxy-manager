@@ -1,7 +1,7 @@
 FROM jc21/nginx-proxy-manager:2.9.18 as npm
 
 FROM ubuntu:22.10 as nginxbuilder
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3-pip jq logrotate gcc g++ nodejs certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
+RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
 RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx
 RUN cp -r openresty-1.21.4.1rc3/. .
 RUN wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip
@@ -64,7 +64,7 @@ RUN ./configure \
 FROM ubuntu:22.10
 COPY --from=npm / ./npm
 COPY --from=nginxbuilder ./ ./build
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3-pip jq logrotate gcc g++ nodejs certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
+RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
 RUN cd build && make install
 RUN rm -rf build
 RUN cp -r ./build/* /

@@ -12,7 +12,6 @@ RUN git clone --recursive https://github.com/google/ngx_brotli
 #RUN curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-1.19.7.patch -o ./quiche/nginx/nginx-http3-1.19.7.patch
 #RUN patch -p01 < quiche/nginx/nginx-1.16.patch; exit 0
 #RUN patch -p01 < quiche/nginx/nginx-http3-1.19.7.patch; exit 0
-
 RUN ./configure \
     --prefix=$PWD \
     --sbin-path=/usr/sbin/nginx \

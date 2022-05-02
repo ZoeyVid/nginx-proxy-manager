@@ -34,7 +34,7 @@ jobs:
           context: .
           file: ./quici.Dockerfile
           platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quici
 
       - name: Build-pagespeed
@@ -43,5 +43,26 @@ jobs:
           context: .
           file: ./pagespeed.Dockerfile
           platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} , ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-pagespeed
+
+
+      - name: Build-quici
+        if: github.ref == 'refs/heads/latest'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./quici.Dockerfile
+          platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quici
+
+      - name: Build-pagespeed
+        if: github.ref == 'refs/heads/latest'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./pagespeed.Dockerfile
+          platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:pagespeed

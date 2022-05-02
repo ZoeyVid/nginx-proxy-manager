@@ -1,6 +1,7 @@
 FROM ubuntu:22.10 as nginxbuilder
 
 ENV TZ=Europe/Berlin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 #RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx
 #RUN cp -r openresty-1.21.4.1rc3/. .

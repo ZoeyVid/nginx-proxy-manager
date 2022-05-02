@@ -16,7 +16,6 @@ RUN git clone --recursive https://github.com/google/ngx_brotli
 
 RUN ./configure \
     --prefix=$PWD \
-    --build="quiche-$(git --git-dir=./quiche/.git rev-parse --short HEAD)" \
     --sbin-path=/usr/sbin/nginx \
     --modules-path=/usr/lib/nginx/modules \
     --conf-path=/etc/nginx/nginx.conf \

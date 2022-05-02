@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as nginxbuilder
+FROM ubuntu:22.10 as nginxbuilder
   
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
 #RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx

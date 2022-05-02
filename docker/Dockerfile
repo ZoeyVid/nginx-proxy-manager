@@ -2,8 +2,8 @@ FROM jc21/nginx-proxy-manager:2.9.18 as npm
 
 FROM ubuntu:22.10 as nginxbuilder
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl -y
-RUN curl "https://openresty.org/download/openresty-1.21.4.1rc3.tar.gz" | tar zx
-RUN cp -r openresty-1.21.4.1rc3/. .
+RUN curl "https://openresty.org/download/openresty-1.19.9.1.tar.gz" | tar zx
+RUN cp -r openresty-1.19.9.1/. .
 RUN wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip
 RUN cd incubator-pagespeed-ngx-master && curl https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-1.14.36.1-apache-incubating-x64.tar.gz | tar zx
 RUN git clone --recursive https://github.com/google/ngx_brotli

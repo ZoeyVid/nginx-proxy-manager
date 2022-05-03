@@ -14,4 +14,4 @@ ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 COPY --from=build /build/cloudflared/cloudflared /usr/local/bin/cloudflared
 
-ENTRYPOINT cloudflared --no-autoupdate tunnel run --token
+ENTRYPOINT cloudflared --no-autoupdate tunnel run --token ${token}

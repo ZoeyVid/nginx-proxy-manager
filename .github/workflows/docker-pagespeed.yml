@@ -1,4 +1,4 @@
-name: Docker CI Pagespeed
+name: Docker CI NPM-Pagespeed
 
 on:
   push:

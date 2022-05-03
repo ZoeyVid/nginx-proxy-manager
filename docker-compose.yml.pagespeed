@@ -1,0 +1,11 @@
+version: "3"
+services:
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: sanoj2020/nginx-proxy-manager:latest
+#    image: sanoj2020/nginx-proxy-manager:develop
+    restart: always
+    network_mode: host
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt

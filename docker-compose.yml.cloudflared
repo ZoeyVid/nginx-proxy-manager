@@ -2,8 +2,8 @@ version: "3"
 services:
   cloudflared:
     container_name: cloudflared
-    image: sanoj2020/cloudflared:latest
-#    image: sanoj2020/cloudflared:develop
+    image: sancraftdev/cloudflared:latest
+#    image: sancraftdev/cloudflared:develop
     restart: always
     network_mode: host
     environment:

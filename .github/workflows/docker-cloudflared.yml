@@ -1,8 +1,14 @@
-name: Docker CI
+name: Docker CI Cloudflared
 
 on:
   push:
+    paths:
+      - cloudflared.Dockerfile
+      - .github/workflows/docker-cloudflared.yml
   pull_request:
+    paths:
+      - cloudflared.Dockerfile
+      - .github/workflows/docker-cloudflared.yml
   workflow_dispatch:
 
 jobs:

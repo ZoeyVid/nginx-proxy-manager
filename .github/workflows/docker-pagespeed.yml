@@ -1,8 +1,14 @@
-name: Docker CI
+name: Docker CI Pagespeed
 
 on:
   push:
+    paths:
+      - pagespeed.Dockerfile
+      - .github/workflows/docker-pagespeed.yml
   pull_request:
+    paths:
+      - pagespeed.Dockerfile
+      - .github/workflows/docker-pagespeed.yml
   workflow_dispatch:
 
 jobs:

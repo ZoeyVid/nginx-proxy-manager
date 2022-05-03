@@ -1,4 +1,5 @@
 FROM golang:alpine as build
+ARG GOOS=${TARGETOS}
 ARG GOARCH=${TARGETARCH}
 RUN apk add git build-base
 RUN git clone https://github.com/cloudflare/cloudflared --branch 2022.5.0 /build/cloudflared

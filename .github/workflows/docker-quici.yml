@@ -1,4 +1,4 @@
-name: Docker CI Quici
+name: Docker CI NPM-Quici
 
 on:
   push:

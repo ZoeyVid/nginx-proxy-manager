@@ -69,6 +69,6 @@ RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --
 RUN cp /etc/apt/sources.list /etc/apt/sources.list-d
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libcrypt1
 RUN cp /etc/apt/sources.list-d /etc/apt/sources.list
-RUN apt-add-repository 'deb http://deb.debian.org/debian experimental main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross
+RUN apt-add-repository 'deb http://deb.debian.org/debian experimental main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross
 RUN cd build && make install
 RUN rm -rf build

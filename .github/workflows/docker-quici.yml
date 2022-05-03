@@ -1,8 +1,14 @@
-name: Docker CI
+name: Docker CI Quici
 
 on:
   push:
+    paths:
+      - quici.Dockerfile
+      - .github/workflows/docker-quici.yml
   pull_request:
+    paths:
+      - quici.Dockerfile
+      - .github/workflows/docker-quici.yml
   workflow_dispatch:
 
 jobs:

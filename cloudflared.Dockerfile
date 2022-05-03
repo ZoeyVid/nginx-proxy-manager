@@ -1,6 +1,6 @@
-FROM golang as build
-#ARG TARGETOS
-#ARG TARGETARCH
+FROM golang:alpine as build
+ARG TARGETOS
+ARG TARGETARCH
 ARG GOOS=${TARGETOS}
 ARG GOARCH=${TARGETARCH}
 RUN apk add git build-base

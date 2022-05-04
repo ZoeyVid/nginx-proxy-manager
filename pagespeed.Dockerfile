@@ -1,5 +1,4 @@
-FROM debian:bullseye as nginxbuilder
-
+FROM jc21/nginx-proxy-manager:latest
 ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENRESTY_VERSION=openresty-1.19.9.1
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
@@ -59,13 +58,4 @@ RUN cd build && ./configure \
     --add-module=./ngx_brotli \
 #    --with-openssl=./quiche/quiche/deps/boringssl \
 #    --with-quiche=./quiche \
-    && make -j2
-
-FROM jc21/nginx-proxy-manager:latest
-
-ENV DEBIAN_FRONTEND=noninteractive
-COPY --from=nginxbuilder ./build ./build
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
-RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
-RUN cd build && make install
-RUN rm -rf build
+    && make -j2 && make install && rm -rf build

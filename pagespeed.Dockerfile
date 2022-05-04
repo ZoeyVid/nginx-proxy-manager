@@ -8,10 +8,12 @@ ENV OPENRESTY_VERSION=openresty-1.21.4.1rc3
 ENV PAGESPEED_INCUBATOR_VERSION=1.14.36.1
 RUN rm /etc/apt/sources.list
 Run echo "deb http://deb.debian.org/debian bullseye main" >> /etc/apt/sources.list
-Run echo "deb http://deb.debian.org/debian/ bullseye-updates main" >> /etc/apt/sources.list
 Run echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list
+Run echo "deb http://deb.debian.org/debian/ bullseye-updates main" >> /etc/apt/sources.list
 Run echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x bullseye main" >> /etc/apt/sources.list
-RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3 python3-pip libcrypt1 libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl certbot -y
+RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3 python3-pip libcrypt1 libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl certbot -y
+RUN RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 #RUN curl "https://nginx.org/download/${NGINX_VERSION}.tar.gz" | tar zx
 #RUN mv ${NGINX_VERSION} build
 RUN curl "https://openresty.org/download/${OPENRESTY_VERSION}.tar.gz" | tar zx

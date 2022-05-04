@@ -60,7 +60,8 @@ RUN cd build && ./configure \
 #    --with-openssl=./quiche/quiche/deps/boringssl \
 #    --with-quiche=./quiche \
     && make -j2
-    
+RUN ls / && ls /build && exit
+
 FROM jc21/nginx-proxy-manager:latest
 
 ENV DEBIAN_FRONTEND=noninteractive

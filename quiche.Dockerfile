@@ -60,4 +60,4 @@ RUN cd build && ./configure \
     --add-module=./ngx_brotli \
     --with-openssl=./quiche/quiche/deps/boringssl \
     --with-quiche=./quiche \
-    && make -j2 && make install && rm -rf build
+    && make -j2 && make install && rm -rf /build

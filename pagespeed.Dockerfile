@@ -14,6 +14,7 @@ Run echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesou
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3 python3-pip libcrypt1 libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl certbot -y
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 #ENV PATH="/root/.cargo/bin:${PATH}"
+#RUN rustup toolchain install nightly && cd /app/build/quiche && rustup override set nightly
 RUN curl "https://openresty.org/download/${OPENRESTY_VERSION}.tar.gz" | tar zx
 RUN mv ${OPENRESTY_VERSION} build
 RUN cd build && wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip

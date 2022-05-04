@@ -26,7 +26,6 @@ RUN cd build && mv quiche/nginx/nginx-${QUICHE_NGINX_PATCH_1}.patch bundle/${NGI
 RUN cd build && curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-${QUICHE_NGINX_PATCH_2}.patch -o bundle/${NGINX_VERSION}/nginx-http3-1.19.7.patch
 RUN cd build/bundle/${NGINX_VERSION} && patch -p01 < nginx-${QUICHE_NGINX_PATCH_1}.patch; exit 0
 RUN cd build/bundle/${NGINX_VERSION} && patch -p01 < nginx-http3-${QUICHE_NGINX_PATCH_2}.patch; exit 0
-#RUN curl -L https://raw.githubusercontent.com/SanCraftDev/nginx-proxy-manager/develop/make -o build/bundle/${NGINX_VERSION}/auto/lib/quiche/make
 RUN cd build && ./configure \
     --prefix=$PWD \
     --sbin-path=/usr/sbin/nginx \

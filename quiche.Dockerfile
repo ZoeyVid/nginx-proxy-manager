@@ -12,7 +12,7 @@ Run echo "deb http://deb.debian.org/debian/ bullseye-updates main" >> /etc/apt/s
 Run echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list
 Run echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x bullseye main" >> /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3 python3-pip libcrypt1 libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl certbot -y
-RUN RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 #RUN curl "https://nginx.org/download/${NGINX_VERSION}.tar.gz" | tar zx
 #RUN mv ${NGINX_VERSION} build

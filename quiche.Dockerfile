@@ -17,8 +17,8 @@ RUN cd build/incubator-pagespeed-ngx-master && curl https://dist.apache.org/repo
 RUN cd build && git clone --recursive https://github.com/google/ngx_brotli
 RUN cd build && git clone --recursive https://github.com/cloudflare/quiche && cd quiche && git checkout tags/${QUICHE_VERSION}
 RUN cd build && curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-${QUICHE_NGINX_PATCH_2}.patch -o ./quiche/nginx/nginx-http3-1.19.7.patch
-RUN cd build/bundle/$[NGINX_VERSION} && patch -p01 < /build/quiche/nginx/nginx-${QUICHE_NGINX_PATCH_1}.patch; exit 0
-RUN cd build/bundle/$[NGINX_VERSION} && patch -p01 < /build/quiche/nginx/nginx-http3-${QUICHE_NGINX_PATCH_2}.patch; exit 0
+RUN cd build/bundle/${NGINX_VERSION} && patch -p01 < /build/quiche/nginx/nginx-${QUICHE_NGINX_PATCH_1}.patch; exit 0
+RUN cd build/bundle/${NGINX_VERSION} && patch -p01 < /build/quiche/nginx/nginx-http3-${QUICHE_NGINX_PATCH_2}.patch; exit 0
 RUN cd build && ./configure \
     --prefix=$PWD \
     --sbin-path=/usr/sbin/nginx \

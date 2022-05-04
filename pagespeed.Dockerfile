@@ -14,13 +14,14 @@ Run echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesou
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install python3 python3-pip libcrypt1 libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross uuid-dev make build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl certbot -y
 #RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 #ENV PATH="/root/.cargo/bin:${PATH}"
-#RUN rustup toolchain install nightly && cd /app/build/quiche && rustup override set nightly
+#RUN rustup toolchain install nightly
 RUN curl "https://openresty.org/download/${OPENRESTY_VERSION}.tar.gz" | tar zx
 RUN mv ${OPENRESTY_VERSION} build
 RUN cd build && wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip
 RUN cd build/incubator-pagespeed-ngx-master && curl https://dist.apache.org/repos/dist/release/incubator/pagespeed/${PAGESPEED_INCUBATOR_VERSION}/x64/psol-${PAGESPEED_INCUBATOR_VERSION}-apache-incubating-x64.tar.gz | tar zx
 RUN cd build && git clone --recursive https://github.com/google/ngx_brotli
 #RUN cd build && git clone --recursive https://github.com/cloudflare/quiche && cd quiche && git checkout tags/${QUICHE_VERSION}
+#RUN cd build/quiche && rustup override set nightly
 #RUN cd build && mv quiche/nginx/nginx-${QUICHE_NGINX_PATCH_1}.patch bundle/${NGINX_VERSION}/nginx-${QUICHE_NGINX_PATCH_1}.patch
 #RUN cd build && curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-${QUICHE_NGINX_PATCH_2}.patch -o bundle/${NGINX_VERSION}/nginx-http3-1.19.7.patch
 #RUN cd build/bundle/${NGINX_VERSION} && patch -p01 < nginx-${QUICHE_NGINX_PATCH_1}.patch; exit 0

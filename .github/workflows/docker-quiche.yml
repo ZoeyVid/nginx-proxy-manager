@@ -5,10 +5,12 @@ on:
     paths:
       - quiche.Dockerfile
       - .github/workflows/docker-quiche.yml
+      - make
   pull_request:
     paths:
       - quiche.Dockerfile
       - .github/workflows/docker-quiche.yml
+      - make
   workflow_dispatch:
 
 jobs:

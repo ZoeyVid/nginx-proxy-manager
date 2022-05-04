@@ -13,7 +13,7 @@ Run echo "deb http://deb.debian.org/debian/ bullseye-updates main" >> /etc/apt/s
 Run echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x bullseye main" >> /etc/apt/sources.list
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
-RUN curl -L 'https://bootstrap.pypa.io/get-pip.py' | python3 && python3 -m venv /opt/certbot && ln -s /opt/certbot/bin/certbot /usr/bin/certbot
+RUN curl -L 'https://bootstrap.pypa.io/get-pip.py' | python3 && python3 -m venv /opt/certbot && rm -rf /usr/bin/certbot && ln -s /opt/certbot/bin/certbot /usr/bin/certbot
 #RUN curl "https://nginx.org/download/${NGINX_VERSION}.tar.gz" | tar zx
 #RUN mv ${NGINX_VERSION} build
 RUN curl "https://openresty.org/download/${OPENRESTY_VERSION}.tar.gz" | tar zx

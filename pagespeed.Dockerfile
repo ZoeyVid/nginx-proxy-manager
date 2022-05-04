@@ -1,11 +1,11 @@
 FROM debian:bullseye as nginxbuilder
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV OPENRESTY-VERSION=openresty-1.21.4.1rc3
+ENV OPENRESTY_VERSION=openresty-1.21.4.1rc3
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
-RUN curl "https://openresty.org/download/${OPENRESTY-VERSION}.tar.gz" | tar zx
-RUN mv ${OPENRESTY-VERSION} build
+RUN curl "https://openresty.org/download/${OPENRESTY_VERSION}.tar.gz" | tar zx
+RUN mv ${OPENRESTY_VERSION} build
 #RUN curl "https://nginx.org/download/nginx-1.21.6.tar.gz" | tar zx
 #RUN cp -r nginx-1.21.6/. .
 RUN cd build && wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip

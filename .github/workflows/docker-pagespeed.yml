@@ -5,10 +5,12 @@ on:
     paths:
       - pagespeed.Dockerfile
       - .github/workflows/docker-pagespeed.yml
+      - make
   pull_request:
     paths:
       - pagespeed.Dockerfile
       - .github/workflows/docker-pagespeed.yml
+      - make
   workflow_dispatch:
 
 jobs:

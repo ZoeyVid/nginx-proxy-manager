@@ -62,8 +62,9 @@ RUN cd ${OPENRESTY-VERSION} && ./configure \
     
 FROM jc21/nginx-proxy-manager:latest
 
-COPY --from=nginxbuilder ./${OPENRESTY-VERSION} ./${OPENRESTY-VERSION}
 ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENRESTY-VERSION=openresty-1.21.4.1rc3
+COPY --from=nginxbuilder ./${OPENRESTY-VERSION} ./${OPENRESTY-VERSION}
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
 RUN cd ${OPENRESTY_VERSION} && make install

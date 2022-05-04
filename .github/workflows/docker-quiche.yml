@@ -47,5 +47,5 @@ jobs:
         if: github.ref == 'refs/heads/latest'
         run: |
          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quiche
-         docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quiche
+         docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quiche ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quiche
          docker push ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quiche

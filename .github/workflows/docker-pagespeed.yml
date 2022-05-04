@@ -43,9 +43,9 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} , ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-pagespeed
 
-      - name: Promote images from develop to beta
+      - name: Add tag if it is from the latest branch
         if: github.ref == 'refs/heads/latest'
         run: |
-         docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
-         docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:pagespeed
+         docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-pagespeed
+         docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-pagespeed ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:pagespeed
          docker push ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:pagespeed

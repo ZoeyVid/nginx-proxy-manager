@@ -66,8 +66,8 @@ RUN cd build && ./configure \
     --with-stream_realip_module \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
-    --add-module=./incubator-pagespeed-ngx-master \
-    --add-module=./ngx_brotli \
-#    --with-openssl=.quiche/quiche/deps/boringssl \
-#    --with-quiche=./quiche \
+    --add-module=/app/build/incubator-pagespeed-ngx-master \
+    --add-module=/app/build/ngx_brotli \
+#    --with-openssl=/app/build/quiche/quiche/deps/boringssl \
+#    --with-quiche=/app/build/quiche \
     && make -j2 && make install && rm -rf /build

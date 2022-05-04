@@ -1,4 +1,4 @@
-FROM jc21/nginx-proxy-manager:latest
+FROM jc21/nginx-proxy-manager:2.9.18
 ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENRESTY_VERSION=openresty-1.21.4.1rc3
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y

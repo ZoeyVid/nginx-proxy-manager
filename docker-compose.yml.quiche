@@ -2,8 +2,8 @@ version: "3"
 services:
   nginx-proxy-manager:
     container_name: nginx-proxy-manager
-    image: sancraftdev/nginx-proxy-manager:latest-quici
-#    image: sancraftdev/nginx-proxy-manager:develop-quici
+    image: sancraftdev/nginx-proxy-manager:latest-quiche
+#    image: sancraftdev/nginx-proxy-manager:develop-quiche
     restart: always
     network_mode: host
     volumes:

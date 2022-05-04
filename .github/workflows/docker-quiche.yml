@@ -1,14 +1,14 @@
-name: Docker CI NPM-Quici
+name: Docker CI NPM-Quiche
 
 on:
   push:
     paths:
-      - quici.Dockerfile
-      - .github/workflows/docker-quici.yml
+      - quiche.Dockerfile
+      - .github/workflows/docker-quiche.yml
   pull_request:
     paths:
-      - quici.Dockerfile
-      - .github/workflows/docker-quici.yml
+      - quiche.Dockerfile
+      - .github/workflows/docker-quiche.yml
   workflow_dispatch:
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
           file: ./quici.Dockerfile
           platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quici
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}-quiche
 
       - name: Build-quici
         if: github.ref == 'refs/heads/latest'
@@ -51,4 +51,4 @@ jobs:
           file: ./quici.Dockerfile
           platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quici
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:quiche

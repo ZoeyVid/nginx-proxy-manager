@@ -1,7 +1,7 @@
 
 # Copyright (C) Cloudflare, Inc.
 
-QUICHE_COMMON_FLAGS="--package quiche --verbose --no-default-features --features ffi"
+QUICHE_COMMON_FLAGS="--package quiche --verbose --no-default-features -Z ffi"
 
 # Default is release build
 QUICHE_BUILD_FLAGS="$QUICHE_COMMON_FLAGS --release"

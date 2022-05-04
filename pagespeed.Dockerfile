@@ -5,16 +5,17 @@ ENV OPENRESTY-VERSION=openresty-1.21.4.1rc3
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
 RUN curl "https://openresty.org/download/${OPENRESTY-VERSION}.tar.gz" | tar zx
+RUN mv ${OPENRESTY-VERSION} build
 #RUN curl "https://nginx.org/download/nginx-1.21.6.tar.gz" | tar zx
 #RUN cp -r nginx-1.21.6/. .
-RUN cd ${OPENRESTY-VERSION} && wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip
-RUN cd ${OPENRESTY-VERSION} && cd incubator-pagespeed-ngx-master && curl https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-1.14.36.1-apache-incubating-x64.tar.gz | tar zx
-RUN cd ${OPENRESTY-VERSION} && git clone --recursive https://github.com/google/ngx_brotli
+RUN cd build && wget "https://github.com/apache/incubator-pagespeed-ngx/archive/refs/heads/master.zip" && unzip master.zip
+RUN cd build/incubator-pagespeed-ngx-master && curl https://dist.apache.org/repos/dist/release/incubator/pagespeed/1.14.36.1/x64/psol-1.14.36.1-apache-incubating-x64.tar.gz | tar zx
+RUN cd build && git clone --recursive https://github.com/google/ngx_brotli
 #RUN git clone --recursive https://github.com/cloudflare/quiche && cd quiche && git checkout tags/0.12.0
 #RUN curl -L https://raw.githubusercontent.com/angristan/nginx-autoinstall/master/patches/nginx-http3-1.19.7.patch -o ./quiche/nginx/nginx-http3-1.19.7.patch
 #RUN patch -p01 < quiche/nginx/nginx-1.16.patch; exit 0
 #RUN patch -p01 < quiche/nginx/nginx-http3-1.19.7.patch; exit 0
-RUN cd ${OPENRESTY-VERSION} && ./configure \
+RUN cd build && ./configure \
     --prefix=$PWD \
     --sbin-path=/usr/sbin/nginx \
     --modules-path=/usr/lib/nginx/modules \
@@ -64,8 +65,8 @@ FROM jc21/nginx-proxy-manager:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV OPENRESTY-VERSION=openresty-1.21.4.1rc3
-COPY --from=nginxbuilder ./${OPENRESTY-VERSION} ./${OPENRESTY-VERSION}
+COPY --from=nginxbuilder ./build ./build
 RUN apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install certbot uuid-dev make cargo rustc build-essential curl wget libpcre3 libpcre3-dev zlib1g-dev git brotli patch git unzip cmake libssl-dev perl software-properties-common -y
 RUN apt-add-repository 'deb http://deb.debian.org/debian bullseye main' && apt-add-repository 'deb http://deb.debian.org/debian bullseye-updates main' && apt update -y && apt upgrade -y --allow-downgrades && apt dist-upgrade -y --allow-downgrades && apt autoclean && apt clean && apt autoremove -y && apt -o DPkg::Options::="--force-confnew" -y install libc-dev-bin libc-devtools libc6-dev-amd64-cross libc6-amd64-cross libcrypt1
-RUN cd ${OPENRESTY_VERSION} && make install
+RUN cd build && make install
 RUN rm -rf build

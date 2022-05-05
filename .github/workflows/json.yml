@@ -14,8 +14,3 @@ jobs:
         uses: limitusus/json-syntax-check@v1
         with:
           pattern: "\\.json$*"
-      - uses: actions/checkout@v3
-      - name: mcmeta-syntax-check
-        uses: limitusus/json-syntax-check@v1
-        with:
-          pattern: "\\pack.mcmeta$*"

@@ -1,4 +1,4 @@
-name: Docker NPM push develop tp latest
+name: Docker NPM push develop to latest
 
 on:
   workflow_dispatch:
@@ -18,3 +18,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push develop to latest
+        run: |
+               docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:develop
+               docker tag ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:develop ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+               docker push ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest

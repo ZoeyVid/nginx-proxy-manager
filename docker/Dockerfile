@@ -96,9 +96,6 @@ RUN rm /etc/apt/sources.list && \
     ./setup-ngxblocker -e conf && \
     ./setup-ngxblocker -x -e conf && \
 
-    yarn install && \
-    yarn add signale && \
-
 # Remove frontend service not required for prod, dev nginx config as well
     rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
 

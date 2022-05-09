@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - docker/Dockerfile
-      - .github/workflows/docker.yml
+      - .github/workflows/docker-npm.yml
   pull_request:
     paths:
       - docker/Dockerfile
-      - .github/workflows/docker.yml
+      - .github/workflows/docker-npm.yml
   workflow_dispatch:
 
 jobs:

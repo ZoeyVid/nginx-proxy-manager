@@ -33,7 +33,7 @@ jobs:
           key: ${{ steps.getversion.outputs.version }}-frontend-${{ secrets.CACHE_ID }}
           
       - name: Prepair frontend
-        if: steps.caches-frontend.outputs.cache-hit != 'true'
+        if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
       - uses: actions/setup-node@v3

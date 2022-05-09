@@ -3,10 +3,12 @@ name: Docker NPM
 on:
   push:
     paths:
+      - .version
       - docker/Dockerfile
       - .github/workflows/docker-npm.yml
   pull_request:
     paths:
+      - .version
       - docker/Dockerfile
       - .github/workflows/docker-npm.yml
   workflow_dispatch:

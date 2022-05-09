@@ -30,10 +30,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/dist
-          key: ${{ steps.getversion.outputs.version }}-frontend
+          key: ${{ steps.getversion.outputs.version }}-frontend-${{ secrets.CACHE_ID }}
           
       - name: Prepair frontend
-        if: steps.caches-frontend.output.cache-hit != 'true'
+        if: steps.caches-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
       - name: Set up QEMU

@@ -36,16 +36,6 @@ jobs:
         if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install node-modules
-        run: |
-             npm i -g yarn
-             cd backend
-             yarn install
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:

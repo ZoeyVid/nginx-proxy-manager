@@ -51,7 +51,6 @@ ARG BUILD_VERSION
 ARG BUILD_COMMIT
 ARG BUILD_DATE
 
-
 COPY docker/rootfs      /
 COPY backend            /app
 COPY global             /app/global

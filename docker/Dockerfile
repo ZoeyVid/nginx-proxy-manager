@@ -93,10 +93,12 @@ RUN rm /etc/apt/sources.list && \
     ./setup-ngxblocker -x -e conf && \
 
     cd /app && \
-    yarn install && \
+    yarn install
+    
+COPY docker/rootfs /
 
 # Remove frontend service not required for prod, dev nginx config as well
-    rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
+RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
@@ -106,7 +108,6 @@ RUN rm /etc/apt/sources.list && \
     pip uninstall --yes setuptools \
 	&& pip install "setuptools==58.0.0"
 
-COPY docker/rootfs /
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]

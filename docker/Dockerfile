@@ -96,17 +96,17 @@ RUN rm /etc/apt/sources.list && \
     yarn install && \
 
 # Remove frontend service not required for prod, dev nginx config as well
-    rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
+    rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf
+
+COPY docker/rootfs /
 
 # Change permission of logrotate config file
-    chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
+RUN chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
 
 # fix for pip installs
 # https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
     pip uninstall --yes setuptools \
 	&& pip install "setuptools==58.0.0"
-
-COPY docker/rootfs /
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]

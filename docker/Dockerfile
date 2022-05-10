@@ -3,8 +3,7 @@
 
 # This file assumes that the frontend has been built using ./scripts/frontend-build
 
-FROM debian:bullseye-slim 
-#php:8.0-rc-fpm-bullseye
+FROM debian:php:8.0-rc-fpm-bullseye
 
 EXPOSE 80 81 443
 
@@ -51,7 +50,6 @@ ARG BUILD_VERSION
 ARG BUILD_COMMIT
 ARG BUILD_DATE
 
-COPY docker/rootfs      /
 COPY backend            /app
 COPY global             /app/global
 COPY frontend/dist      /app/frontend
@@ -107,6 +105,8 @@ RUN rm /etc/apt/sources.list && \
 # https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
     pip uninstall --yes setuptools \
 	&& pip install "setuptools==58.0.0"
+
+COPY docker/rootfs /
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]

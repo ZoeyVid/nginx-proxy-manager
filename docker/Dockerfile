@@ -81,18 +81,7 @@ RUN rm /etc/apt/sources.list && \
     
     /tmp/install-s6 "${TARGETPLATFORM}" && \
     rm -f /tmp/install-s6 && \
-
-    wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker && \
-    chmod +x /usr/local/sbin/install-ngxblocker && \
-    cd /usr/local/sbin && \
-    ./install-ngxblocker && \
-    ./install-ngxblocker -x && \
-    chmod +x /usr/local/sbin/setup-ngxblocker && \
-    chmod +x /usr/local/sbin/update-ngxblocker && \
-    ./setup-ngxblocker -e conf && \
-    ./setup-ngxblocker -x -e conf && \
-
-    cd /app && \
+    
     yarn install
     
 COPY docker/rootfs /

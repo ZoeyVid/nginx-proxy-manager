@@ -3,7 +3,7 @@
 
 # This file assumes that the frontend has been built using ./scripts/frontend-build
 
-FROM debian:php:8.0-rc-fpm-bullseye
+FROM php:8.0-rc-fpm-bullseye
 
 EXPOSE 80 81 443
 

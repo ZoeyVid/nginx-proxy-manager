@@ -81,13 +81,22 @@ RUN rm /etc/apt/sources.list && \
     
     /tmp/install-s6 "${TARGETPLATFORM}" && \
     rm -f /tmp/install-s6 && \
-    
-    yarn install
-    
-COPY docker/rootfs /
+
+    wget https://raw.githubusercontent.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/master/install-ngxblocker -O /usr/local/sbin/install-ngxblocker && \
+    chmod +x /usr/local/sbin/install-ngxblocker && \
+    cd /usr/local/sbin && \
+    ./install-ngxblocker && \
+    ./install-ngxblocker -x && \
+    chmod +x /usr/local/sbin/setup-ngxblocker && \
+    chmod +x /usr/local/sbin/update-ngxblocker && \
+    ./setup-ngxblocker -e conf && \
+    ./setup-ngxblocker -x -e conf && \
+
+    cd /app && \
+    yarn install && \
 
 # Remove frontend service not required for prod, dev nginx config as well
-RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
+    rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
@@ -97,6 +106,7 @@ RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
     pip uninstall --yes setuptools \
 	&& pip install "setuptools==58.0.0"
 
+COPY docker/rootfs /
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]

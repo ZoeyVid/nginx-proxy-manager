@@ -26,7 +26,7 @@
 		"objection": "^2.2.16",
 		"path": "^0.12.7",
 		"signale": "^1.4.0",
-		"sqlite3": "^5.0.8",
+		"sqlite3": "^4.1.1",
 		"temp-write": "^4.0.0"
 	},
 	"signale": {

@@ -75,7 +75,7 @@ RUN rm /etc/apt/sources.list && \
     apt -o DPkg::Options::="--force-confnew" -y install -y python3 python3-pip certbot curl gcc make g++ git nodejs build-essential ca-certificates git sqlite3 \
     tar unzip moreutils jq logrotate wget python-is-python3 knot-dnsutils redis-tools redis-server libxml2 libxslt1-dev libxslt1.1 perl && \
     npm i -g yarn && \
-    wget https://raw.githubusercontent.com/SanCraftDev/nginx-autoinstall/master/nginx-autoinstall.sh && \
+    wget https://raw.githubusercontent.com/SanCraftDev/nginx-autoinstall/main/nginx-autoinstall.sh && \
     chmod +x nginx-autoinstall.sh && \
     ./nginx-autoinstall.sh && \
     

@@ -65,3 +65,6 @@ jobs:
           build-args: |
                 "GEOIP2_ACCOUNT_ID=${{ secrets.MAXMIND_ID }}"
                 "GEOIP2_LICENSE_KEY=${{ secrets.MAXMIND_KEY }}"
+                
+      - name: Show Nginx version
+        run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} /usr/sbin/nginx -V

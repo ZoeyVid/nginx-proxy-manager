@@ -52,7 +52,7 @@ RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
     pip install "setuptools==58.0.0"
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
-ENTRYPOINT [ "/init" ]
+CMD [ "/init" ]
 
 LABEL org.label-schema.schema-version="1.0" \
 	org.label-schema.license="MIT" \

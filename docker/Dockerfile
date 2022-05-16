@@ -5,73 +5,51 @@
 
 FROM sancraftdev/openresty-nginx-quic:develop
 
-EXPOSE 80 81 443
-
-ENV DEBIAN_FRONTEND=noninteractive \
-    SUPPRESS_NO_CONFIG_WARNING=1 \
-    S6_FIX_ATTRS_HIDDEN=1 \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-    NODE_ENV=production \
-    NPM_BUILD_VERSION="${BUILD_VERSION}" \
-    NPM_BUILD_COMMIT="${BUILD_COMMIT}" \
-    NPM_BUILD_DATE="${BUILD_DATE}" \
-    HEADLESS=y \
-    NGINX_VER=MAINLINE \
-    BROTLI=y \
-#    OPTION=1 \
-    PAGESPEED=y \
-#    HEADERMOD=y \
-    FANCYINDEX=y \
-#    CACHEPURGE=y \
-#    SUBFILTER=y \
-    LUA=y \
-#    WEBDAV=y \
-#    VTS=y \
-#    RTMP=y \
-#    TESTCOOKIE=y \
-    HTTP3=y \
-#    MODSEC=y \
-#    REDIS2=y \
-#    HTTPREDIS=y \
-#    SRCACHE=y \
-#    NGXECHO=y \
-#    HPACK=y \
-#    TLSDYN=y \
-#    SSL=1 \
-    RM_CONF=y \
-    RM_LOGS=y \
-    GEOIP=y
-    
 ARG TARGETPLATFORM
 ARG BUILD_VERSION
 ARG BUILD_COMMIT
 ARG BUILD_DATE
 
-COPY backend            /app
-COPY global             /app/global
-COPY frontend/dist      /app/frontend
+ENV SUPPRESS_NO_CONFIG_WARNING=1 \
+	S6_FIX_ATTRS_HIDDEN=1 \
+	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
+	NODE_ENV=production \
+	NPM_BUILD_VERSION="${BUILD_VERSION}" \
+	NPM_BUILD_COMMIT="${BUILD_COMMIT}" \
+	NPM_BUILD_DATE="${BUILD_DATE}"
+
+RUN echo "fs.file-max = 65535" > /etc/sysctl.conf \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends jq logrotate \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+
+# s6 overlay
 COPY scripts/install-s6 /tmp/install-s6
+RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6
+
+EXPOSE 80 81 443
+
+COPY backend       /app
+COPY frontend/dist /app/frontend
+COPY global        /app/global
 
 WORKDIR /app
+RUN yarn install
 
-RUN /tmp/install-s6 "${TARGETPLATFORM}" && \
-    rm -f /tmp/install-s6 && \
-
-    cd /app && \
-    yarn install && \
-
-# Remove frontend service not required for prod, dev nginx config as well
-    rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf
-
+# add late to limit cache-busting by modifications
 COPY docker/rootfs /
 
+# Remove frontend service not required for prod, dev nginx config as well
+RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
+
 # Change permission of logrotate config file
-RUN chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
+    chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
 
 # fix for pip installs
 # https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
-    pip uninstall --yes setuptools \
-	&& pip install "setuptools==58.0.0"
+    pip uninstall --yes setuptools && \
+    pip install "setuptools==58.0.0"
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT [ "/init" ]

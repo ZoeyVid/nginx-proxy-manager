@@ -19,11 +19,19 @@ jobs:
     if: github.ref == 'refs/heads/testing'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3      
+        
+      - name: Set current date as env variable
+        run: echo "BUILD_DATE::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
           
       - name: Read VERSION file
         id: getversion
         run: echo "::set-output name=version::$(cat .version)"
+        
+      - name: set envs
+        run: |
+         export "BUILD_VERSION=${{ steps.getversion.outputs.version }}"
+         export "BUILD_COMMIT=${{ github.sha }}"
         
       - name: cache-frontend
         id: cache-frontend
@@ -67,7 +75,7 @@ jobs:
            "BUILDPLATFORM=linux/amd64"
            "BUILD_VERSION=${{ steps.getversion.outputs.version }}"
            "BUILD_COMMIT=${{ github.sha }}"
-           "BUILD_DATE=$(date '+%Y-%m-%d %T %Z')"
+           "BUILD_DATE=$BUILD_DATE"
                 
       - name: Show Nginx version
         run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} /usr/sbin/nginx -V

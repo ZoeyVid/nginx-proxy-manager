@@ -31,7 +31,7 @@ jobs:
         
       - name: set envs
         run: |
-         export "BUILD_VERSION=${{ steps.getversion.outputs.version }}"
+         export "BUILD_VERSION=${{ steps.version.outputs.version }}"
          export "BUILD_COMMIT=${{ github.sha }}"
          export "BUILD_DATE=${{ steps.date.outputs.version }}"
         
@@ -75,7 +75,7 @@ jobs:
           build-args: |
            "TARGETPLATFORM=linux/amd64"
            "BUILDPLATFORM=linux/amd64"
-           "BUILD_VERSION=${{ steps.getversion.outputs.version }}"
+           "BUILD_VERSION=${{ steps.version.outputs.version }}"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.version }}"
                 

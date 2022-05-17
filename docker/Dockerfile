@@ -18,12 +18,6 @@ ENV SUPPRESS_NO_CONFIG_WARNING=1 \
 	NPM_BUILD_COMMIT="${BUILD_COMMIT}" \
 	NPM_BUILD_DATE="${BUILD_DATE}"
 
-RUN echo "fs.file-max = 65535" > /etc/sysctl.conf \
-	&& apt-get update \
-	&& apt-get install -y --no-install-recommends jq logrotate \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
-
 # s6 overlay
 COPY scripts/install-s6 /tmp/install-s6
 RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6

@@ -67,7 +67,7 @@ jobs:
            "BUILDPLATFORM=linux/amd64"
            "BUILD_VERSION=${{ steps.getversion.outputs.version }}"
            "BUILD_COMMIT=${{ github.sha }}"
-           "BUILD_DATE=$(date '+%Y-%m-%d %T %Z')""
+           "BUILD_DATE=$(date '+%Y-%m-%d %T %Z')"
                 
       - name: Show Nginx version
         run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} /usr/sbin/nginx -V

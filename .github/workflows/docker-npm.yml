@@ -16,7 +16,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/testing'
     steps:
       - name: Checkout
         uses: actions/checkout@v3      

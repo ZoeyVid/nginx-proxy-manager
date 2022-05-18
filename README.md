@@ -57,6 +57,10 @@ so that the barrier for entry here is low.
 - Just arround 150 MB bigger than the original version
 - Run the admin interface on port 81 with ssl (https)
 
+## Soon
+- Use as web server with php support
+- change version numbers also in the frontend
+
 ## Hosting your home network
 
 I won't go in to too much detail here but here are the basics for someone new to this self-hosted world.
@@ -100,13 +104,17 @@ services:
 ```bash
 docker-compose up -d
 ```
+OR
+```bash
+docker compose up -d
+```
 
 4. Log in to the Admin UI
 
 When your docker container is running, connect to it on port `81` for the admin interface.
 Sometimes this can take a little bit because of the entropy of keys.
 
-[http://127.0.0.1:81](http://127.0.0.1:81)
+[https://127.0.0.1:81](https://127.0.0.1:81)
 
 Default Admin User:
 ```

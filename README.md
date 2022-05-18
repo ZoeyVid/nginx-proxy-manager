@@ -53,7 +53,7 @@ so that the barrier for entry here is low.
 - Use OCSP Stapling, this requires that you upload a Intermediate Certificate if you use custom certificates
 - Use HTTP/2 also on Port 80, if enabled
 - Use HTTP/2 on the default host on port 80
-- More Nginx/Openresty Modules, see [here](https://github.com/SanCraftDev/openresty-nginx-quic)
+- More Nginx/Openresty Modules, see [here]([https://github.com/SanCraftDev/openresty-nginx-quic](https://github.com/SanCraftDev/openresty-nginx-quic/blob/develop/Dockerfile))
 - Just arround 150 MB bigger than the original version
 - Run the admin interface on port 81 with ssl (https)
 

@@ -3,7 +3,7 @@
 
 # This file assumes that the frontend has been built using ./scripts/frontend-build
 
-FROM sancraftdev/openresty-nginx-quic:develop
+FROM sancraftdev/openresty-nginx-quic:latest
 
 ARG TARGETPLATFORM
 ARG BUILD_VERSION
@@ -13,10 +13,7 @@ ARG BUILD_DATE
 ENV SUPPRESS_NO_CONFIG_WARNING=1 \
 	S6_FIX_ATTRS_HIDDEN=1 \
 	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-	NODE_ENV=production \
-	NPM_BUILD_VERSION="${BUILD_VERSION}" \
-	NPM_BUILD_COMMIT="${BUILD_COMMIT}" \
-	NPM_BUILD_DATE="${BUILD_DATE}"
+	NODE_ENV=production
 
 # s6 overlay
 COPY scripts/install-s6 /tmp/install-s6

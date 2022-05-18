@@ -1,12 +1,12 @@
 <p align="center">
 	<img src="https://nginxproxymanager.com/github.png">
 	<br><br>
-	<img src="https://img.shields.io/badge/version-2.9.18-green.svg?style=for-the-badge">
-	<a href="https://hub.docker.com/repository/docker/jc21/nginx-proxy-manager">
-		<img src="https://img.shields.io/docker/stars/jc21/nginx-proxy-manager.svg?style=for-the-badge">
+	<img src="https://img.shields.io/badge/version-2.9.18+-green.svg?style=for-the-badge">
+	<a href="https://hub.docker.com/repository/docker/sancraftdev/nginx-proxy-manager">
+		<img src="https://img.shields.io/docker/stars/sancraftdev/nginx-proxy-manager.svg?style=for-the-badge">
 	</a>
-	<a href="https://hub.docker.com/repository/docker/jc21/nginx-proxy-manager">
-		<img src="https://img.shields.io/docker/pulls/jc21/nginx-proxy-manager.svg?style=for-the-badge">
+	<a href="https://hub.docker.com/repository/docker/sancraftdev/nginx-proxy-manager">
+		<img src="https://img.shields.io/docker/pulls/sancraftdev/nginx-proxy-manager.svg?style=for-the-badge">
 	</a>
 	<a href="https://gitter.im/nginx-proxy-manager/community">
 		<img alt="Gitter" src="https://img.shields.io/gitter/room/nginx-proxy-manager/community?style=for-the-badge">
@@ -42,6 +42,20 @@ so that the barrier for entry here is low.
 - Advanced Nginx configuration available for super users
 - User management, permissions and audit log
 
+# New Features
+
+- Google Brotli enabled by default (can not be disabled)
+- Google Pagespeed enabled by default (can not be disabled)
+- Modsecurity enabled by default (can not be disabled)
+- HTTP/3 (QUIC) Support if you enable HTTP/2
+- Fix Proxy Hosts, if origin only accepts TLSv1.3
+- Only use TLSv1.2 and TLSv1.3
+- Use OCSP Stapling, this requires that you upload a Intermediate Certificate if you use custom certificates
+- Use HTTP/2 also on Port 80, if enabled
+- Use HTTP/2 on the default host on port 80
+- More Nginx/Openresty Modules, see [here](https://github.com/SanCraftDev/openresty-nginx-quic)
+- Just arround 150 MB bigger than the original version
+- Run the admin interface on port 81 with ssl (https)
 
 ## Hosting your home network
 
@@ -62,18 +76,23 @@ I won't go in to too much detail here but here are the basics for someone new to
 2. Create a docker-compose.yml file similar to this:
 
 ```yml
-version: '3'
+version: "3"
 services:
-  app:
-    image: 'sancraftdev/nginx-proxy-manager:latest'
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: sancraftdev/nginx-proxy-manager:latest
+    restart: always
+    network_mode: host
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /opt/npm:/data
+      - /opt/npm-letsencrypt:/etc/letsencrypt
+    healthcheck:
+      test: ["CMD", "/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      X_FRAME_OPTIONS: "sameorigin"
 ```
 
 3. Bring up your stack by running

@@ -73,10 +73,9 @@ dns_azure_zone2 = example.org:/subscriptions/99800903-fb14-4992-9aff-12eaf274462
 		dependencies:        'cloudflare',
 		credentials:         `# Cloudflare API token
 dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567
-OR
-# Cloudflare API credentials
-dns_cloudflare_email = cloudflare@example.com
-dns_cloudflare_api_key = 0123456789abcdef0123456789abcdef01234`,
+# OR Cloudflare API credentials
+#dns_cloudflare_email = cloudflare@example.com
+#dns_cloudflare_api_key = 0123456789abcdef0123456789abcdef01234`,
 		full_plugin_name: 'dns-cloudflare',
 	},
 	//####################################################//

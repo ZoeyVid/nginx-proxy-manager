@@ -43,7 +43,9 @@ RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
 # fix for pip installs
 # https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
     pip uninstall --yes setuptools && \
-    pip install "setuptools==58.0.0"
+    pip install "setuptools==58.0.0" && \
+    
+    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam
 
 VOLUME [ "/data", "/etc/letsencrypt" ]
 CMD [ "/init" ]

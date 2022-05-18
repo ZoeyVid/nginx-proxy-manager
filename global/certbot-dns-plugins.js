@@ -72,7 +72,11 @@ dns_azure_zone2 = example.org:/subscriptions/99800903-fb14-4992-9aff-12eaf274462
 		version_requirement: '==$(certbot --version | grep -Eo \'[0-9](\\.[0-9]+)+\')', // official plugin, use certbot version
 		dependencies:        'cloudflare',
 		credentials:         `# Cloudflare API token
-dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567`,
+dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567
+OR
+# Cloudflare API credentials
+dns_cloudflare_email = cloudflare@example.com
+dns_cloudflare_api_key = 0123456789abcdef0123456789abcdef01234`,
 		full_plugin_name: 'dns-cloudflare',
 	},
 	//####################################################//
@@ -126,11 +130,12 @@ dns_corenetworks_password = secure_password`,
 	cpanel: {
 		display_name:        'cPanel',
 		package_name:        'certbot-dns-cpanel',
-		version_requirement: '~=0.2.2',
+		version_requirement: '~=0.4.0',
 		dependencies:        '',
 		credentials:         `cpanel_url = https://cpanel.example.com:2083
 cpanel_username = user
-cpanel_password = hunter2`,
+cpanel_password = hunter2
+cpanel_token = YOURTOKENGOESHERE`,
 		full_plugin_name: 'cpanel',
 	},
 	//####################################################//
@@ -147,7 +152,7 @@ dns_desec_endpoint = https://desec.io/api/v1/`,
 	duckdns: {
 		display_name:        'DuckDNS',
 		package_name:        'certbot-dns-duckdns',
-		version_requirement: '~=0.6',
+		version_requirement: '~=0.9',
 		dependencies:        '',
 		credentials:         'dns_duckdns_token=your-duckdns-token',
 		full_plugin_name:    'dns-duckdns',
@@ -362,7 +367,7 @@ dns_luadns_token = 0123456789abcdef0123456789abcdef`,
 	netcup: {
 		display_name:        'netcup',
 		package_name:        'certbot-dns-netcup',
-		version_requirement: '~=1.0.0',
+		version_requirement: '~=1.1.4',
 		dependencies:        '',
 		credentials:         `dns_netcup_customer_id  = 123456
 dns_netcup_api_key      = 0123456789abcdef0123456789abcdef01234567
@@ -471,6 +476,15 @@ dns_rfc2136_algorithm = HMAC-SHA512`,
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`,
 		full_plugin_name: 'dns-route53',
+	},
+	//####################################################//
+        scaleway: {
+		display_name:        'Scaleway',
+		package_name:        'certbot-dns-scaleway',
+		version_requirement: '~=0.6.6',
+		dependencies:        '',
+		credentials:         'dns_scaleway_application_token=b3a0b9a9-3814-4f12-95b0-a7473bf8b306',
+		full_plugin_name:    'dns-scaleway',
 	},
 	//####################################################//
 	transip: {

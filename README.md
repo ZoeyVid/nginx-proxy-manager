@@ -60,6 +60,7 @@ so that the barrier for entry here is low.
 ## Soon
 - Use as web server with php support
 - change version numbers also in the frontend
+- I will try to create a pr to contribute to the original project, but I am not able to add new the functions as options in the frontend
 
 ## Hosting your home network
 

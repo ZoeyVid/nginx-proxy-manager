@@ -54,6 +54,7 @@ so that the barrier for entry here is low.
 - More Nginx/Openresty Modules, see [here]([https://github.com/SanCraftDev/openresty-nginx-quic](https://github.com/SanCraftDev/openresty-nginx-quic/blob/develop/Dockerfile))
 - Just arround 150 MB bigger than the original version
 - Runs the admin interface on port 81 with ssl (https)
+- Default page runs also with ssl (https)
 
 ## Soon
 - Use as web server with php support

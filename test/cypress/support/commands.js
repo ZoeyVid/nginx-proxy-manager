@@ -34,7 +34,7 @@ Cypress.Commands.add('getToken', () => {
 		path: '/api/tokens',
 		data: {
 			identity: 'admin@example.com',
-			secret:   'changeme'
+			secret:   '9KcvfmAvcVonB7YOMqdjJGsTG2JL058Rx6xFNMintAeaGETsRBRlSbfXdi1inoCa'
 		}
 	}).then(res => {
 		cy.wrap(res.token);

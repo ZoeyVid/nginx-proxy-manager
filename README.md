@@ -118,7 +118,7 @@ Sometimes this can take a little bit because of the entropy of keys.
 Default Admin User:
 ```
 Email:    admin@example.com
-Password: changeme
+Password: 9KcvfmAvcVonB7YOMqdjJGsTG2JL058Rx6xFNMintAeaGETsRBRlSbfXdi1inoCa
 ```
 
 Immediately after logging in with this default user you will be asked to modify your details and change your password.

@@ -90,6 +90,7 @@ services:
     volumes:
       - /opt/npm:/data
       - /opt/npm-letsencrypt:/etc/letsencrypt
+      - /var/www:/var/www
     healthcheck:
       test: ["CMD", "/bin/check-health"]
       interval: 10s

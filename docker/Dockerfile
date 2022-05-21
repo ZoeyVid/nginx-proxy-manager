@@ -17,18 +17,13 @@ ENV SUPPRESS_NO_CONFIG_WARNING=1 \
 
 # s6 overlay
 COPY scripts/install-s6 /tmp/install-s6
-RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -f /tmp/install-s6
+RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -rf /tmp
 
 EXPOSE 80 81 443
 
 COPY backend       /app
 COPY frontend/dist /app/frontend
 COPY global        /app/global
-
-WORKDIR /app
-RUN yarn install
-
-# add late to limit cache-busting by modifications
 COPY docker/rootfs /
 
 # Remove frontend service not required for prod, dev nginx config as well

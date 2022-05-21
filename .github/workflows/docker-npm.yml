@@ -45,7 +45,7 @@ jobs:
         if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
-      - name: prepair build
+      - name: Prepair build
         run: |
          cd backend
          yarn install

@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           
-      - name: Read VERSION file
+      - name: Read .version file
         id: version
         run: echo "::set-output name=version::$(cat .version)"
         
@@ -63,7 +63,7 @@ jobs:
         if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
-      - name: Prepair build
+      - name: Prepair backend
         run: |
          cd backend
          yarn install

@@ -52,9 +52,10 @@ so that the barrier for entry here is low.
 - Only use TLSv1.2 and TLSv1.3
 - Use OCSP Stapling, this requires that you upload a Intermediate Certificate if you use custom certificates
 - More Nginx/Openresty Modules, see [here]([https://github.com/SanCraftDev/openresty-nginx-quic](https://github.com/SanCraftDev/openresty-nginx-quic/blob/develop/Dockerfile))
-- Just arround 150 MB bigger than the original version
+- Just arround 480 MB bigger than the original version
 - Runs the admin interface on port 81 with ssl (https)
 - Default page runs also with ssl (https)
+- Uses fancyindex if you use the npm directly as webserver
 
 ## Soon
 - Use as web server with php support

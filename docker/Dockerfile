@@ -5,40 +5,38 @@
 
 FROM sancraftdev/openresty-nginx-quic:latest
 
-ARG TARGETPLATFORM
-ARG BUILD_VERSION
-ARG BUILD_COMMIT
-ARG BUILD_DATE
+ARG TARGETPLATFORM \
+    BUILD_VERSION \
+    BUILD_COMMIT \
+    BUILD_DATE
 
 ENV SUPPRESS_NO_CONFIG_WARNING=1 \
 	S6_FIX_ATTRS_HIDDEN=1 \
 	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
 	NODE_ENV=production
 
+COPY backend       /app \
+     frontend/dist /app/frontend \
+     global        /app/global \
+     docker/rootfs /
+     
 # s6 overlay
-COPY scripts/install-s6 /tmp/install-s6
-RUN /tmp/install-s6 "${TARGETPLATFORM}" && rm -rf /tmp
-
-EXPOSE 80 81 443
-
-COPY backend       /app
-COPY frontend/dist /app/frontend
-COPY global        /app/global
-COPY docker/rootfs /
-
-# Remove frontend service not required for prod, dev nginx config as well
-RUN rm -rf /etc/services.d/frontend /etc/nginx/conf.d/dev.conf && \
+RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz | tar xz -C / && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
 
 # fix for pip installs
 # https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
-    pip uninstall --yes setuptools && \
     pip install "setuptools==58.0.0" && \
-    
-    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam
 
+# Downloas dhparam
+    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam \
+    
+# Clean
+    rm -rf /tmp
+
+EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
 CMD [ "/init" ]
 

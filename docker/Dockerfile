@@ -31,7 +31,7 @@ RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.2
     pip install "setuptools==58.0.0" && \
 
 # Downloas dhparam
-    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam \
+    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam && \
     
 # Clean
     rm -rf /tmp

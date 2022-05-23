@@ -15,10 +15,10 @@ ENV SUPPRESS_NO_CONFIG_WARNING=1 \
 	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
 	NODE_ENV=production
 
-COPY backend       /app \
-     frontend/dist /app/frontend \
-     global        /app/global \
-     docker/rootfs /
+COPY backend       /app
+COPY frontend/dist /app/frontend
+COPY global        /app/global
+COPY docker/rootfs /
      
 # s6 overlay
 RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz | tar xz -C / && \

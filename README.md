@@ -57,6 +57,7 @@ so that the barrier for entry here is low.
 - Default page runs also with ssl (https)
 - Uses fancyindex if you use the npm directly as webserver
 - expose INTERNAL backend api only to localhost
+- Easy security headers, see [here](https://github.com/GetPageSpeed/ngx_security_headers), enabled by default if you enable hsts
 
 ## Soon
 - more

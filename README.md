@@ -98,7 +98,6 @@ services:
       timeout: 3s
     environment:
       DB_SQLITE_FILE: "/data/database.sqlite"
-      X_FRAME_OPTIONS: "sameorigin"
 ```
 
 3. Bring up your stack by running

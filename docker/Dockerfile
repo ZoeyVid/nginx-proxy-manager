@@ -11,9 +11,9 @@ ARG TARGETPLATFORM \
     BUILD_DATE
 
 ENV SUPPRESS_NO_CONFIG_WARNING=1 \
-	S6_FIX_ATTRS_HIDDEN=1 \
-	S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-	NODE_ENV=production
+    S6_FIX_ATTRS_HIDDEN=1 \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
+    NODE_ENV=production
 
 COPY backend       /app
 COPY frontend/dist /app/frontend
@@ -25,13 +25,6 @@ RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.2
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
-
-# fix for pip installs
-# https://github.com/NginxProxyManager/nginx-proxy-manager/issues/1769
-    pip install "setuptools==58.0.0" && \
-
-# Downloas dhparam
-    curl -L https://ssl-config.mozilla.org/ffdhe2048.txt -o /dhparam && \
     
 # Clean
     rm -rf /tmp

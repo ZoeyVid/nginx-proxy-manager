@@ -42,6 +42,15 @@ jobs:
         id: version
         run: echo "::set-output name=version::$(cat .version)"
         
+      - name: Set versions
+        run: |
+         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' frontend/package.json
+         cat frontend/package.json | grep "${{ steps.version.outputs.version }}"
+         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' backend/package.json
+         cat backend/package.json | grep "${{ steps.version.outputs.version }}"
+         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' docs/package.json
+         cat docs/package.json | grep "${{ steps.version.outputs.version }}"
+        
       - name: Set current date as env variable
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"

@@ -5,12 +5,12 @@ on:
     paths:
       - .version
       - docker/Dockerfile
-      - .github/workflows/docker-npm.yml
+      - .github/workflows/docker.yml
   pull_request:
     paths:
       - .version
       - docker/Dockerfile
-      - .github/workflows/docker-npm.yml
+      - .github/workflows/docker.yml
   workflow_dispatch:
 
 jobs:

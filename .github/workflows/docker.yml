@@ -76,7 +76,17 @@ jobs:
         run: |
          cd backend
          yarn install
-               
+
+      - name: Cache Docker layers
+        continue-on-error: true
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ secrets.CACHE_ID }}-${{ github.sha }}
+          restore-keys: |
+            buildx-${{ secrets.CACHE_ID }}-
+            buildx-
+
       - name: Build
         uses: docker/build-push-action@v3
         with:
@@ -91,6 +101,8 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: Show Nginx version
         run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} /usr/sbin/nginx -V

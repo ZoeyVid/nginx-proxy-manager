@@ -19,6 +19,9 @@ jobs:
 
       - name: Push develop to latest
         run: |
-               curl -L https://github.com/regclient/regclient/releases/latest/download/regctl-linux-amd64 -o ./regctl
-               chmod +x ./regctl
-               ./regctl image copy ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:develop ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+           curl -L https://github.com/regclient/regclient/releases/latest/download/regctl-linux-amd64 -o ./regctl
+           chmod +x ./regctl
+           ./regctl image copy ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+           
+      - name: Show Nginx version
+        run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest /usr/sbin/nginx -V

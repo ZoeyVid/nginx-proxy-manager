@@ -95,8 +95,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
           build-args: |
-           "TARGETPLATFORM=linux/amd64"
-           "BUILDPLATFORM=linux/amd64"
            "BUILD_VERSION=${{ steps.version.outputs.version }}"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"

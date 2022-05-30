@@ -1,4 +1,4 @@
-name: Docker NPM
+name: Docker CI
 
 on:
   push:

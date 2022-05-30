@@ -31,7 +31,7 @@ RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.2
 
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
-CMD [ "/init" ]
+ENTRYPOINT [ "/init" ]
 
 LABEL org.label-schema.schema-version="1.0" \
 	org.label-schema.license="MIT" \

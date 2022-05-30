@@ -72,7 +72,15 @@ jobs:
         if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: ./scripts/frontend-build
 
+      - name: cache-backend
+        id: cache-backend
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}
+
       - name: Prepair backend
+        if: steps.cache-backend.outputs.cache-hit != 'true'
         run: |
          cd backend
          yarn install

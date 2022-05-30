@@ -102,4 +102,4 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: Show Nginx version
-        run: docker run --rm -it --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+        run: docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V

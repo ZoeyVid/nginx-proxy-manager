@@ -1,8 +1,3 @@
-# This is a Dockerfile intended to be built using `docker buildx`
-# for multi-arch support. Building with `docker build` may have unexpected results.
-
-# This file assumes that the frontend has been built using ./scripts/frontend-build
-
 FROM sancraftdev/openresty-nginx-quic:latest
 
 ARG TARGETPLATFORM \
@@ -39,4 +34,4 @@ LABEL org.label-schema.schema-version="1.0" \
 	org.label-schema.description="Docker container for managing Nginx proxy hosts with a simple, powerful interface " \
 	org.label-schema.url="https://github.com/SanCraftDev/nginx-proxy-manager" \
 	org.label-schema.vcs-url="https://github.com/SanCraftDev/nginx-proxy-manager.git" \
-	org.label-schema.cmd="docker run --rm -ti sancraftdev/nginx-proxy-manager:latest"
+	org.label-schema.cmd="docker run --rm -it sancraftdev/nginx-proxy-manager:latest"

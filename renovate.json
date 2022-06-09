@@ -8,6 +8,7 @@
   "ignorePaths": [
     "frontend/package.json", 
     "backend/package.json", 
-    "docs/package.json"
+    "docs/package.json",
+    "test/package.json"
   ]
 }

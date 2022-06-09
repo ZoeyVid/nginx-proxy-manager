@@ -11,8 +11,8 @@
     "test/cypress/Dockerfile",
     "docker/docker-compose.ci.yml",
     "docker/docker-compose.dev.yml"
-  ]
+  ],
   "baseBranches": [],
   "includeForks": true,
-  "automerge": true,
+  "automerge": true
 }

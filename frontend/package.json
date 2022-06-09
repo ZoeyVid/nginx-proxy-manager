@@ -32,7 +32,7 @@
     "numeral": "^2.0.6",
     "sass-loader": "10.2.0",
     "style-loader": "^1.1.3",
-    "tabler-ui": "git+https://github.com/tabler/tabler.git#00f78ad823311bc3ad974ac3e5b0126198f0a813",
+    "tabler-ui": "git+https://github.com/tabler/tabler.git#d7935bae44cb82fbb192d1823e0bd70bef53a548",
     "underscore": "^1.12.1",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",

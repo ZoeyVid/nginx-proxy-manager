@@ -2,9 +2,6 @@
   "extends": [
     "config:base"
   ],
-  "baseBranches": [],
-  "includeForks": true,
-  "automerge": true,
   "ignorePaths": [
     "frontend/package.json", 
     "backend/package.json", 
@@ -15,4 +12,7 @@
     "docker/docker-compose.ci.yml",
     "docker/docker-compose.dev.yml"
   ]
+  "baseBranches": [],
+  "includeForks": true,
+  "automerge": true,
 }

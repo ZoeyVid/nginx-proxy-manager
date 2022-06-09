@@ -4,5 +4,6 @@
   ],
   "baseBranches": [],
   "includeForks": true,
-  "automerge": true
+  "automerge": true,
+  "ignorePaths": ["frontend/package.json"]
 }

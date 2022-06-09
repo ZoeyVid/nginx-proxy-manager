@@ -1,0 +1,8 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "baseBranches": [],
+  "includeForks": true,
+  "automerge": true
+}

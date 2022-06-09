@@ -9,6 +9,10 @@
     "frontend/package.json", 
     "backend/package.json", 
     "docs/package.json",
-    "test/package.json"
+    "test/package.json",
+    "docker/dev/Dockerfile",
+    "test/cypress/Dockerfile",
+    "docker/docker-compose.ci.yml",
+    "docker/docker-compose.dev.yml"
   ]
 }

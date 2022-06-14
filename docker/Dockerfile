@@ -8,7 +8,8 @@ ARG TARGETPLATFORM \
 ENV SUPPRESS_NO_CONFIG_WARNING=1 \
     S6_FIX_ATTRS_HIDDEN=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-    NODE_ENV=production
+    NODE_ENV=production \
+    DB_SQLITE_FILE=/data/database.sqlite
 
 COPY backend       /app
 COPY frontend/dist /app/frontend
@@ -26,6 +27,7 @@ RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.2
 
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
+HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=5 CMD /bin/check-health
 ENTRYPOINT [ "/init" ]
 
 LABEL org.label-schema.schema-version="1.0" \

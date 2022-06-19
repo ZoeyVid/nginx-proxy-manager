@@ -2,15 +2,7 @@ name: Docker CI
 
 on:
   push:
-    paths:
-      - .version
-      - docker/Dockerfile
-      - .github/workflows/docker.yml
   pull_request:
-    paths:
-      - .version
-      - docker/Dockerfile
-      - .github/workflows/docker.yml
   workflow_dispatch:
 
 jobs:

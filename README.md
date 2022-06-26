@@ -79,7 +79,7 @@ I won't go in to too much detail here but here are the basics for someone new to
 - [Docker Install documentation](https://docs.docker.com/install/)
 - [Docker-Compose Install documentation](https://docs.docker.com/compose/install/)
 
-2. Create a docker-compose.yml file similar to this:
+2. Create a compose.yaml file similar to this:
 
 ```yml
 version: "3"

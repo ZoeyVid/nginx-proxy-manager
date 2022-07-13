@@ -2,10 +2,10 @@
 	<img src="https://nginxproxymanager.com/github.png">
 	<br><br>
 	<img src="https://img.shields.io/badge/version-2.9.18+-green.svg?style=for-the-badge">
-	<a href="https://hub.docker.com/repository/docker/sancraftdev/nginx-proxy-manager">
+	<a href="https://hub.docker.com/r/sancraftdev/nginx-proxy-manager">
 		<img src="https://img.shields.io/docker/stars/sancraftdev/nginx-proxy-manager.svg?style=for-the-badge">
 	</a>
-	<a href="https://hub.docker.com/repository/docker/sancraftdev/nginx-proxy-manager">
+	<a href="https://hub.docker.com/r/sancraftdev/nginx-proxy-manager">
 		<img src="https://img.shields.io/docker/pulls/sancraftdev/nginx-proxy-manager.svg?style=for-the-badge">
 	</a>
 	<a href="https://gitter.im/nginx-proxy-manager/community">

@@ -95,7 +95,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
           build-args: |
-           "BUILD_VERSION=${{ steps.version.outputs.version }}"
+           "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
           cache-from: type=local,src=/tmp/.buildx-cache

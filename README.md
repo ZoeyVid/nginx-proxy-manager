@@ -84,28 +84,16 @@ I won't go in to too much detail here but here are the basics for someone new to
 ```yml
 version: "3"
 services:
-  nginx-proxy-manager:
-    container_name: nginx-proxy-manager
-    image: sancraftdev/nginx-proxy-manager:latest
-    restart: always
-    network_mode: host
-    volumes:
-      - /opt/npm:/data
-      - /opt/npm-letsencrypt:/etc/letsencrypt
-      - /var/www:/var/www # optional, if you want to use it as webserver
-    dns:
-      - 9.9.9.9
-      - 149.112.112.112
-      - 2620:fe::fe
-      - 2620:fe::fe:9
-      - 1.1.1.2
-      - 1.0.0.2
-      - 2606:4700:4700::1112
-      - 2606:4700:4700::1002
-      - 94.140.14.14
-      - 94.140.15.15
-      - 2a10:50c0::ad1:ff
-      - 2a10:50c0::ad2:ff
+    nginx-proxy-manager:
+        container_name: nginx-proxy-manager
+        image: sancraftdev/nginx-proxy-manager:latest
+#        image: sancraftdev/nginx-proxy-manager:develop
+        restart: always
+        network_mode: host
+        volumes:
+        - "/opt/npm:/data"
+        - "/opt/npm-letsencrypt:/etc/letsencrypt"
+        - "/var/www:/var/www" # optional, if you want to use it as webserver
 ```
 
 3. Bring up your stack by running

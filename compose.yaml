@@ -1,11 +1,12 @@
 version: "3"
 services:
-  nginx-proxy-manager:
-    container_name: nginx-proxy-manager
-    image: sancraftdev/nginx-proxy-manager:latest
-    restart: always
-    network_mode: host
-    volumes:
-      - /opt/npm:/data
-      - /opt/npm-letsencrypt:/etc/letsencrypt
-      - /var/www:/var/www # optional, if you want to use it as webserver
+    nginx-proxy-manager:
+        container_name: nginx-proxy-manager
+        image: sancraftdev/nginx-proxy-manager:latest
+#        image: sancraftdev/nginx-proxy-manager:develop
+        restart: always
+        network_mode: host
+        volumes:
+        - "/opt/npm:/data"
+        - "/opt/npm-letsencrypt:/etc/letsencrypt"
+        - "/var/www:/var/www" # optional, if you want to use it as webserver

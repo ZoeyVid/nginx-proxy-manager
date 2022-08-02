@@ -29,7 +29,7 @@ jobs:
            curl -L https://github.com/regclient/regclient/releases/latest/download/regctl-linux-amd64 -o ./regctl
            chmod +x ./regctl
            ./regctl image copy ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
-           ./regctl image copy ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
+           ./regctl image copy ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
            
       - name: Show Nginx version
         run: | 

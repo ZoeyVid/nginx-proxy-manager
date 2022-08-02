@@ -21,7 +21,7 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ github.actor }}
           password: ${{ github.token }}
 
       - name: Push develop to latest
@@ -29,7 +29,9 @@ jobs:
            curl -L https://github.com/regclient/regclient/releases/latest/download/regctl-linux-amd64 -o ./regctl
            chmod +x ./regctl
            ./regctl image copy ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
-           ./regctl image copy ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+           ./regctl image copy ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:${{ github.ref_name }} ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest
            
       - name: Show Nginx version
-        run: docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest -V
+        run: | 
+         docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest -V
+         docker run --rm --entrypoint /usr/sbin/nginx ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}:latest -V

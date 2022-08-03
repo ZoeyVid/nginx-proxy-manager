@@ -1,4 +1,4 @@
-name: Docker CI
+name: Build Docker Image
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,7 +24,7 @@ jobs:
           driver-opts: env.BUILDKIT_STEP_LOG_MAX_SIZE=-1
 
       - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -65,7 +65,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/dist
-          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}
+          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
           
       - name: Prepair frontend
         if: steps.cache-frontend.outputs.cache-hit != 'true'
@@ -76,7 +78,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: backend/node_modules
-          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}
+          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
 
       - name: Prepair backend
         if: steps.cache-backend.outputs.cache-hit != 'true'
@@ -85,21 +89,21 @@ jobs:
          yarn install
 
       - name: Cache Docker layers
-        continue-on-error: true
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: buildx-${{ secrets.CACHE_ID }}-${{ github.sha }}
+          key: buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            buildx-${{ secrets.CACHE_ID }}-
+            buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
 
       - name: Build
         uses: docker/build-push-action@v3
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           context: .
           file: ./docker/Dockerfile
           platforms: linux/amd64 #,linux/amd64/v2,linux/amd64/v3 #linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: | 
            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
            ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
@@ -110,5 +114,31 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
                 
-      - name: Show Nginx version
+      - name: show version
+        if: ${{ github.event_name != 'pull_request' }}
         run: docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+
+      - name: Set PR-Number (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        id: pr
+        run: echo "::set-output name=pr::$(echo pr-${{ github.ref_name }} | sed "s/refs\/pull\/://g" | sed "s/\/merge//g")"
+
+      - name: Build (PR)
+        uses: docker/build-push-action@v3
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          platforms: linux/amd64 #,linux/amd64/v2,linux/amd64/v3 #linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
+          push: true
+          tags: ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }}
+          build-args: |
+           "BUILD_VERSION=${{ steps.version.outputs.version }}+"
+           "BUILD_COMMIT=${{ github.sha }}"
+           "BUILD_DATE=${{ steps.date.outputs.date }}"
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+                
+      - name: show version (PR)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -V

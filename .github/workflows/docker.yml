@@ -8,7 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -104,7 +103,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           platforms: linux/amd64 #,linux/amd64/v2,linux/amd64/v3 #linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
-          push: true
+          push: ${{ github.ref == 'refs/heads/develop' }}
           tags: | 
            ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
            ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
@@ -133,7 +132,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           platforms: linux/amd64 #,linux/amd64/v2,linux/amd64/v3 #linux/arm64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
-          push: true
+          push: ${{ github.event_name == 'pull_request' }}
           tags: ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }}
           build-args: |
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"

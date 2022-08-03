@@ -116,7 +116,9 @@ jobs:
                 
       - name: show version
         if: ${{ github.event_name != 'pull_request' }}
-        run: docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+        run: | 
+         docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+         docker run --rm --entrypoint /usr/sbin/nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
 
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}

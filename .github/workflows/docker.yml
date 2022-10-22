@@ -82,7 +82,7 @@ jobs:
          node --version
          yarn --version
          npm install --global yarn
-         cd backend
+         cd frontend
          yarn install
          yarn build
 

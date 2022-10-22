@@ -20,7 +20,7 @@
     "imports-loader": "0.8.0",
     "jquery": "3.6.1",
     "jquery-mask-plugin": "1.14.16",
-    "jquery-serializejson": "2.9.0",
+    "jquery-serializejson": "3.2.1",
     "marionette.approuter": "1.0.2",
     "marionette.templatecache": "1.0.0",
     "messageformat": "2.3.0",

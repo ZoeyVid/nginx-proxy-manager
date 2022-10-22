@@ -105,13 +105,13 @@ jobs:
          cd backend
          yarn install
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
+#      - name: Cache Docker layers
+#        uses: actions/cache@v3
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
+#          restore-keys: |
+#            buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
 
       - name: Build
         uses: docker/build-push-action@v3
@@ -128,8 +128,8 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version
         if: ${{ github.ref == 'refs/heads/develop' }}
@@ -155,8 +155,8 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+#          cache-from: type=local,src=/tmp/.buildx-cache
+#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version (PR)
         if: ${{ github.event_name == 'pull_request' }}

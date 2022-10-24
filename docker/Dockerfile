@@ -22,7 +22,6 @@ ENV TARGETPLATFORM=${TARGETPLATFORM} \
 
 COPY backend       /app
 COPY frontend/dist /app/frontend
-COPY global        /app/global
 COPY docker/rootfs /
      
 # s6 overlay

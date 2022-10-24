@@ -104,6 +104,9 @@ jobs:
          npm install --global yarn
          cd backend
          yarn install
+         cp -r ../global ./
+         timeout 3 node index.js || if [ "$?" -eq "124" ]; then exit 0; fi
+         rm -rf global
 
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3

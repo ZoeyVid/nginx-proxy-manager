@@ -99,13 +99,15 @@ jobs:
 #        if: steps.cache-backend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
+         export DB_SQLITE_FILE=/data/database.sqlite
+         export NODE_ENV=dev
          node --version
          yarn --version
          npm install --global yarn
          mv global backend
          cd backend
          yarn install && yarn eslint index.js
-         NODE_ENV=dev timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" -eq "124" ]; then exit 0; fi
+         timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" -eq "124" ]; then exit 0; fi
 
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3

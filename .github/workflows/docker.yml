@@ -66,17 +66,17 @@ jobs:
         with:
           node-version: 18
         
-      - name: cache-frontend
-        id: cache-frontend
-        uses: actions/cache@v3
-        with:
-          path: frontend/dist
-          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
+#      - name: cache-frontend
+#        id: cache-frontend
+#        uses: actions/cache@v3
+#        with:
+#          path: frontend/dist
+#          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
+#          restore-keys: |
+#            ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
           
       - name: Prepair frontend
-        if: steps.cache-frontend.outputs.cache-hit != 'true'
+#        if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
          node --version
@@ -86,17 +86,17 @@ jobs:
          yarn install
          yarn build
 
-      - name: cache-backend
-        id: cache-backend
-        uses: actions/cache@v3
-        with:
-          path: backend/node_modules
-          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
+#      - name: cache-backend
+#        id: cache-backend
+#        uses: actions/cache@v3
+#        with:
+#          path: backend/node_modules
+#          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
+#          restore-keys: |
+#            ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
 
       - name: Prepair backend
-        if: steps.cache-backend.outputs.cache-hit != 'true'
+#        if: steps.cache-backend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
          node --version

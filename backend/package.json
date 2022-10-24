@@ -27,7 +27,7 @@
 		"path": "0.12.7",
 		"signale": "1.4.0",
 		"sqlite3": "5.1.2",
-		"temp-write": "4.0.0"
+		"temp-write": "5.0.0"
 	},
 	"signale": {
 		"displayDate": true,

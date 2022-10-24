@@ -106,7 +106,8 @@ jobs:
          npm install --global yarn
          mv global backend
          cd backend
-         yarn install && yarn eslint index.js
+         yarn install
+         yarn eslint index.js
          timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
 #      - name: Cache Docker layers

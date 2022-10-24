@@ -105,7 +105,7 @@ jobs:
          mv global backend
          cd backend
          yarn install
-         timeout 3 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" -eq "124" ]; then exit 0; fi
+         timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" -eq "124" ]; then exit 0; fi
 
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3

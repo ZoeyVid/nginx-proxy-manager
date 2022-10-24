@@ -17,8 +17,9 @@ ENV TARGETPLATFORM=${TARGETPLATFORM} \
     SUPPRESS_NO_CONFIG_WARNING=1 \
     S6_FIX_ATTRS_HIDDEN=1 \
     S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-    NODE_ENV=production \
-    DB_SQLITE_FILE=/data/database.sqlite
+    NODE_OPTIONS=--openssl-legacy-provider \
+    DB_SQLITE_FILE=/data/database.sqlite \
+    NODE_ENV=production
 
 COPY backend       /app
 COPY frontend/dist /app/frontend

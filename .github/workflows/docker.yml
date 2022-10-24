@@ -99,7 +99,7 @@ jobs:
 #        if: steps.cache-backend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
-         export DB_SQLITE_FILE=/home/runner/work/dev.sqlite
+         export DB_SQLITE_FILE=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/dev.sqlite
          export NODE_ENV=dev
          node --version
          yarn --version

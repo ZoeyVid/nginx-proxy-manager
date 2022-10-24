@@ -2,7 +2,7 @@
   "extends": [
     "config:base"
   ],
-  "rangeStrategy": "pin";
+  "rangeStrategy": "pin",
   "digest": {
     "enabled": false
   },

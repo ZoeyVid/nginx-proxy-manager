@@ -6,7 +6,6 @@
     "enabled": false
   },
   "ignorePaths": [
-    "backend/package.json", 
     "docs/package.json",
     "test/package.json",
     "docker/dev/Dockerfile",

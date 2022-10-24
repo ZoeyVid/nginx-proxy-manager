@@ -16,14 +16,14 @@
 		"gravatar": "1.8.2",
 		"json-schema-ref-parser": "8.0.0",
 		"jsonwebtoken": "8.5.1",
-		"knex": "2.3.0",
+		"knex": "0.20.15",
 		"liquidjs": "9.42.1",
 		"lodash": "4.17.21",
 		"moment": "2.29.4",
 		"mysql": "2.18.1",
 		"node-rsa": "1.1.1",
 		"nodemon": "2.0.20",
-		"objection": "3.0.1",
+		"objection": "2.2.18",
 		"path": "0.12.7",
 		"signale": "1.4.0",
 		"sqlite3": "5.1.2",
@@ -36,7 +36,7 @@
 	"author": "Jamie Curnow <jc@jc21.com>",
 	"license": "MIT",
 	"devDependencies": {
-		"eslint": "8.26.0",
+		"eslint": "6.8.0",
 		"eslint-plugin-align-assignments": "1.1.2",
 		"prettier": "2.7.1"
 	}

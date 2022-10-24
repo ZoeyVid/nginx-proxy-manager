@@ -4,7 +4,7 @@
 	"description": "A beautiful interface for creating Nginx endpoints",
 	"main": "js/index.js",
 	"dependencies": {
-		"ajv": "6.12.6",
+		"ajv": "7.2.4",
 		"archiver": "5.3.1",
 		"batchflow": "0.4.0",
 		"bcrypt": "5.1.0",

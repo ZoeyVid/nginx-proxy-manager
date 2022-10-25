@@ -6,6 +6,10 @@
   "digest": {
     "enabled": false
   },
+  "baseBranches": [
+    "dev",
+    "develop"
+  ],
   "ignorePaths": [
     "docs/package.json",
     "test/package.json",

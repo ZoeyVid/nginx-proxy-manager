@@ -1,4 +1,4 @@
-<p align="center">.
+<p align="center">
 	<img src="https://nginxproxymanager.com/github.png">
 	<br><br>
 	<img src="https://img.shields.io/badge/version-2.9.18+-green.svg?style=for-the-badge">

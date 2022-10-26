@@ -1,5 +1,7 @@
 FROM sancraftdev/openresty-nginx-quic:latest
 
+ARG S6_VERSION=v1.22.1.0
+
 ARG TARGETPLATFORM \
     BUILD_VERSION \
     BUILD_COMMIT \
@@ -27,7 +29,7 @@ COPY docker/rootfs /
 # s6 overlay
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
-    curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-"$ARCH".tar.gz | tar xz -C / && \
+    curl -L https://github.com/just-containers/s6-overlay/releases/download/"$S6_VERSION"/s6-overlay-"$ARCH".tar.gz | tar xz -C / && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \

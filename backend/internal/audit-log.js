@@ -19,7 +19,7 @@ const internalAuditLog = {
 					.orderBy('created_on', 'DESC')
 					.orderBy('id', 'DESC')
 					.limit(100)
-					.allowEager('[user]');
+					.allowGraph('[user]');
 
 				// Query is used for searching
 				if (typeof search_query === 'string') {

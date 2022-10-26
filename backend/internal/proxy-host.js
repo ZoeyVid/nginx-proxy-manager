@@ -223,7 +223,7 @@ const internalProxyHost = {
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
-					.allowEager('[owner,access_list,access_list.[clients,items],certificate]')
+					.allowGraph('[owner,access_list,access_list.[clients,items],certificate]')
 					.first();
 
 				if (access_data.permission_visibility !== 'all') {
@@ -410,7 +410,7 @@ const internalProxyHost = {
 					.where('is_deleted', 0)
 					.groupBy('id')
 					.omit(['is_deleted'])
-					.allowEager('[owner,access_list,certificate]')
+					.allowGraph('[owner,access_list,certificate]')
 					.orderBy('domain_names', 'ASC');
 
 				if (access_data.permission_visibility !== 'all') {

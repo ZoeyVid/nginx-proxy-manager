@@ -1,6 +1,6 @@
 FROM sancraftdev/openresty-nginx-quic:latest
 
-ARG S6_VERSION=v1.22.1.0
+ARG S6_VERSION=v1.22.1.0v
 
 ARG TARGETPLATFORM \
     BUILD_VERSION \

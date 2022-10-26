@@ -5,8 +5,7 @@ ARG TARGETPLATFORM \
     BUILD_COMMIT \
     BUILD_DATE
 
-ENV TARGETPLATFORM=${TARGETPLATFORM} \
-    BUILD_VERSION=${BUILD_VERSION} \
+ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \
     BUILD_DATE=${BUILD_DATE} \
     
@@ -26,7 +25,9 @@ COPY frontend/dist /app/frontend
 COPY docker/rootfs /
      
 # s6 overlay
-RUN curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-amd64.tar.gz | tar xz -C / && \
+RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
+    if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
+    curl -L https://github.com/just-containers/s6-overlay/releases/download/v1.22.1.0/s6-overlay-"$ARCH".tar.gz | tar xz -C / && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \

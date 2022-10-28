@@ -41,7 +41,7 @@ jobs:
           
       - name: Read .version file
         id: version
-        run: echo "::set-output name=version::$(cat .version)"
+        run: echo "version=$(cat .version)" >> $GITHUB_OUTPUT
         
       - name: Set versions
         run: |
@@ -54,7 +54,7 @@ jobs:
         
       - name: Set current date as env variable
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
+        run: echo "date=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
         
       - name: set envs
         run: |
@@ -145,7 +145,7 @@ jobs:
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr
-        run: echo "::set-output name=pr::$(echo pr-${{ github.ref_name }} | sed "s/refs\/pull\/://g" | sed "s/\/merge//g")"
+        run: echo "pr=$(echo pr-${{ github.ref_name }} | sed "s/refs\/pull\/://g" | sed "s/\/merge//g")" >> $GITHUB_OUTPUT
 
       - name: Build (PR)
         uses: docker/build-push-action@v3

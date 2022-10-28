@@ -21,7 +21,6 @@ on:
   repository_dispatch:
   status:
   watch:
-  workflow_run:
   
   push:
   schedule:

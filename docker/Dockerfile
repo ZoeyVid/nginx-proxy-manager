@@ -34,11 +34,6 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     yarn install && \
     yarn eslint index.js
 
-# Test Backend
-WORKDIR /app
-RUN timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ $? == 124 ]; then rm -rf /app; else exit 1; fi
-WORKDIR /
-
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \
     BUILD_DATE=${BUILD_DATE} \

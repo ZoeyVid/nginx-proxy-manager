@@ -7,6 +7,10 @@ ARG TARGETPLATFORM \
     BUILD_COMMIT \
     BUILD_DATE
 
+ARG NODE_OPTIONS=--openssl-legacy-provider \
+    DB_SQLITE_FILE=/data/dev.sqlite \
+    NODE_ENV=dev
+
 COPY backend       /app
 COPY frontend/dist /app/frontend
 COPY docker/rootfs /
@@ -20,18 +24,19 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
     
 # Clean
-    rm -rf /tmp
+    rm -rf /tmp && \
 
-ARG NODE_OPTIONS=--openssl-legacy-provider \
-    DB_SQLITE_FILE=/data/dev.sqlite \
-    NODE_ENV=dev
-    
-RUN cd /app && \
+# Build Backend
+    cd /app && \
     mkdir -p /data/letsencrypt-acme-challenge && \
     npm install --global yarn && \
     yarn install && \
     yarn eslint index.js && \
-    timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
+
+# Test Backend
+WORKDIR /app
+RUN timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then rm -rf /app; else exit 1; fi
+WORKDIR /
 
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \

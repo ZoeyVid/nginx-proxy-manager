@@ -27,6 +27,7 @@ ARG NODE_OPTIONS=--openssl-legacy-provider \
     NODE_ENV=dev
     
 RUN cd /app && \
+    npm install --global yarn && \
     yarn install && \
     yarn eslint index.js && \
     timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi

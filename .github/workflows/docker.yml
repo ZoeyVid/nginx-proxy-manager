@@ -86,29 +86,8 @@ jobs:
          yarn install
          yarn build
 
-#      - name: cache-backend
-#        id: cache-backend
-#        uses: actions/cache@v3
-#        with:
-#          path: backend/node_modules
-#          key: ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ steps.version.outputs.version }}-backend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
-
-      - name: Prepair backend
-#        if: steps.cache-backend.outputs.cache-hit != 'true'
-        run: |
-         export NODE_OPTIONS=--openssl-legacy-provider
-         export DB_SQLITE_FILE=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/dev.sqlite
-         export NODE_ENV=dev
-         node --version
-         yarn --version
-         npm install --global yarn
-         mv global backend
-         cd backend
-         yarn install
-         yarn eslint index.js
-         timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
+      - name: move global folder
+        run: mv global backend
 
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3

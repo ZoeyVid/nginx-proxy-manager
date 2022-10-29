@@ -27,7 +27,7 @@ ARG NODE_OPTIONS=--openssl-legacy-provider \
     NODE_ENV=dev
     
 RUN cd /app && \
-    mkdir /data && \
+    mkdir -p /data/letsencrypt-acme-challenge && \
     npm install --global yarn && \
     yarn install && \
     yarn eslint index.js && \

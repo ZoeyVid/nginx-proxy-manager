@@ -7,10 +7,6 @@ ARG TARGETPLATFORM \
     BUILD_COMMIT \
     BUILD_DATE
 
-ARG NODE_OPTIONS=--openssl-legacy-provider \
-    DB_SQLITE_FILE=/data/dev.sqlite \
-    NODE_ENV=dev
-
 COPY docker/rootfs /
 COPY backend       /app
 COPY global        /app/global

@@ -9,7 +9,6 @@ ARG TARGETPLATFORM \
 
 COPY docker/rootfs /
 COPY backend       /app
-COPY global        /app/global
 COPY frontend/dist /app/frontend
      
 # s6 overlay

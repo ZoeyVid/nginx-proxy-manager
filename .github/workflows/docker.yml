@@ -86,6 +86,21 @@ jobs:
          yarn install
          yarn build
 
+      - name: Test Backend
+        run: |
+         export NODE_OPTIONS=--openssl-legacy-provider
+         export DB_SQLITE_FILE=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/backend-test/dev.sqlite
+         export NODE_ENV=dev
+         node --version
+         yarn --version
+         npm install --global yarn
+         mv global backend
+         cp backend backend-test
+         cd backend-test
+         yarn install
+         yarn eslint index.js
+         timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
+
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3
 #        with:

@@ -86,9 +86,6 @@ jobs:
          yarn install
          yarn build
 
-      - name: move global folder
-        run: mv global backend
-
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3
 #        with:

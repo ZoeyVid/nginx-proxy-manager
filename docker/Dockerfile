@@ -11,9 +11,10 @@ ARG NODE_OPTIONS=--openssl-legacy-provider \
     DB_SQLITE_FILE=/data/dev.sqlite \
     NODE_ENV=dev
 
-COPY backend       /app
-COPY frontend/dist /app/frontend
 COPY docker/rootfs /
+COPY backend       /app
+COPY global        /app/global
+COPY frontend/dist /app/frontend
      
 # s6 overlay
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \

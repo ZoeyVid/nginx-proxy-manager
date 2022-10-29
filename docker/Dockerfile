@@ -7,21 +7,6 @@ ARG TARGETPLATFORM \
     BUILD_COMMIT \
     BUILD_DATE
 
-ENV BUILD_VERSION=${BUILD_VERSION} \
-    BUILD_COMMIT=${BUILD_COMMIT} \
-    BUILD_DATE=${BUILD_DATE} \
-    
-    NPM_BUILD_VERSION=${BUILD_VERSION} \
-    NPM_BUILD_COMMIT=${BUILD_COMMIT} \
-    NPM_BUILD_DATE=${BUILD_DATE} \
-
-    SUPPRESS_NO_CONFIG_WARNING=1 \
-    S6_FIX_ATTRS_HIDDEN=1 \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-    NODE_OPTIONS=--openssl-legacy-provider \
-    DB_SQLITE_FILE=/data/database.sqlite \
-    NODE_ENV=production
-
 COPY backend       /app
 COPY frontend/dist /app/frontend
 COPY docker/rootfs /
@@ -36,6 +21,30 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     
 # Clean
     rm -rf /tmp
+
+ARG NODE_OPTIONS=--openssl-legacy-provider \
+    DB_SQLITE_FILE=/app/dev.sqlite \
+    NODE_ENV=dev
+    
+RUN cd /app && \
+    yarn install && \
+    yarn eslint index.js && \
+    timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1;
+
+ENV BUILD_VERSION=${BUILD_VERSION} \
+    BUILD_COMMIT=${BUILD_COMMIT} \
+    BUILD_DATE=${BUILD_DATE} \
+    
+    NPM_BUILD_VERSION=${BUILD_VERSION} \
+    NPM_BUILD_COMMIT=${BUILD_COMMIT} \
+    NPM_BUILD_DATE=${BUILD_DATE} \
+
+    SUPPRESS_NO_CONFIG_WARNING=1 \
+    S6_FIX_ATTRS_HIDDEN=1 \
+    S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
+    NODE_OPTIONS=--openssl-legacy-provider \
+    DB_SQLITE_FILE=/data/database.sqlite \
+    NODE_ENV=production
 
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]

@@ -23,10 +23,11 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     rm -rf /tmp
 
 ARG NODE_OPTIONS=--openssl-legacy-provider \
-    DB_SQLITE_FILE=/app/dev.sqlite \
+    DB_SQLITE_FILE=/data/dev.sqlite \
     NODE_ENV=dev
     
 RUN cd /app && \
+    mkdir /data && \
     npm install --global yarn && \
     yarn install && \
     yarn eslint index.js && \

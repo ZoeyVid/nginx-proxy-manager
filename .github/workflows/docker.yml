@@ -95,7 +95,7 @@ jobs:
          yarn --version
          npm install --global yarn
          mv global backend
-         cp backend backend-test
+         cp -r backend backend-test
          cd backend-test
          yarn install
          yarn eslint index.js

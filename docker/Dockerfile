@@ -29,7 +29,7 @@ ARG NODE_OPTIONS=--openssl-legacy-provider \
 RUN cd /app && \
     yarn install && \
     yarn eslint index.js && \
-    timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1;
+    timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \

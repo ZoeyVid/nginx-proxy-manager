@@ -94,8 +94,9 @@ jobs:
          mv global backend
          cp -r backend backend-test
          cd backend-test
-         npm install
-         npm eslint index.js
+         npm install --force
+         npm install eslint --global
+         eslint index.js
          timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
 #      - name: Cache Docker layers

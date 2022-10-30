@@ -25,9 +25,8 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
 # Build Backend
     cd /app && \
     mkdir -p /data/letsencrypt-acme-challenge && \
-    npm install --global yarn && \
-    yarn install && \
-    yarn eslint index.js
+    npm install && \
+    npm eslint index.js
 
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \

@@ -71,7 +71,7 @@
       "details": "Details",
       "enable-ssl": "Enable SSL",
       "force-ssl": "Force SSL",
-      "http2-support": "HTTP/2 Support",
+      "http2-support": "HTTP/2 - HTTP/3-Quic",
       "domain-names": "Domain Names",
       "cert-provider": "Certificate Provider",
       "block-exploits": "Block Common Exploits",
@@ -85,7 +85,7 @@
       "advanced-warning": "Enter your custom Nginx configuration here at your own risk!",
       "advanced-config": "Custom Nginx Configuration",
       "advanced-config-var-headline": "These proxy details are available as nginx variables:",
-      "advanced-config-header-info": "Please note, that any add_header or set_header directives added here will not be used by nginx. You will have to add a custom location '/' and add the header in the custom config there.",
+      "advanced-config-header-info": "Please note, adding a location '/' will overwrite the proxy configuration",
       "hsts-enabled": "HSTS Enabled",
       "hsts-subdomains": "HSTS Subdomains",
       "locations": "Custom locations"

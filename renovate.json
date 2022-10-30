@@ -6,6 +6,10 @@
   "digest": {
     "enabled": false
   },
+  "baseBranches": [
+    "dev",
+    "develop"
+  ],
   "ignorePaths": [
     "docs/package.json",
     "test/package.json",
@@ -14,10 +18,7 @@
     "docker/docker-compose.ci.yml",
     "docker/docker-compose.dev.yml"
   ],
-  "baseBranches": [
-    "dev",
-    "develop"
-  ],
+  "baseBranches": [],
   "includeForks": true,
   "automerge": true,
   "branchPrefix": "renovate-deps-update-"

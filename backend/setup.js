@@ -219,6 +219,7 @@ const setupLogrotation = () => {
 	};
 
 	logger.info('Logrotate Timer initialized');
+	logger.info("Test")
 	setInterval(runLogrotate, intervalTimeout);
 	// And do this now as well
 	return runLogrotate();

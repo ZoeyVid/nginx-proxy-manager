@@ -157,7 +157,7 @@ jobs:
         run: docker run --rm --entrypoint /usr/sbin/nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -V
           
       - name: add comment (PR)
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@v2
         if: ${{ github.event_name == 'pull_request' }}
         with:
           message: "The Docker Image can now be found here: `ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }}`"

@@ -215,6 +215,7 @@ const setupLogrotation = () => {
 		try {
 			await utils.exec('logrotate /etc/logrotate.d/nginx-proxy-manager');
 			logger.info('Logrotate completed.');
+			logger.info("DEV Version");
 		} catch (e) { logger.warn(e); }
 	};
 

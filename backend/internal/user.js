@@ -186,7 +186,7 @@ const internalUser = {
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
-					.allowEager('[permissions]')
+					.allowGraph('[permissions]')
 					.first();
 
 				// Custom omissions
@@ -195,7 +195,7 @@ const internalUser = {
 				}
 
 				if (typeof data.expand !== 'undefined' && data.expand !== null) {
-					query.eager('[' + data.expand.join(', ') + ']');
+					query.withGraphFetched('[' + data.expand.join(', ') + ']');
 				}
 
 				return query;
@@ -323,7 +323,7 @@ const internalUser = {
 					.where('is_deleted', 0)
 					.groupBy('id')
 					.omit(['is_deleted'])
-					.allowEager('[permissions]')
+					.allowGraph('[permissions]')
 					.orderBy('name', 'ASC');
 
 				// Query is used for searching
@@ -335,7 +335,7 @@ const internalUser = {
 				}
 
 				if (typeof expand !== 'undefined' && expand !== null) {
-					query.eager('[' + expand.join(', ') + ']');
+					query.withGraphFetched('[' + expand.join(', ') + ']');
 				}
 
 				return query;

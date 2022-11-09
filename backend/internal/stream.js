@@ -113,7 +113,7 @@ const internalStream = {
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
-					.allowEager('[owner]')
+					.allowGraph('[owner]')
 					.first();
 
 				if (access_data.permission_visibility !== 'all') {
@@ -126,7 +126,7 @@ const internalStream = {
 				}
 
 				if (typeof data.expand !== 'undefined' && data.expand !== null) {
-					query.eager('[' + data.expand.join(', ') + ']');
+					query.withGraphFetched('[' + data.expand.join(', ') + ']');
 				}
 
 				return query;
@@ -299,7 +299,7 @@ const internalStream = {
 					.where('is_deleted', 0)
 					.groupBy('id')
 					.omit(['is_deleted'])
-					.allowEager('[owner]')
+					.allowGraph('[owner]')
 					.orderBy('incoming_port', 'ASC');
 
 				if (access_data.permission_visibility !== 'all') {
@@ -314,7 +314,7 @@ const internalStream = {
 				}
 
 				if (typeof expand !== 'undefined' && expand !== null) {
-					query.eager('[' + expand.join(', ') + ']');
+					query.withGraphFetched('[' + expand.join(', ') + ']');
 				}
 
 				return query;

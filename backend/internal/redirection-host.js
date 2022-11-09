@@ -218,7 +218,7 @@ const internalRedirectionHost = {
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
-					.allowEager('[owner,certificate]')
+					.allowGraph('[owner,certificate]')
 					.first();
 
 				if (access_data.permission_visibility !== 'all') {
@@ -231,7 +231,7 @@ const internalRedirectionHost = {
 				}
 
 				if (typeof data.expand !== 'undefined' && data.expand !== null) {
-					query.eager('[' + data.expand.join(', ') + ']');
+					query.withGraphFetched('[' + data.expand.join(', ') + ']');
 				}
 
 				return query;
@@ -405,7 +405,7 @@ const internalRedirectionHost = {
 					.where('is_deleted', 0)
 					.groupBy('id')
 					.omit(['is_deleted'])
-					.allowEager('[owner,certificate]')
+					.allowGraph('[owner,certificate]')
 					.orderBy('domain_names', 'ASC');
 
 				if (access_data.permission_visibility !== 'all') {
@@ -420,7 +420,7 @@ const internalRedirectionHost = {
 				}
 
 				if (typeof expand !== 'undefined' && expand !== null) {
-					query.eager('[' + expand.join(', ') + ']');
+					query.withGraphFetched('[' + expand.join(', ') + ']');
 				}
 
 				return query;

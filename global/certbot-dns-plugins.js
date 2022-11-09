@@ -72,10 +72,7 @@ dns_azure_zone2 = example.org:/subscriptions/99800903-fb14-4992-9aff-12eaf274462
 		version_requirement: '==$(certbot --version | grep -Eo \'[0-9](\\.[0-9]+)+\')', // official plugin, use certbot version
 		dependencies:        'cloudflare',
 		credentials:         `# Cloudflare API token
-dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567
-# OR Cloudflare API credentials
-#dns_cloudflare_email = cloudflare@example.com
-#dns_cloudflare_api_key = 0123456789abcdef0123456789abcdef01234`,
+dns_cloudflare_api_token = 0123456789abcdef0123456789abcdef01234567`,
 		full_plugin_name: 'dns-cloudflare',
 	},
 	//####################################################//
@@ -129,12 +126,11 @@ dns_corenetworks_password = secure_password`,
 	cpanel: {
 		display_name:        'cPanel',
 		package_name:        'certbot-dns-cpanel',
-		version_requirement: '~=0.4.0',
+		version_requirement: '~=0.2.2',
 		dependencies:        '',
 		credentials:         `cpanel_url = https://cpanel.example.com:2083
 cpanel_username = user
-cpanel_password = hunter2
-cpanel_token = YOURTOKENGOESHERE`,
+cpanel_password = hunter2`,
 		full_plugin_name: 'cpanel',
 	},
 	//####################################################//
@@ -204,6 +200,25 @@ dns_dnsmadeeasy_secret_key = c9b5625f-9834-4ff8-baba-4ed5f32cae55`,
 		credentials:         `dns_dnspod_email = "email@example.com"
 dns_dnspod_api_token = "id,key"`,
 		full_plugin_name: 'dns-dnspod',
+	},
+	//####################################################//
+	domainoffensive: {
+		display_name:        'DomainOffensive (do.de)',
+		package_name:        'certbot-dns-do',
+		version_requirement: '~=0.31.0',
+		dependencies:        '',
+		credentials:         'dns_do_api_token = YOUR_DO_DE_AUTH_TOKEN',
+		full_plugin_name:    'dns-do',
+	},
+	//####################################################//
+	domeneshop: {
+		display_name:        'Domeneshop',
+		package_name:        'certbot-dns-domeneshop',
+		version_requirement: '~=0.2.8',
+		dependencies:        '',
+		credentials:         `dns_domeneshop_client_token=YOUR_DOMENESHOP_CLIENT_TOKEN
+dns_domeneshop_client_secret=YOUR_DOMENESHOP_CLIENT_SECRET`,
+		full_plugin_name: 'dns-domeneshop',
 	},
 	//####################################################//
 	dynu: {
@@ -363,10 +378,20 @@ dns_luadns_token = 0123456789abcdef0123456789abcdef`,
 		full_plugin_name: 'dns-luadns',
 	},
 	//####################################################//
+	namecheap: {
+		display_name:        'Namecheap',
+		package_name:        'certbot-dns-namecheap',
+		version_requirement: '~=1.0.0',
+		dependencies:        '',
+		credentials:         `dns_namecheap_username  = 123456
+dns_namecheap_api_key      = 0123456789abcdef0123456789abcdef01234567`,
+		full_plugin_name: 'dns-namecheap',
+	},
+	//####################################################//
 	netcup: {
 		display_name:        'netcup',
 		package_name:        'certbot-dns-netcup',
-		version_requirement: '~=1.1.4',
+		version_requirement: '~=1.0.0',
 		dependencies:        '',
 		credentials:         `dns_netcup_customer_id  = 123456
 dns_netcup_api_key      = 0123456789abcdef0123456789abcdef01234567
@@ -475,15 +500,6 @@ dns_rfc2136_algorithm = HMAC-SHA512`,
 aws_access_key_id=AKIAIOSFODNN7EXAMPLE
 aws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`,
 		full_plugin_name: 'dns-route53',
-	},
-	//####################################################//
-        scaleway: {
-		display_name:        'Scaleway',
-		package_name:        'certbot-dns-scaleway',
-		version_requirement: '~=0.6.6',
-		dependencies:        '',
-		credentials:         'dns_scaleway_application_token=b3a0b9a9-3814-4f12-95b0-a7473bf8b306',
-		full_plugin_name:    'dns-scaleway',
 	},
 	//####################################################//
 	transip: {

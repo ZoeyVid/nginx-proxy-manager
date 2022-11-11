@@ -45,7 +45,9 @@ so that the barrier for entry here is low.
 # New Features
 
 - Google Brotli enabled by default (can not be disabled)
+<!---
 - Google Pagespeed enabled by default (can not be disabled)
+--->
 - Modsecurity enabled by default (can not be disabled)
 - HTTP/3 (QUIC) Support if you enable HTTP/2 (can not be enabled separate)
 - Fix Proxy Hosts, if origin only accepts TLSv1.3
@@ -93,20 +95,7 @@ services:
         volumes:
         - "/opt/npm:/data"
         - "/opt/npm-letsencrypt:/etc/letsencrypt"
-        - "/var/www:/var/www" # optional, if you want to use it as webserver
-        dns:
-        - 9.9.9.9
-        - 149.112.112.112
-        - 2620:fe::fe
-        - 2620:fe::fe:9
-        - 1.1.1.2
-        - 1.0.0.2
-        - 2606:4700:4700::1112
-        - 2606:4700:4700::1002
-        - 94.140.14.14
-        - 94.140.15.15
-        - 2a10:50c0::ad1:ff
-        - 2a10:50c0::ad2:ff
+        - "/var/www:/var/www" # optional, if you want to use it as webserver for html
 ```
 
 3. Bring up your stack by running

@@ -67,8 +67,6 @@ jobs:
       - name: Prepair frontend
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
-         node --version
-         yarn --version
          npm install --global yarn
          cd frontend
          yarn install

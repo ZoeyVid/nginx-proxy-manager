@@ -65,18 +65,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-        
-#      - name: cache-frontend
-#        id: cache-frontend
-#        uses: actions/cache@v3
-#        with:
-#          path: frontend/dist
-#          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
           
       - name: Prepair frontend
-#        if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
          node --version
@@ -99,14 +89,6 @@ jobs:
          eslint index.js
          timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
-#      - name: Cache Docker layers
-#        uses: actions/cache@v3
-#        with:
-#          path: /tmp/.buildx-cache
-#          key: buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-#          restore-keys: |
-#            buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
-
       - name: Build
         uses: docker/build-push-action@v3
         if: ${{ github.event_name != 'pull_request' }}
@@ -122,8 +104,6 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version
         if: ${{ github.ref == 'refs/heads/develop' }}
@@ -149,8 +129,6 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version (PR)
         if: ${{ github.event_name == 'pull_request' }}

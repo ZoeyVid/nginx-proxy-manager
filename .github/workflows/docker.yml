@@ -49,8 +49,6 @@ jobs:
          cat frontend/package.json | grep "${{ steps.version.outputs.version }}"
          sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' backend/package.json
          cat backend/package.json | grep "${{ steps.version.outputs.version }}"
-         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' docs/package.json
-         cat docs/package.json | grep "${{ steps.version.outputs.version }}"
         
       - name: Set current date as env variable
         id: date

@@ -44,7 +44,7 @@ jobs:
               | tail -1 \
               | sed -E "s/\^\{\}//"
           )"
-          sed -i "s|ARG S6_VERSION=.*|ARG S6_VERSION=$S6_VERSION|" ./docker/Dockerfile
+          sed -i "s|ARG S6_VERSION=.*|ARG S6_VERSION=$S6_VERSION|" ./Dockerfile
           echo "version=$S6_VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request

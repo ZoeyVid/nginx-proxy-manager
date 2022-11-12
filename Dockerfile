@@ -57,10 +57,10 @@ ENTRYPOINT [ "/init" ]
 HEALTHCHECK CMD /bin/check-health
 
 LABEL org.label-schema.schema-version="1.0" \
-	org.label-schema.license="MIT" \
-	org.label-schema.name="nginx-proxy-manager" \
-	org.label-schema.description="Docker container for managing Nginx proxy hosts with a simple, powerful interface " \
-	org.label-schema.url="https://github.com/SanCraftDev/nginx-proxy-manager" \
-	org.label-schema.vcs-url="https://github.com/SanCraftDev/nginx-proxy-manager.git" \
-	org.label-schema.cmd="docker run --rm -it sancraftdev/nginx-proxy-manager:latest" \ 
-    org.opencontainers.image.source="https://github.com/SanCraftDev/nginx-proxy-manager"
+      org.label-schema.license="MIT" \
+      org.label-schema.name="nginx-proxy-manager" \
+      org.label-schema.description="Docker container for managing Nginx proxy hosts with a simple, powerful interface " \
+      org.label-schema.url="https://github.com/SanCraftDev/nginx-proxy-manager" \
+      org.label-schema.vcs-url="https://github.com/SanCraftDev/nginx-proxy-manager.git" \
+      org.label-schema.cmd="docker run --rm -it sancraftdev/nginx-proxy-manager:latest" \ 
+      org.opencontainers.image.source="https://github.com/SanCraftDev/nginx-proxy-manager"

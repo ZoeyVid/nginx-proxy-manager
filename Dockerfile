@@ -11,19 +11,11 @@ COPY rootfs        /
 COPY backend       /app
 COPY frontend/dist /app/frontend
 
-# update
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update -y && \
-    apt upgrade -y --allow-downgrades && \
-    apt dist-upgrade -y --allow-downgrades && \
-    apt autoremove --purge -y && \
-    apt autoclean -y && \
-    apt clean -y && \
-
+RUN apk --no-cache upgrade && \
 # s6 overlay
     if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
-    curl -L https://github.com/just-containers/s6-overlay/releases/download/"$S6_VERSION"/s6-overlay-"$ARCH".tar.gz | tar xz -C / && \
+    wget https://github.com/just-containers/s6-overlay/releases/download/"$S6_VERSION"/s6-overlay-"$ARCH".tar.gz -O - | tar xz -C / && \
 
 # Change permission of logrotate config file
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \

@@ -41,7 +41,7 @@ then
 fi
 
 # Handle IPV6 settings
-/bin/handle-ipv6-setting /usr/local/nginx/conf/conf.d
+/bin/handle-ipv6-setting /usr/local/openresty/nginx/conf/conf.d
 /bin/handle-ipv6-setting /data/nginx
 
 exec nginx

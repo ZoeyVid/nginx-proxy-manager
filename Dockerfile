@@ -11,7 +11,7 @@ COPY rootfs        /
 COPY backend       /app
 COPY frontend/dist /app/frontend
 
-RUN apk --no-cache upgrade && \
+RUN apk upgrade --no-cache && \
 # s6 overlay
     if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \

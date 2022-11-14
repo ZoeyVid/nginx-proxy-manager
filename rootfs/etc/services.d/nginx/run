@@ -14,6 +14,7 @@ mkdir -p /tmp/nginx/body \
 	/data/nginx/stream \
 	/data/nginx/dead_host \
 	/data/nginx/temp \
+	/data/nginx/custom \
 	/var/lib/nginx/cache/public \
 	/var/lib/nginx/cache/private \
 	/var/cache/nginx/proxy_temp

@@ -25,7 +25,8 @@ RUN apk upgrade --no-cache && \
 
 # Build Backend
     cd /app && \
-    npm install --force
+    yarn install && \
+    apk del --no-cache yarn
 
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \

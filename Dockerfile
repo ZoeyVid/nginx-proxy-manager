@@ -17,8 +17,10 @@ RUN apk upgrade --no-cache && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
     wget https://github.com/just-containers/s6-overlay/releases/download/"$S6_VERSION"/s6-overlay-"$ARCH".tar.gz -O - | tar xz -C / && \
 
-# Change permission of logrotate config file
+# Change permission
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
+    chmod +x /bin/check-health && \
+    chmod +x /bin/handle-ipv6-setting && \
     
 # Clean
     rm -rf /tmp && \

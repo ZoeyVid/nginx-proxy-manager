@@ -59,7 +59,7 @@ const internalNginx = {
 						let valid_lines = [];
 						let err_lines   = err.message.split('\n');
 						err_lines.map(function (line) {
-							if (line.indexOf('/var/log/nginx/error.log') === -1) {
+							if (line.indexOf('/data/nginx/error.log') === -1) {
 								valid_lines.push(line);
 							}
 						});
@@ -101,7 +101,7 @@ const internalNginx = {
 			logger.info('Testing Nginx configuration');
 		}
 
-		return utils.exec('/usr/sbin/nginx -t -g "error_log off;"');
+		return utils.exec('nginx -t -g "error_log off;"');
 	},
 
 	/**
@@ -111,7 +111,7 @@ const internalNginx = {
 		return internalNginx.test()
 			.then(() => {
 				logger.info('Reloading Nginx');
-				return utils.exec('/usr/sbin/nginx -s reload');
+				return utils.exec('nginx -s reload');
 			});
 	},
 

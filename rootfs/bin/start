@@ -31,9 +31,6 @@ then
 	echo "Complete"
 fi
 
-nginx -t
-nginx
-
 if nginx -t; then
 while true; do
 nginx

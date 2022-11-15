@@ -212,31 +212,9 @@ const setupCertbotPlugins = () => {
 		});
 };
 
-
-/**
- * Starts a timer to call run the logrotation binary every two days
- * @returns {Promise}
- */
-const setupLogrotation = () => {
-	const intervalTimeout = 1000 * 60 * 60 * 24 * 2; // 2 days
-
-	const runLogrotate = async () => {
-		try {
-			await utils.exec('logrotate /etc/logrotate.d/nginx-proxy-manager');
-			logger.info('Logrotate completed.');
-		} catch (e) { logger.warn(e); }
-	};
-
-	logger.info('Logrotate Timer initialized');
-	setInterval(runLogrotate, intervalTimeout);
-	// And do this now as well
-	return runLogrotate();
-};
-
 module.exports = function () {
 	return setupJwt()
 		.then(setupDefaultUser)
 		.then(setupDefaultSettings)
-		.then(setupCertbotPlugins)
-		.then(setupLogrotation);
+		.then(setupCertbotPlugins);
 };

@@ -20,7 +20,8 @@ mkdir -p /tmp/nginx/body \
 	/var/cache/nginx/proxy_temp
 
 rm -rf /data/logs
-
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s|include conf.d/include/assets.conf;||g" {} \;
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/# Asset Caching//g" {} \;
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/proxy_http_version.*//g" {} \;
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/access_log.*//g" {} \;
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/error_log.*//g" {} \;

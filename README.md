@@ -114,7 +114,7 @@ Immediately after logging in with this default user you will be asked to modify 
 Special thanks to [all of our contributors](https://github.com/NginxProxyManager/nginx-proxy-manager/graphs/contributors).
 
 
-# Ülease report Bugs first to this fork before reporting them to the original Repository
+# Please report Bugs first to this fork before reporting them to the original Repository
 
 ## Getting Support
 

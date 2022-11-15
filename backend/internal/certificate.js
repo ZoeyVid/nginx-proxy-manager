@@ -12,7 +12,7 @@ const internalAuditLog   = require('./audit-log');
 const internalNginx      = require('./nginx');
 const internalHost       = require('./host');
 const letsencryptStaging = process.env.NODE_ENV !== 'production';
-const letsencryptConfig  = '/etc/letsencrypt.ini';
+const letsencryptConfig  = '/usr/local/openresty/nginx/conf/letsencrypt.ini';
 const certbotCommand     = 'certbot';
 const archiver           = require('archiver');
 const path               = require('path');
@@ -874,7 +874,12 @@ const internalCertificate = {
 		// Escape single quotes and backslashes
 		const escapedCredentials = certificate.meta.dns_provider_credentials.replaceAll('\'', '\\\'').replaceAll('\\', '\\\\');
 		const credentialsCmd     = 'mkdir -p /etc/letsencrypt/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentialsLocation + '\' && chmod 600 \'' + credentialsLocation + '\'';
-		const prepareCmd         = 'pip install ' + dns_plugin.package_name + (dns_plugin.version_requirement || '') + ' ' + dns_plugin.dependencies;
+	        let prepareCmd = 'pip install ' + dns_plugin.package_name + (dns_plugin.version_requirement || '') + ' ' + dns_plugin.dependencies;
+
+		// Special case for cloudflare
+		if (dns_plugin.package_name === 'certbot-dns-cloudflare') {
+			prepareCmd = 'pip install certbot-dns-cloudflare --index-url https://www.piwheels.org/simple --prefer-binary';
+		}
 
 		// Whether the plugin has a --<name>-credentials argument
 		const hasConfigArg = certificate.meta.dns_provider !== 'route53';

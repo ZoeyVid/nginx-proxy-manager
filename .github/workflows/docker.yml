@@ -16,8 +16,8 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
+        with:          
+          platforms: arm64 #all
 
       - name: Set up Docker Buildx
         id: buildx
@@ -49,8 +49,6 @@ jobs:
          cat frontend/package.json | grep "${{ steps.version.outputs.version }}"
          sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' backend/package.json
          cat backend/package.json | grep "${{ steps.version.outputs.version }}"
-         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' docs/package.json
-         cat docs/package.json | grep "${{ steps.version.outputs.version }}"
         
       - name: Set current date as env variable
         id: date
@@ -65,22 +63,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-        
-#      - name: cache-frontend
-#        id: cache-frontend
-#        uses: actions/cache@v3
-#        with:
-#          path: frontend/dist
-#          key: ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ steps.version.outputs.version }}-frontend-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
           
       - name: Prepair frontend
-#        if: steps.cache-frontend.outputs.cache-hit != 'true'
         run: |
          export NODE_OPTIONS=--openssl-legacy-provider
-         node --version
-         yarn --version
          npm install --global yarn
          cd frontend
          yarn install
@@ -99,21 +85,13 @@ jobs:
          eslint index.js
          timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
-#      - name: Cache Docker layers
-#        uses: actions/cache@v3
-#        with:
-#          path: /tmp/.buildx-cache
-#          key: buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-${{ github.sha }}
-#          restore-keys: |
-#            buildx-${{ secrets.CACHE_ID }}-${{ github.ref_name }}-
-
       - name: Build
         uses: docker/build-push-action@v3
         if: ${{ github.event_name != 'pull_request' }}
         with:
           context: .
-          file: ./docker/Dockerfile
-          platforms: linux/amd64,linux/arm64 #,linux/amd64/v2,linux/amd64/v3 #,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64 #,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4 #,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
           push: ${{ github.ref == 'refs/heads/develop' }}
           tags: | 
            ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
@@ -122,14 +100,12 @@ jobs:
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version
         if: ${{ github.ref == 'refs/heads/develop' }}
         run: | 
-         docker run --rm --entrypoint /usr/sbin/nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
-         docker run --rm --entrypoint /usr/sbin/nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+         docker run --rm --entrypoint nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+         docker run --rm --entrypoint nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
 
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
@@ -141,20 +117,18 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         with:
           context: .
-          file: ./docker/Dockerfile
-          platforms: linux/amd64,linux/arm64 #,linux/amd64/v2,linux/amd64/v3 #,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64 #,linux/amd64/v2,linux/amd64/v3,linux/amd64/v4 #,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6
           push: ${{ github.event_name == 'pull_request' }}
           tags: ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }}
           build-args: |
            "BUILD_VERSION=${{ steps.version.outputs.version }}+"
            "BUILD_COMMIT=${{ github.sha }}"
            "BUILD_DATE=${{ steps.date.outputs.date }}"
-#          cache-from: type=local,src=/tmp/.buildx-cache
-#          cache-to: type=local,dest=/tmp/.buildx-cache
                 
       - name: show version (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: docker run --rm --entrypoint /usr/sbin/nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -V
+        run: docker run --rm --entrypoint nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -V
           
       - name: add comment (PR)
         uses: mshick/add-pr-comment@v2

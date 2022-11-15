@@ -169,18 +169,23 @@ const setupCertbotPlugins = () => {
 		.andWhere('provider', 'letsencrypt')
 		.then((certificates) => {
 			if (certificates && certificates.length) {
-				let plugins  = [];
-				let promises = [];
+				let plugins                   = [];
+				let promises                  = [];
+				let install_cloudflare_plugin = false;
 
 				certificates.map(function (certificate) {
 					if (certificate.meta && certificate.meta.dns_challenge === true) {
-						const dns_plugin          = dns_plugins[certificate.meta.dns_provider];
-						const packages_to_install = `${dns_plugin.package_name}${dns_plugin.version_requirement || ''} ${dns_plugin.dependencies}`;
+						const dns_plugin = dns_plugins[certificate.meta.dns_provider];
 
-						if (plugins.indexOf(packages_to_install) === -1) plugins.push(packages_to_install);
+						if (dns_plugin.package_name === 'certbot-dns-cloudflare') {
+							install_cloudflare_plugin = true;
+						} else {
+							const packages_to_install = `${dns_plugin.package_name}${dns_plugin.version_requirement || ''} ${dns_plugin.dependencies}`;
+							if (plugins.indexOf(packages_to_install) === -1) plugins.push(packages_to_install);
+						}
 
 						// Make sure credentials file exists
-						const credentials_loc = '/etc/letsencrypt/credentials/credentials-' + certificate.id; 
+						const credentials_loc = '/etc/letsencrypt/credentials/credentials-' + certificate.id;
 						// Escape single quotes and backslashes
 						const escapedCredentials = certificate.meta.dns_provider_credentials.replaceAll('\'', '\\\'').replaceAll('\\', '\\\\');
 						const credentials_cmd    = '[ -f \'' + credentials_loc + '\' ] || { mkdir -p /etc/letsencrypt/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentials_loc + '\' && chmod 600 \'' + credentials_loc + '\'; }';
@@ -193,42 +198,23 @@ const setupCertbotPlugins = () => {
 					promises.push(utils.exec(install_cmd));
 				}
 
+			        if (install_cloudflare_plugin) {
+					promises.push(utils.exec('pip install certbot-dns-cloudflare --index-url https://www.piwheels.org/simple --prefer-binary'));
+				}
+				
 				if (promises.length) {
 					return Promise.all(promises)
-						.then(() => { 
-							logger.info('Added Certbot plugins ' + plugins.join(', ')); 
+						.then(() => {
+							logger.info('Added Certbot plugins ' + plugins.join(', '));
 						});
 				}
 			}
 		});
 };
 
-
-/**
- * Starts a timer to call run the logrotation binary every two days
- * @returns {Promise}
- */
-const setupLogrotation = () => {
-	const intervalTimeout = 1000 * 60 * 60 * 24 * 2; // 2 days
-
-	const runLogrotate = async () => {
-		try {
-			await utils.exec('logrotate /etc/logrotate.d/nginx-proxy-manager');
-			logger.info('Logrotate completed.');
-			logger.info("DEV Version");
-		} catch (e) { logger.warn(e); }
-	};
-
-	logger.info('Logrotate Timer initialized');
-	setInterval(runLogrotate, intervalTimeout);
-	// And do this now as well
-	return runLogrotate();
-};
-
 module.exports = function () {
 	return setupJwt()
 		.then(setupDefaultUser)
 		.then(setupDefaultSettings)
-		.then(setupCertbotPlugins)
-		.then(setupLogrotation);
+		.then(setupCertbotPlugins);
 };

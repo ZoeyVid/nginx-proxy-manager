@@ -12,7 +12,7 @@ const internalAuditLog   = require('./audit-log');
 const internalNginx      = require('./nginx');
 const internalHost       = require('./host');
 const letsencryptStaging = process.env.NODE_ENV !== 'production';
-const letsencryptConfig  = '/etc/letsencrypt.ini';
+const letsencryptConfig  = '/usr/local/openresty/nginx/conf/letsencrypt.ini';
 const certbotCommand     = 'certbot';
 const archiver           = require('archiver');
 const path               = require('path');

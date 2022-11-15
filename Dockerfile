@@ -18,7 +18,7 @@ RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget \
     nodejs-current npm \
     python3 py3-pip \
-    supervisor logrotate openssl apache2-utils \
+    logrotate openssl apache2-utils \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission
@@ -42,7 +42,6 @@ ENV DB_SQLITE_FILE=/data/database.sqlite \
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT ["start"]
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 HEALTHCHECK CMD /bin/check-health
 

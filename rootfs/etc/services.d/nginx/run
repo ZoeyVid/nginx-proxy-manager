@@ -21,6 +21,9 @@ mkdir -p /tmp/nginx/body \
 
 rm -rf /data/logs
 
+find . -type f -name '/data/nginx/*.conf' -exec sed -i "s/access_log.*//g" {} \;
+find . -type f -name '/data/nginx/*.conf' -exec sed -i "s/error_log.*//g" {} \;
+
 touch /data/nginx/error.log && chmod 777 /data/nginx/error.log && chmod -R 777 /var/cache/nginx
 chown root /tmp/nginx
 

@@ -7,13 +7,6 @@ RUN apk upgrade --no-cache && \
 
 FROM sancraftdev/openresty-nginx-quic:latest
 
-ARG S6_VERSION=v1.22.1.0
-
-ARG TARGETPLATFORM \
-    BUILD_VERSION \
-    BUILD_COMMIT \
-    BUILD_DATE
-
 COPY rootfs        /
 COPY backend       /app
 COPY frontend/dist /app/frontend
@@ -25,16 +18,12 @@ RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget \
     nodejs-current npm \
     python3 py3-pip \
-    bash logrotate apache2-utils openssl \
+    supervisor logrotate openssl apache2-utils \
     gcc g++ libffi-dev python3-dev && \
-    
-# s6 overlay
-    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
-    if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
-    wget https://github.com/just-containers/s6-overlay/releases/download/"$S6_VERSION"/s6-overlay-"$ARCH".tar.gz -O - | tar xz -C / && \
 
 # Change permission
     chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
+    chmod +x /bin/start && \
     chmod +x /bin/check-health && \
     chmod +x /bin/handle-ipv6-setting && \
     
@@ -47,24 +36,13 @@ RUN apk upgrade --no-cache && \
     pip install --no-cache-dir certbot && \
     apk del --no-cache gcc g++ libffi-dev python3-dev npm
 
-ENV BUILD_VERSION=${BUILD_VERSION} \
-    BUILD_COMMIT=${BUILD_COMMIT} \
-    BUILD_DATE=${BUILD_DATE} \
-    
-    NPM_BUILD_VERSION=${BUILD_VERSION} \
-    NPM_BUILD_COMMIT=${BUILD_COMMIT} \
-    NPM_BUILD_DATE=${BUILD_DATE} \
-
-    SUPPRESS_NO_CONFIG_WARNING=1 \
-    S6_FIX_ATTRS_HIDDEN=1 \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=1 \
-    NODE_OPTIONS=--openssl-legacy-provider \
-    DB_SQLITE_FILE=/data/database.sqlite \
+ENV DB_SQLITE_FILE=/data/database.sqlite \
     NODE_ENV=production
 
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
-ENTRYPOINT [ "/init" ]
+ENTRYPOINT ["start"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 HEALTHCHECK CMD /bin/check-health
 

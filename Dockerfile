@@ -1,3 +1,10 @@
+FROM alpine:20221110 as build
+
+RUN apk upgrade --no-cache && \ 
+    apk add --no-cache ca-certificates wget git && \ 
+    git clone --recursive https://github.com/SanCraftDev/Nginx-Fancyindex-Theme /nft && \
+    wget https://ssl-config.mozilla.org/ffdhe2048.txt -O /etc/ssl/dhparam
+
 FROM sancraftdev/openresty-nginx-quic:latest
 
 ARG S6_VERSION=v1.22.1.0
@@ -11,7 +18,16 @@ COPY rootfs        /
 COPY backend       /app
 COPY frontend/dist /app/frontend
 
+COPY --from=build /etc/ssl/dhparam /etc/ssl/dhparam
+COPY --from=build /nft/Nginx-Fancyindex-Theme-dark /nft
+
 RUN apk upgrade --no-cache && \
+    apk add --no-cache ca-certificates wget \
+    nodejs-current npm \
+    python3 py3-pip \
+    bash logrotate apache2-utils openssl \
+    gcc g++ libffi-dev python3-dev && \
+    
 # s6 overlay
     if [ "$TARGETPLATFORM" = "linux/amd64" ]; then export ARCH=amd64; fi && \
     if [ "$TARGETPLATFORM" = "linux/arm64" ]; then export ARCH=aarch64; fi && \
@@ -28,7 +44,8 @@ RUN apk upgrade --no-cache && \
 # Build Backend
     cd /app && \
     npm install --force && \
-    apk del --no-cache npm
+    pip install --no-cache-dir certbot && \
+    apk del --no-cache gcc g++ libffi-dev python3-dev npm
 
 ENV BUILD_VERSION=${BUILD_VERSION} \
     BUILD_COMMIT=${BUILD_COMMIT} \

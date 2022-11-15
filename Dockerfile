@@ -33,7 +33,7 @@ RUN apk upgrade --no-cache && \
 
 ENV DB_SQLITE_FILE=/data/database.sqlite \
     NODE_ENV=production
-
+WORKDIR /app
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT ["start"]

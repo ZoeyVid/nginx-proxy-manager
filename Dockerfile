@@ -20,7 +20,7 @@ RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget \
     python3 py3-pip \
     nodejs-current npm \
-    openssl apache2-utils \
+    openssl apache2-utils jq \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission

@@ -31,6 +31,12 @@ then
 	echo "Complete"
 fi
 
-while true; do 
+nginx -t
+nginx
+
+if nginx -t; then
+while true; do
+nginx
 node --abort_on_uncaught_exception --max_old_space_size=250 index.js
 done
+fi

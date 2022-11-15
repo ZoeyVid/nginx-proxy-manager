@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 OK=$(wget --no-check-certificate https://127.0.0.1:81/api -O - | jq --raw-output '.status')
 

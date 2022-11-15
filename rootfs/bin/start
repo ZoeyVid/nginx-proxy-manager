@@ -1,3 +1,36 @@
 #!/bin/sh
+mkdir -p /tmp/letsencrypt-acme-challenge \
+	/data/custom_ssl \
+	/data/access \
+	/data/nginx/redirection_host \
+	/data/nginx/default_host \
+	/data/nginx/default_www \
+	/data/nginx/proxy_host \
+	/data/nginx/dead_host \
+	/data/nginx/stream \
+	/data/nginx/custom \
+	/data/nginx/temp \
 
-exec "$@"
+rm -rf /data/letsencrypt-acme-challenge \
+       /data/nginx/temp \
+       /data/logs
+
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s|include conf.d/include/assets.conf;||g" {} \;
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/# Asset Caching//g" {} \;
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/proxy_http_version.*//g" {} \;
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/access_log.*//g" {} \;
+find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/error_log.*//g" {} \;
+
+touch /data/nginx/error.log \
+      /usr/local/openresty/nginx/conf/conf.d/include/ip_ranges.conf
+
+if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]
+then
+	echo "Generating dummy SSL certificate..."
+	openssl req -new -newkey rsa:2048 -days 365000 -nodes -x509 -subj '/CN=*' -sha256 -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem
+	echo "Complete"
+fi
+
+while true; do 
+node --abort_on_uncaught_exception --max_old_space_size=250 /app/index.js
+done

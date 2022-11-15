@@ -16,9 +16,9 @@ COPY --from=build /nft/Nginx-Fancyindex-Theme-dark /nft
 
 RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget \
-    nodejs-current npm \
     python3 py3-pip \
-    logrotate openssl apache2-utils \
+    nodejs-current npm \
+    openssl apache2-utils \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission

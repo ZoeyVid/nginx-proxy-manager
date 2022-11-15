@@ -22,13 +22,8 @@ RUN apk upgrade --no-cache && \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission
-    chmod 644 /etc/logrotate.d/nginx-proxy-manager && \
     chmod +x /bin/start && \
     chmod +x /bin/check-health && \
-    chmod +x /bin/handle-ipv6-setting && \
-    
-# Clean
-    rm -rf /tmp && \
 
 # Build Backend
     cd /app && \

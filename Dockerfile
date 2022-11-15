@@ -14,11 +14,13 @@ COPY frontend/dist /app/frontend
 COPY --from=build /etc/ssl/dhparam /etc/ssl/dhparam
 COPY --from=build /nft/Nginx-Fancyindex-Theme-dark /nft
 
+WORKDIR /app
+
 RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget \
     python3 py3-pip \
     nodejs-current npm \
-    openssl apache2-utils \
+    openssl apache2-utils jq \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission
@@ -26,14 +28,13 @@ RUN apk upgrade --no-cache && \
     chmod +x /bin/check-health && \
 
 # Build Backend
-    cd /app && \
     npm install --force && \
     pip install --no-cache-dir certbot && \
     apk del --no-cache gcc g++ libffi-dev python3-dev npm
 
-ENV DB_SQLITE_FILE=/data/database.sqlite \
-    NODE_ENV=production
-WORKDIR /app
+ENV DB_SQLITE_FILE=/data/database.sqlite
+ENV NODE_ENV=production
+    
 EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT ["start"]

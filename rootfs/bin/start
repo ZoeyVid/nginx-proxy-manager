@@ -32,13 +32,25 @@ then
 fi
 
 sed -i "s/daemon off;/daemon on;/g" /usr/local/openresty/nginx/conf/nginx.conf || exit 1
-nginx -t || exit 1
-sed -i "s/daemon on;/daemon off;/g" /usr/local/openresty/nginx/conf/nginx.conf || exit 1
-nginx -t || exit 1
+if ! "nginx -t 2> /dev/null"; then
+nginx -T
+sleep inf
+fi
 
-while nginx -t; do
+sed -i "s/daemon on;/daemon off;/g" /usr/local/openresty/nginx/conf/nginx.conf || exit 1
+if ! "nginx -t 2> /dev/null"; then
+nginx -T
+sleep inf
+fi
+
+while "nginx -t 2> /dev/null"; do
 sed -i "s/daemon off;/daemon on;/g" /usr/local/openresty/nginx/conf/nginx.conf || exit 1
 nginx || exit 1
 sed -i "s/daemon on;/daemon off;/g" /usr/local/openresty/nginx/conf/nginx.conf || exit 1
 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || exit 1
 done
+
+if ! "nginx -t 2> /dev/null"; then
+nginx -T
+sleep inf
+fi

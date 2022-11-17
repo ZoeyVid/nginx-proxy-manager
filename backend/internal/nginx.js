@@ -287,7 +287,7 @@ const internalNginx = {
 
 		return new Promise((resolve, reject) => {
 			let template = null;
-			let filename = '/usr/local/openresty/nginx/conf/conf.d/letsencrypt_' + certificate.id + '.conf';
+			let filename = '/usr/local/nginx/conf/conf.d/letsencrypt_' + certificate.id + '.conf';
 
 			try {
 				template = fs.readFileSync(__dirname + '/../templates/letsencrypt-request.conf', {encoding: 'utf8'});
@@ -329,7 +329,7 @@ const internalNginx = {
 	deleteLetsEncryptRequestConfig: (certificate, throw_errors) => {
 		return new Promise((resolve, reject) => {
 			try {
-				let config_file = '/usr/local/openresty/nginx/conf/conf.d/letsencrypt_' + certificate.id + '.conf';
+				let config_file = '/usr/local/nginx/conf/conf.d/letsencrypt_' + certificate.id + '.conf';
 
 				if (debug_mode) {
 					logger.warn('Deleting nginx config: ' + config_file);

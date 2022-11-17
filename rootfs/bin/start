@@ -9,12 +9,13 @@ mkdir -p /tmp/letsencrypt-acme-challenge \
          /data/nginx/dead_host \
          /data/nginx/stream \
          /data/nginx/custom \
-         /data/nginx/temp \
-         /data/nginx/error.log || exit 1
+         /data/nginx/temp || exit 1
 
 rm -rf /data/letsencrypt-acme-challenge \
        /data/nginx/temp \
-       /data/logs || exit 1
+       /data/logs \
+       /data/error.log \
+       /data/nginx/error.log || exit 1
 
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s|include conf.d/include/assets.conf;||g" {} \; || exit 1
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/# Asset Caching//g" {} \; || exit 1
@@ -22,7 +23,7 @@ find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/proxy_http_version.*//g
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/access_log.*//g" {} \; || exit 1
 find /data/nginx/ -type f -name '*.conf' -exec sed -i "s/error_log.*//g" {} \; || exit 1
 
-touch /data/nginx/error.log \
+touch /data/error.log \
       /usr/local/openresty/nginx/conf/conf.d/include/ip_ranges.conf || exit 1
 
 if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]; then

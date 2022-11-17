@@ -5,7 +5,7 @@ RUN apk upgrade --no-cache && \
     git clone --recursive https://github.com/SanCraftDev/Nginx-Fancyindex-Theme /nft && \
     wget https://ssl-config.mozilla.org/ffdhe2048.txt -O /etc/ssl/dhparam
 
-FROM sancraftdev/openresty-nginx-quic:latest
+FROM sancraftdev/nginx-quic:latest
 
 COPY rootfs        /
 COPY backend       /app

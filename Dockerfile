@@ -24,8 +24,8 @@ RUN apk upgrade --no-cache && \
     gcc g++ libffi-dev python3-dev && \
 
 # Change permission
-    chmod +x /bin/start && \
-    chmod +x /bin/check-health && \
+    chmod +x /usr/local/bin/start && \
+    chmod +x /usr/local/bin/check-health && \
 
 # Build Backend
     npm install --force && \

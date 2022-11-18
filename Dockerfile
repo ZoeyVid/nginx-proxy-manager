@@ -1,7 +1,7 @@
 FROM alpine:20221110 as build
 
 RUN apk upgrade --no-cache && \ 
-    apk add --no-cache ca-certificates wget git && \ 
+    apk add --no-cache ca-certificates wget git tzdata && \ 
     git clone --recursive https://github.com/SanCraftDev/Nginx-Fancyindex-Theme /nft && \
     wget https://ssl-config.mozilla.org/ffdhe2048.txt -O /etc/ssl/dhparam
 
@@ -17,7 +17,7 @@ COPY --from=build /nft/Nginx-Fancyindex-Theme-dark /nft
 WORKDIR /app
 
 RUN apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates wget \
+    apk add --no-cache ca-certificates wget tzdata \
     python3 py3-pip \
     nodejs-current npm \
     openssl apache2-utils jq \

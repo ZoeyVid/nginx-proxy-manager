@@ -39,7 +39,7 @@ EXPOSE 80 81 443 81/udp 443/udp
 VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT ["start"]
 
-HEALTHCHECK CMD /bin/check-health
+HEALTHCHECK CMD check-health
 
 LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.license="MIT" \

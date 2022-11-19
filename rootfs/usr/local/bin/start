@@ -30,6 +30,11 @@ if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]; then
 	openssl req -new -newkey rsa:2048 -days 365000 -nodes -x509 -subj '/CN=*' -sha256 -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem || exit 1
 fi
 
+if [ "$NPM_LISTEN_LOCALHOST" == "true" ]; then
+sed -i "s/listen 81/listen 127.0.0.1:81/g" /usr/local/nginx/conf/conf.d/production.conf
+sed -i "s/listen [::]:81/listen [::1]:81/g" /usr/local/nginx/conf/conf.d/production.conf
+fi
+
 while nginx -t 2> /dev/null; do
 nginx || exit 1 &
 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || exit 1 &

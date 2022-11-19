@@ -4,26 +4,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  dhparam-generation-4096:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: generate dhparam 4096
-        id: update
-        run: openssl dhparam -out rootfs/etc/ssl/dhparam 4096
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          signoff: true
-          delete-branch: true
-          commit-message: update dhparam 4096
-          branch: update-dhparam-4096
-          title: update dhparam 4096
-          body: update dhparam 4096
-
   dhparam-generation-8192:
     runs-on: ubuntu-latest
     steps:
@@ -32,7 +12,10 @@ jobs:
 
       - name: generate dhparam 8192
         id: update
-        run: openssl dhparam -out rootfs/etc/ssl/dhparam 8192
+        run: |
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 8192
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
@@ -52,7 +35,10 @@ jobs:
 
       - name: generate dhparam 16384
         id: update
-        run: openssl dhparam -out rootfs/etc/ssl/dhparam 16384
+        run: | 
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 16384
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
@@ -72,7 +58,10 @@ jobs:
 
       - name: generate dhparam 32768
         id: update
-        run: openssl dhparam -out rootfs/etc/ssl/dhparam 32768
+        run: |
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 32768
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4

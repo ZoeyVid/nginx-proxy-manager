@@ -10,7 +10,6 @@ RUN apk upgrade --no-cache && \
     nodejs-current npm \
     openssl apache2-utils jq \
     gcc g++ libffi-dev python3-dev && \
-    wget https://ssl-config.mozilla.org/ffdhe2048.txt -O /etc/ssl/dhparam && \
 
 # Change permission
     chmod +x /usr/local/bin/start && \

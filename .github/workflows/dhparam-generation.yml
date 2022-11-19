@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: update w2d version
+      - name: generate dhparam
         id: update
         run: openssl dhparam -out rootfs/etc/ssl/dhparam 4096
 #        run: openssl dhparam -out rootfs/etc/ssl/dhparam 8192

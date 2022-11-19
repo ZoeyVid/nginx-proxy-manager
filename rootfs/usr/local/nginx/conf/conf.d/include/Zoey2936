@@ -9,10 +9,10 @@ location = /.well-known/acme-challenge/ {
     return 404;
 }
 
-location = /nft {
-    return 301 /nft/;
+location = /nftd {
+    return 301 /nftd/;
 }
 
-location ^~ /nft/ {
-    alias /nft/;
+location ^~ /nftd/ {
+    alias /nftd/;
 }

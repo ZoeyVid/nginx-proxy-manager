@@ -1,6 +1,5 @@
 FROM sancraftdev/nginx-quic:latest
 COPY rootfs          /
-COPY nftd            /nftd
 COPY backend         /app
 COPY frontend/dist   /app/frontend
 

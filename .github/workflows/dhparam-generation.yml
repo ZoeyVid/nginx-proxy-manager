@@ -4,23 +4,42 @@ on:
   workflow_dispatch:
 
 jobs:
-  dhparam-generation:
+  dhparam-generation-4096:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: generate dhparam
+      - name: generate dhparam 4096
         id: update
         run: openssl dhparam -out rootfs/etc/ssl/dhparam 4096
-#        run: openssl dhparam -out rootfs/etc/ssl/dhparam 8192
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           signoff: true
           delete-branch: true
-          commit-message: update dhparam
-          branch: update-dhparam
-          title: update dhparam
-          body: update dhparam
+          commit-message: update dhparam 4096
+          branch: update-dhparam-4096
+          title: update dhparam 4096
+          body: update dhparam 4096
+
+  dhparam-generation-8192:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: generate dhparam 8192
+        id: update
+        run: openssl dhparam -out rootfs/etc/ssl/dhparam 8192
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update dhparam 8192
+          branch: update-dhparam-8192
+          title: update dhparam 8192
+          body: update dhparam 8192

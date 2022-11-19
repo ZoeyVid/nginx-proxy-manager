@@ -23,8 +23,5 @@ RUN apk upgrade --no-cache && \
 ENV NODE_ENV=production \
     DB_SQLITE_FILE=/data/database.sqlite
     
-EXPOSE 80 81 443 81/udp 443/udp
-VOLUME [ "/data", "/etc/letsencrypt" ]
 ENTRYPOINT ["start"]
-
 HEALTHCHECK CMD check-health

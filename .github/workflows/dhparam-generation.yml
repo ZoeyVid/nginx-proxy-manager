@@ -23,7 +23,7 @@ jobs:
           signoff: true
           delete-branch: true
           commit-message: update dhparam 8192
-          branch: update-dhparam-8192
+          branch: update-dhparam
           title: update dhparam 8192
           body: update dhparam 8192
 
@@ -46,7 +46,7 @@ jobs:
           signoff: true
           delete-branch: true
           commit-message: update dhparam 16384
-          branch: update-dhparam-16384
+          branch: update-dhparam
           title: update dhparam 16384
           body: update dhparam 16384
 
@@ -69,6 +69,6 @@ jobs:
           signoff: true
           delete-branch: true
           commit-message: update dhparam 32768
-          branch: update-dhparam-32768
+          branch: update-dhparam
           title: update dhparam 32768
           body: update dhparam 32768

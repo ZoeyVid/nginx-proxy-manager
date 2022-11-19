@@ -88,6 +88,7 @@ services:
         - "/var/www:/var/www" # optional, if you want to use it as webserver for html
         environment:
         - "TZ=Europe/Berlin"
+#        - "NGINX_LOG_NOT_FOUND=true" # Enable to allow logging of 404 errors
 #        - "NPM_LISTEN_LOCALHOST=true" # Enable to bind the NPM Dashboard on Port 81 only to localhost
 ```
 

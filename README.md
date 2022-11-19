@@ -86,6 +86,9 @@ services:
         - "/opt/npm:/data"
         - "/opt/npm-letsencrypt:/etc/letsencrypt"
         - "/var/www:/var/www" # optional, if you want to use it as webserver for html
+        environment:
+        - "TZ=Europe/Berlin"
+#        - "NPM_LISTEN_LOCALHOST=true" # Enable to bind the NPM Dashboard on Port 81 only to localhost
 ```
 
 3. Bring up your stack by running

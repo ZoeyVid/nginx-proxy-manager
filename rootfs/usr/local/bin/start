@@ -32,7 +32,7 @@ fi
 
 if [ "$NPM_LISTEN_LOCALHOST" == "true" ]; then
 sed -i "s/listen 81/listen 127.0.0.1:81/g" /usr/local/nginx/conf/conf.d/production.conf
-sed -i "s/listen [::]:81/listen [::1]:81/g" /usr/local/nginx/conf/conf.d/production.conf
+sed -i "s/listen \[::\]:81/listen \[::1\]:81/g" /usr/local/nginx/conf/conf.d/production.conf
 fi
 
 if [ "$NGINX_LOG_NOT_FOUND" == "true" ]; then

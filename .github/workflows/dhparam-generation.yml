@@ -1,0 +1,74 @@
+name: dhparam-generation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dhparam-generation-8192:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: generate dhparam 8192
+        id: update
+        run: |
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 8192
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update dhparam 8192
+          branch: update-dhparam
+          title: update dhparam 8192
+          body: update dhparam 8192
+
+  dhparam-generation-16384:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: generate dhparam 16384
+        id: update
+        run: | 
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 16384
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update dhparam 16384
+          branch: update-dhparam
+          title: update dhparam 16384
+          body: update dhparam 16384
+
+  dhparam-generation-32768:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: generate dhparam 32768
+        id: update
+        run: |
+         openssl dhparam -check -5 -out rootfs/etc/ssl/dhparam 32768
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam
+         openssl dhparam -check -text -in rootfs/etc/ssl/dhparam -out rootfs/etc/ssl/dhparam.txt
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          signoff: true
+          delete-branch: true
+          commit-message: update dhparam 32768
+          branch: update-dhparam
+          title: update dhparam 32768
+          body: update dhparam 32768

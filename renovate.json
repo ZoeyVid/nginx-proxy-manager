@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "rangeStrategy": "pin",
+  "digest": {
+    "enabled": false
+  },
+  "ignorePaths": [
+    "docs/package.json",
+    "test/package.json",
+    "docker/dev/Dockerfile",
+    "test/cypress/Dockerfile",
+    "docker/docker-compose.ci.yml",
+    "docker/docker-compose.dev.yml"
+  ],
+  "baseBranches": [
+    "dev",
+    "develop"
+  ],
+  "includeForks": true,
+  "automerge": true,
+  "branchPrefix": "renovate-deps-update-"
+}

@@ -6,10 +6,13 @@ COPY frontend/dist   /app/frontend
 WORKDIR /app
 RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget tzdata \
-    python3 py3-pip \
+    python3 \
     nodejs-current npm \
     openssl apache2-utils jq \
     gcc g++ libffi-dev python3-dev && \
+    
+# Install pip
+    wget https://bootstrap.pypa.io/get-pip.py -O - | python3 && \
 
 # Change permission
     chmod +x /usr/local/bin/start && \

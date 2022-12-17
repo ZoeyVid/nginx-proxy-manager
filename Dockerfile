@@ -4,12 +4,15 @@ COPY backend         /app
 COPY frontend/dist   /app/frontend
 
 WORKDIR /app
-RUN apk upgrade --no-cache && \
+RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/repositories && \
+    apk update && \
+    apk upgrade --no-cache && \
     apk add --no-cache ca-certificates wget tzdata \
     python3 \
     nodejs-current npm \
     openssl apache2-utils jq \
     gcc g++ libffi-dev python3-dev && \
+    php7 php7-fpm php8 php8-fpm php81 php81-fpm php82 php82-fpm && \
     
 # Install pip
     wget https://bootstrap.pypa.io/get-pip.py -O - | python3 && \

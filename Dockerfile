@@ -7,7 +7,7 @@ WORKDIR /app
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/repositories && \
     apk update && \
     apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates wget tzdata \
+    apk add --no-cache ca-certificates wget tzdata coreutils \
     python3 \
     nodejs-current npm \
     openssl apache2-utils jq fcgi \

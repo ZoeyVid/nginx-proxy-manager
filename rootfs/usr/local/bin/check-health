@@ -2,7 +2,7 @@
 
 OK=$(wget -q --no-check-certificate https://127.0.0.1:81/api -O - | jq --raw-output '.status')
 
-if [ "$OK" == "OK" ]; then
+if (cgi-fcgi -bind -connect /dev/php7.sock && cgi-fcgi -bind -connect /dev/php8.sock && cgi-fcgi -bind -connect /dev/php81.sock && cgi-fcgi -bind -connect /dev/php82.sock && [ "$OK" == "OK" ])
 	echo "OK"
 	exit 0
 else

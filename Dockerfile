@@ -10,7 +10,7 @@ RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing | tee -a /etc/apk/re
     apk add --no-cache ca-certificates wget tzdata \
     python3 \
     nodejs-current npm \
-    openssl apache2-utils jq \
+    openssl apache2-utils jq fcgi \
     gcc g++ libffi-dev python3-dev \
     php7 php7-fpm php8 php8-fpm php81 php81-fpm php82 php82-fpm && \
     

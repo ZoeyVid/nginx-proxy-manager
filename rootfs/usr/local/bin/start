@@ -48,6 +48,12 @@ touch /data/nginx/custom/root.conf \
       /data/nginx/custom/server_stream_udp.conf \
       /usr/local/nginx/conf/conf.d/include/ip_ranges.conf || exit 1
 
+
+for folder in $(find /etc -maxdepth 1 -type d -name php*); do sed -i "s|user = nobody|user = root|g" $folder/php-fpm.d/www.conf; done;
+for folder in $(find /etc -maxdepth 1 -type d -name php*); do sed -i "s|group = nobody|group = root|g" $folder/php-fpm.d/www.conf; done;
+for folder in $(find /etc -maxdepth 1 -type d -name php*); do sed -i "s|listen = 127.0.0.1:9000|listen = /dev/$(echo $folder| sed "s|/etc/||g").sock|g" $folder/php-fpm.d/www.conf; done;
+for folder in $(find /etc -maxdepth 1 -type d -name php*); do cp -rn $folder /data; done;
+
 if [ ! -f /data/nginx/dummycert.pem ] || [ ! -f /data/nginx/dummykey.pem ]; then
 openssl req -new -newkey rsa:4096 -days 365000 -nodes -x509 -subj '/CN=*' -sha256 -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem || exit 1
 fi
@@ -66,13 +72,57 @@ nginx -T || exit 1
 sleep inf || exit 1
 fi
 
-while nginx -t 2> /dev/null; do
+if ! php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+while (nginx -t 2> /dev/null && php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FORt 2> /dev/null && php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FORt 2> /dev/null && php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FORt 2> /dev/null && php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FORt 2> /dev/null); do
 nginx || exit 1 &
+php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FOR || exit 1 &
+php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FOR || exit 1 &
+php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FOR || exit 1 &
+php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FOR || exit 1 &
 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || exit 1 &
 wait
 done
 
 if ! nginx -t 2> /dev/null; then
 nginx -T || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm7 -c /data/php7 -y /data/php7/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm8 -c /data/php8 -y /data/php8/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm81 -c /data/php81 -y /data/php81/php-fpm.conf -FORt || exit 1
+sleep inf || exit 1
+fi
+
+if ! php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FORt 2> /dev/null; then
+php-fpm82 -c /data/php82 -y /data/php82/php-fpm.conf -FORt || exit 1
 sleep inf || exit 1
 fi

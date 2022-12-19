@@ -1,15 +1,19 @@
-FROM zoeyvid/nginx-quic:20
+FROM zoeyvid/nginx-quic:22
 COPY rootfs          /
 COPY backend         /app
 COPY frontend/dist   /app/frontend
 
 WORKDIR /app
 RUN apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates wget tzdata \
+    apk add --no-cache ca-certificates wget tzdata coreutils \
     python3 \
     nodejs-current npm \
-    openssl apache2-utils jq \
-    gcc g++ libffi-dev python3-dev && \
+    openssl apache2-utils jq fcgi \
+    gcc g++ libffi-dev python3-dev \
+    php81 php81-fpm php82 php82-fpm && \
+    
+# Install cross-env
+    npm install --global cross-env && \
     
 # Install pip
     wget https://bootstrap.pypa.io/get-pip.py -O - | python3 && \

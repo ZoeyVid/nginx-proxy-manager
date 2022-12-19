@@ -52,17 +52,11 @@ jobs:
           registry: ghcr.io
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ github.token }}
-          
-      - name: Read .version file
-        id: version
-        run: echo "version=$(cat .version)" >> $GITHUB_OUTPUT
         
       - name: Set versions
         run: |
-         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' frontend/package.json
-         cat frontend/package.json | grep "${{ steps.version.outputs.version }}"
-         sed -i 's/"0.0.0"/"${{ steps.version.outputs.version }}"/g' backend/package.json
-         cat backend/package.json | grep "${{ steps.version.outputs.version }}"
+         sed -i 's/"0.0.0"/"$(cat .version)"/g' frontend/package.json
+         sed -i 's/"0.0.0"/"$(cat .version)"/g' backend/package.json
          
       - uses: actions/setup-node@v3
         with:
@@ -78,14 +72,11 @@ jobs:
 
       - name: Test Backend
         run: |
-         export NODE_OPTIONS=--openssl-legacy-provider
-         export DB_SQLITE_FILE=/home/runner/work/${{ github.event.repository.name }}/${{ github.event.repository.name }}/backend-test/dev.sqlite
-         export NODE_ENV=dev
          mv global backend
          cp -r backend backend-test
          cd backend-test
          npm install --force
-         timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
+         sudo timeout 10 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
          
       - name: Build
         uses: docker/build-push-action@v3
@@ -102,8 +93,8 @@ jobs:
       - name: show version
         if: ${{ github.ref == 'refs/heads/develop' }}
         run: | 
-         docker run --rm --entrypoint nginx ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
-         docker run --rm --entrypoint nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -V
+         docker run --rm --entrypoint sh ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -c "nginx -V && php81 -v && php82 -v && php-fpm81 -v && php-fpm82 -v"
+         docker run --rm --entrypoint sh ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }} -c "nginx -V && php81 -v && php82 -v && php-fpm81 -v && php-fpm82 -v"
 
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
@@ -122,7 +113,7 @@ jobs:
                 
       - name: show version (PR)
         if: ${{ github.event_name == 'pull_request' }}
-        run: docker run --rm --entrypoint nginx ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -V
+        run: docker run --rm --entrypoint sh ghcr.io/${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ steps.pr.outputs.pr }} -c "nginx -V && php81 -v && php82 -v && php-fpm81 -v && php-fpm82 -v"
           
       - name: add comment (PR)
         uses: mshick/add-pr-comment@v2

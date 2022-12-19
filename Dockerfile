@@ -1,6 +1,7 @@
 FROM zoeyvid/nginx-quic:22
 COPY rootfs          /
 COPY backend         /app
+COPY global          /app/global
 COPY frontend/dist   /app/frontend
 
 WORKDIR /app
@@ -23,6 +24,7 @@ RUN apk upgrade --no-cache && \
     chmod +x /usr/local/bin/check-health && \
 
 # Build Backend
+    sed -i "s/0.0.0/$(cat global/.version)/g" package.json && \
     npm install --force && \
     pip install --no-cache-dir certbot && \
     apk del --no-cache gcc g++ libffi-dev python3-dev npm

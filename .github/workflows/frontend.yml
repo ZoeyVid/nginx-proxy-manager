@@ -32,7 +32,7 @@ jobs:
          yarn --no-lockfile build
          
       - name: Cache frontend
-        uses: actions/cache/save@v3.2.0-beta.1
+        uses: actions/cache/save@v3
         with:
           path: frontend/dist
           key: frontend

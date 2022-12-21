@@ -65,13 +65,14 @@ so that the barrier for entry here is low.
 2. Set `Scheme` to `http`, `Forward Hostname / IP` to `0.0.0.0`, `Forward Port` to `1` and enable `Websockets Support` (you can also use other values, since these get fully ignored)
 3. Maybe set an Access List
 4. Make your SSL Settings
-5.1 Custom Nginx Configuration (advanced tab), which looks the following for plain html, the slash at the end of the file path is important:
+5. 
+a) Custom Nginx Configuration (advanced tab), which looks the following for plain html, the slash at the end of the file path is important:
 ```
 location / {
 alias /var/www/<your-html-site-folder-name>/;
 }
 ```
-5.2 Custom Nginx Configuration (advanced tab), which looks the following for plain html & php, the slash at the end of the file path is important:
+b) Custom Nginx Configuration (advanced tab), which looks the following for plain html & php, the slash at the end of the file path is important:
 ```
 location / {
 alias /var/www/<your-php-site-folder-name>/;
@@ -80,7 +81,7 @@ location ~ [^/]\.php(/|$) {
 fastcgi_pass php82;
 fastcgi_split_path_info ^(.+?\.php)(/.*)$;
 if (!-f $document_root$fastcgi_script_name) {return 404;}
-}
+}}
 ```
 
 # Quick Setup

@@ -185,10 +185,10 @@ const setupCertbotPlugins = () => {
 						}
 
 						// Make sure credentials file exists
-						const credentials_loc = '/data/letsencrypt/credentials/credentials-' + certificate.id;
+						const credentials_loc = '/data/ssl/certbot/credentials/credentials-' + certificate.id;
 						// Escape single quotes and backslashes
 						const escapedCredentials = certificate.meta.dns_provider_credentials.replaceAll('\'', '\\\'').replaceAll('\\', '\\\\');
-						const credentials_cmd    = '[ -f \'' + credentials_loc + '\' ] || { mkdir -p /data/letsencrypt/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentials_loc + '\' && chmod 600 \'' + credentials_loc + '\'; }';
+						const credentials_cmd    = '[ -f \'' + credentials_loc + '\' ] || { mkdir -p /data/ssl/certbot/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentials_loc + '\' && chmod 600 \'' + credentials_loc + '\'; }';
 						promises.push(utils.exec(credentials_cmd));
 					}
 				});

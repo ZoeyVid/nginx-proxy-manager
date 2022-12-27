@@ -44,7 +44,7 @@ so that the barrier for entry here is low.
 - Fix Proxy Hosts, if origin only accepts TLSv1.3
 - Only use TLSv1.2 and TLSv1.3
 - Uses OCSP Stapling
-  - Needs manual migration if you use custom certificates, just upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/custom_ssl/npm-[certificate-id]` folder
+  - Needs manual migration if you use custom certificates, just upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/ssl/custom/npm-[certificate-id]` folder
 - Smaller then the original
 - Runs the admin interface on port 81 with ssl (https)
 - Default page runs also with ssl (https)
@@ -66,13 +66,16 @@ so that the barrier for entry here is low.
 3. Maybe set an Access List
 4. Make your SSL Settings
 5. 
-a) Custom Nginx Configuration (advanced tab), which looks the following for plain html, the slash at the end of the file path is important:
+a) Custom Nginx Configuration (advanced tab), which looks the following for file server:
+- Note: the slash at the end of the file path is important
 ```
 location / {
 alias /var/www/<your-html-site-folder-name>/;
 }
 ```
-b) Custom Nginx Configuration (advanced tab), which looks the following for plain html & php, the slash at the end of the file path is important:
+b) Custom Nginx Configuration (advanced tab), which looks the following for file server and **php**:
+- Note: the slash at the end of the file path is important
+- Note: you can replace `fastcgi_pass php82;` with `fastcgi_pass` `php7`/`php8`/`php81`/`php82` `;` 
 ```
 location / {
 alias /var/www/<your-php-site-folder-name>/;

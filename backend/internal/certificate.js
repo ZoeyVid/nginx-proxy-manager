@@ -12,8 +12,8 @@ const internalAuditLog   = require('./audit-log');
 const internalNginx      = require('./nginx');
 const internalHost       = require('./host');
 const letsencryptStaging = process.env.NODE_ENV !== 'production';
-const letsencryptConfig  = '/usr/local/nginx/conf/letsencrypt.ini';
-const certbotCommand     = 'certbot --config-dir /data/letsencrypt';
+const letsencryptConfig  = '/etc/ssl/certbot.ini';
+const certbotCommand     = 'certbot --config-dir /data/ssl/certbot';
 const archiver           = require('archiver');
 const path               = require('path');
 const { isArray }        = require('lodash');
@@ -63,7 +63,7 @@ const internalCertificate = {
 						});
 				})
 				.then(() => {
-					// Now go and fetch all the letsencrypt certs from the db and query the files and update expiry times
+					// Now go and fetch all the certbot certs from the db and query the files and update expiry times
 					return certificateModel
 						.query()
 						.where('is_deleted', 0)
@@ -74,7 +74,7 @@ const internalCertificate = {
 
 								certificates.map(function (certificate) {
 									promises.push(
-										internalCertificate.getCertificateInfoFromFile('/data/letsencrypt/live/npm-' + certificate.id + '/fullchain.pem')
+										internalCertificate.getCertificateInfoFromFile('/data/ssl/certbot/live/npm-' + certificate.id + '/fullchain.pem')
 											.then((cert_info) => {
 												return certificateModel
 													.query()
@@ -202,9 +202,9 @@ const internalCertificate = {
 							}
 						})
 						.then(() => {
-							// At this point, the letsencrypt cert should exist on disk.
+							// At this point, the certbot cert should exist on disk.
 							// Lets get the expiry date from the file and update the row silently
-							return internalCertificate.getCertificateInfoFromFile('/data/letsencrypt/live/npm-' + certificate.id + '/fullchain.pem')
+							return internalCertificate.getCertificateInfoFromFile('/data/ssl/certbot/live/npm-' + certificate.id + '/fullchain.pem')
 								.then((cert_info) => {
 									return certificateModel
 										.query()
@@ -354,7 +354,7 @@ const internalCertificate = {
 				})
 				.then((certificate) => {
 					if (certificate.provider === 'letsencrypt') {
-						const zipDirectory = '/data/letsencrypt/live/npm-' + data.id;
+						const zipDirectory = '/data/ssl/certbot/live/npm-' + data.id;
 
 						if (!fs.existsSync(zipDirectory)) {
 							throw new error.ItemNotFoundError('Certificate ' + certificate.nice_name + ' does not exists');
@@ -523,7 +523,7 @@ const internalCertificate = {
 
 		return new Promise((resolve, reject) => {
 			if (certificate.provider === 'letsencrypt') {
-				reject(new Error('Refusing to write letsencrypt certs here'));
+				reject(new Error('Refusing to write certbot certs here'));
 				return;
 			}
 
@@ -878,10 +878,10 @@ const internalCertificate = {
 
 		logger.info(`Requesting Let's Encrypt certificates via ${dns_plugin.display_name} for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
-		const credentialsLocation = '/data/letsencrypt/credentials/credentials-' + certificate.id;
+		const credentialsLocation = '/data/ssl/certbot/credentials/credentials-' + certificate.id;
 		// Escape single quotes and backslashes
 		const escapedCredentials = certificate.meta.dns_provider_credentials.replaceAll('\'', '\\\'').replaceAll('\\', '\\\\');
-		const credentialsCmd     = 'mkdir -p /data/letsencrypt/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentialsLocation + '\' && chmod 600 \'' + credentialsLocation + '\'';
+		const credentialsCmd     = 'mkdir -p /data/ssl/certbot/credentials 2> /dev/null; echo \'' + escapedCredentials + '\' > \'' + credentialsLocation + '\' && chmod 600 \'' + credentialsLocation + '\'';
 		let prepareCmd           = 'pip install ' + dns_plugin.package_name + (dns_plugin.version_requirement || '') + ' ' + dns_plugin.dependencies;
 
 		// Special case for cloudflare
@@ -954,7 +954,7 @@ const internalCertificate = {
 
 					return renewMethod(certificate)
 						.then(() => {
-							return internalCertificate.getCertificateInfoFromFile('/data/letsencrypt/live/npm-' + certificate.id + '/fullchain.pem');
+							return internalCertificate.getCertificateInfoFromFile('/data/ssl/certbot/live/npm-' + certificate.id + '/fullchain.pem');
 						})
 						.then((cert_info) => {
 							return certificateModel
@@ -1027,7 +1027,7 @@ const internalCertificate = {
 
 		// Prepend the path to the credentials file as an environment variable
 		if (certificate.meta.dns_provider === 'route53') {
-			const credentialsLocation = '/data/letsencrypt/credentials/credentials-' + certificate.id;
+			const credentialsLocation = '/data/ssl/certbot/credentials/credentials-' + certificate.id;
 			mainCmd                   = 'AWS_CONFIG_FILE=\'' + credentialsLocation + '\' ' + mainCmd;
 		}
 
@@ -1050,12 +1050,12 @@ const internalCertificate = {
 
 		const mainCmd = certbotCommand + ' revoke ' +
 			'--config "' + letsencryptConfig + '" ' +
-			'--cert-path "/data/letsencrypt/live/npm-' + certificate.id + '/fullchain.pem" ' +
+			'--cert-path "/data/ssl/certbot/live/npm-' + certificate.id + '/fullchain.pem" ' +
 			'--delete-after-revoke ' +
 			(letsencryptStaging ? '--staging' : '');
 
 		// Don't fail command if file does not exist
-		const delete_credentialsCmd = `rm -f '/data/letsencrypt/credentials/credentials-${certificate.id}' || true`;
+		const delete_credentialsCmd = `rm -f '/data/ssl/certbot/credentials/credentials-${certificate.id}' || true`;
 
 		logger.info('Command:', mainCmd + '; ' + delete_credentialsCmd);
 
@@ -1079,7 +1079,7 @@ const internalCertificate = {
 	 * @returns {Boolean}
 	 */
 	hasLetsEncryptSslCerts: (certificate) => {
-		const letsencryptPath = '/data/letsencrypt/live/npm-' + certificate.id;
+		const letsencryptPath = '/data/ssl/certbot/live/npm-' + certificate.id;
 
 		return fs.existsSync(letsencryptPath + '/fullchain.pem') && fs.existsSync(letsencryptPath + '/privkey.pem');
 	},
@@ -1155,7 +1155,7 @@ const internalCertificate = {
 		}
 
 		// Create a test challenge file
-		const testChallengeDir  = '/tmp/letsencrypt-acme-challenge/.well-known/acme-challenge';
+		const testChallengeDir  = '/tmp/acme-challenge/.well-known/acme-challenge';
 		const testChallengeFile = testChallengeDir + '/test-challenge';
 		fs.mkdirSync(testChallengeDir, {recursive: true});
 		fs.writeFileSync(testChallengeFile, 'Success', {encoding: 'utf8'});

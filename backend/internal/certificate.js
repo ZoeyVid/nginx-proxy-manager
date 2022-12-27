@@ -11,12 +11,11 @@ const dnsPlugins         = require('../global/certbot-dns-plugins');
 const internalAuditLog   = require('./audit-log');
 const internalNginx      = require('./nginx');
 const internalHost       = require('./host');
-const letsencryptStaging = process.env.NODE_ENV !== 'production';
-const letsencryptConfig  = '/etc/ssl/certbot.ini';
-const certbotCommand     = 'certbot --config-dir /data/ssl/certbot';
 const archiver           = require('archiver');
 const path               = require('path');
 const { isArray }        = require('lodash');
+const certbotConfig      = '/data/ssl/certbot/config.ini';
+const certbotCommand     = 'certbot --config-dir /data/ssl/certbot';
 
 function omissions() {
 	return ['is_deleted'];
@@ -45,10 +44,9 @@ const internalCertificate = {
 			logger.info('Renewing SSL certs close to expiry...');
 
 			const cmd = certbotCommand + ' renew --non-interactive --quiet ' +
-				'--config "' + letsencryptConfig + '" ' +
+				'--config "' + certbotConfig + '" ' +
 				'--preferred-challenges "dns,http" ' +
-				'--disable-hook-validation ' +
-				(letsencryptStaging ? '--staging' : '');
+				'--disable-hook-validation';
 
 			return utils.exec(cmd)
 				.then((result) => {
@@ -844,14 +842,12 @@ const internalCertificate = {
 		logger.info('Requesting Let\'sEncrypt certificates for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
 		const cmd = certbotCommand + ' certonly ' +
-			'--config "' + letsencryptConfig + '" ' +
+			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
-			'--agree-tos ' +
 			'--authenticator webroot ' +
 			'--email "' + certificate.meta.letsencrypt_email + '" ' +
 			'--preferred-challenges "dns,http" ' +
-			'--domains "' + certificate.domain_names.join(',') + '" ' +
-			(letsencryptStaging ? '--staging' : '');
+			'--domains "' + certificate.domain_names.join(',') + '"';
 
 		logger.info('Command:', cmd);
 
@@ -893,9 +889,8 @@ const internalCertificate = {
 		const hasConfigArg = certificate.meta.dns_provider !== 'route53';
 
 		let mainCmd = certbotCommand + ' certonly ' +
-			'--config "' + letsencryptConfig + '" ' +
+			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
-			'--agree-tos ' +
 			'--email "' + certificate.meta.letsencrypt_email + '" ' +
 			'--domains "' + certificate.domain_names.join(',') + '" ' +
 			'--authenticator ' + dns_plugin.full_plugin_name + ' ' +
@@ -908,8 +903,7 @@ const internalCertificate = {
 				certificate.meta.propagation_seconds !== undefined
 					? ' --' + dns_plugin.full_plugin_name + '-propagation-seconds ' + certificate.meta.propagation_seconds
 					: ''
-			) +
-			(letsencryptStaging ? ' --staging' : '');
+			);
 
 		// Prepend the path to the credentials file as an environment variable
 		if (certificate.meta.dns_provider === 'route53') {
@@ -989,12 +983,11 @@ const internalCertificate = {
 		logger.info('Renewing Let\'sEncrypt certificates for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
 		const cmd = certbotCommand + ' renew --force-renewal ' +
-			'--config "' + letsencryptConfig + '" ' +
+			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
 			'--preferred-challenges "dns,http" ' +
 			'--no-random-sleep-on-renew ' +
-			'--disable-hook-validation ' +
-			(letsencryptStaging ? '--staging' : '');
+			'--disable-hook-validation ';
 
 		logger.info('Command:', cmd);
 
@@ -1019,11 +1012,10 @@ const internalCertificate = {
 		logger.info(`Renewing Let's Encrypt certificates via ${dns_plugin.display_name} for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
 		let mainCmd = certbotCommand + ' renew ' +
-			'--config "' + letsencryptConfig + '" ' +
+			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
 			'--disable-hook-validation ' +
-			'--no-random-sleep-on-renew ' +
-			(letsencryptStaging ? ' --staging' : '');
+			'--no-random-sleep-on-renew';
 
 		// Prepend the path to the credentials file as an environment variable
 		if (certificate.meta.dns_provider === 'route53') {
@@ -1049,10 +1041,9 @@ const internalCertificate = {
 		logger.info('Revoking Let\'sEncrypt certificates for Cert #' + certificate.id + ': ' + certificate.domain_names.join(', '));
 
 		const mainCmd = certbotCommand + ' revoke ' +
-			'--config "' + letsencryptConfig + '" ' +
+			'--config "' + certbotConfig + '" ' +
 			'--cert-path "/data/ssl/certbot/live/npm-' + certificate.id + '/fullchain.pem" ' +
-			'--delete-after-revoke ' +
-			(letsencryptStaging ? '--staging' : '');
+			'--delete-after-revoke';
 
 		// Don't fail command if file does not exist
 		const delete_credentialsCmd = `rm -f '/data/ssl/certbot/credentials/credentials-${certificate.id}' || true`;

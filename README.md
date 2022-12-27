@@ -53,7 +53,8 @@ so that the barrier for entry here is low.
 - Easy security headers, see [here](https://github.com/GetPageSpeed/ngx_security_headers), enabled by default if you enable hsts
 - Access Log disabled
 - Error Log written to console
-- PHP included, you can add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?name=php*
+- PHP included, you can add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?branch=edge&name=php*&arch=x86_64
+- allows different acme servers
 
 ## Soon
 - more
@@ -86,6 +87,12 @@ fastcgi_split_path_info ^(.+?\.php)(/.*)$;
 if (!-f $document_root$fastcgi_script_name) {return 404;}
 }}
 ```
+
+# custom acme server
+1. Open this file: `nano` `/opt/npm/ssl/certbot/config.ini`
+2. uncomment the server line and change it to your acme server
+3. maybe set eab keys
+4. create your cert
 
 # Quick Setup
 

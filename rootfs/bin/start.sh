@@ -96,6 +96,10 @@ if [ ! -f /data/nginx/default.conf ]; then
 cp /usr/local/nginx/conf/conf.d/include/default.conf /data/nginx/default.conf || exit 1
 fi
 
+if [ ! -f /data/ssl/certbot/config.ini ]; then
+cp /etc/ssl/certbot.ini /data/ssl/certbot/config.ini || exit 1
+fi
+
 touch /data/nginx/default.conf \
       /data/nginx/html/index.html \
       /data/nginx/custom/root.conf \

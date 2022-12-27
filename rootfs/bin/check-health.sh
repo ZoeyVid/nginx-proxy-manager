@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if (cgi-fcgi -bind -connect /dev/php7.sock > /dev/null && cgi-fcgi -bind -connect /dev/php8.sock > /dev/null && cgi-fcgi -bind -connect /dev/php81.sock > /dev/null && cgi-fcgi -bind -connect /dev/php82.sock > /dev/null && [ "$(wget -q --no-check-certificate https://127.0.0.1:81/api -O - | jq --raw-output '.status')" == "OK" ]); then
 	echo "OK"

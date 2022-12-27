@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # From https://github.com/nextcloud/all-in-one/pull/1377/files
 if [ -n "$PHP_APKS" ]; then
@@ -28,16 +28,16 @@ if [ -n "$PHP_APKS" ]; then
     done
 fi
 
-mkdir -p /tmp/letsencrypt-acme-challenge \
-         /data/letsencrypt \
-         /data/custom_ssl \
-         /data/access \
+mkdir -p /tmp/acme-challenge \
+         /data/ssl/certbot \
+         /data/ssl/custom \
          /data/php \
          /data/nginx/redirection_host \
          /data/nginx/proxy_host \
          /data/nginx/dead_host \
          /data/nginx/stream \
          /data/nginx/custom \
+         /data/nginx/access \
          /data/nginx/html || exit 1
 
 if [ -f /data/nginx/default_host/site.conf ]; then
@@ -48,21 +48,46 @@ if [ -f /data/nginx/default_www/index.html ]; then
 mv /data/nginx/default_www/index.html /data/nginx/html/index.html || exit 1
 fi
 
+if [ -e /data/access ]; then
+mv /data/access/* /data/nginx/access || exit 1
+fi
+
+if [ -e /etc/letsencrypt/live ]; then
+mv /etc/letsencrypt/* /data/ssl/certbot || exit 1
+fi
+
+if [ -e /data/letsencrypt/live ]; then
+mv /data/letsencrypt/* /data/ssl/certbot || exit 1
+fi
+
+if [ -e /data/custom_ssl/npm-* ]; then
+mv /data/custom_ssl/* /data/ssl/custom || exit 1
+fi
+
 rm -rf /data/letsencrypt-acme-challenge \
        /data/nginx/default_host \
        /data/nginx/default_www \
        /data/nginx/streams \
        /data/nginx/temp \
+       /data/index.html \
+       /data/letsencrypt \
+       /data/custom_ssl \
+       /data/certbot \
+       /data/access \
        /data/logs \
        /data/error.log \
        /data/nginx/error.log || exit 1
 
-if [ -e /etc/letsencrypt/live ]; then
-mv /etc/letsencrypt/* /data/letsencrypt || exit 1
-fi
+find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/access|/data/nginx/access|g" {} \; || exit 1
 
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/letsencrypt|g" {} \; || exit 1
-find /data/letsencrypt -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/letsencrypt|g" {} \; || exit 1
+find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/custom_ssl|/data/ssl/custom|g" {} \; || exit 1
+find /data/nginx -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/ssl/certbot|g" {} \; || exit 1
+find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/letsencrypt|/data/ssl/certbot|g" {} \; || exit 1
+
+find /data/ssl/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/ssl/certbot|g" {} \; || exit 1
+find /data/ssl/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/letsencrypt|/data/ssl/certbot|g" {} \; || exit 1
+
+find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/letsencrypt-acme-challenge.conf;|include conf.d/include/acme-challenge.conf;|g" {} \; || exit 1
 
 find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/assets.conf;||g" {} \; || exit 1
 find /data/nginx -type f -name '*.conf' -exec sed -i "s/# Asset Caching//g" {} \; || exit 1
@@ -78,12 +103,17 @@ if [ ! -f /data/nginx/default.conf ]; then
 cp /usr/local/nginx/conf/conf.d/include/default.conf /data/nginx/default.conf || exit 1
 fi
 
+if [ ! -f /data/ssl/certbot/config.ini ]; then
+cp /etc/ssl/certbot.ini /data/ssl/certbot/config.ini || exit 1
+fi
+
 touch /data/nginx/default.conf \
       /data/nginx/html/index.html \
       /data/nginx/custom/root.conf \
       /data/nginx/custom/events.conf \
       /data/nginx/custom/http.conf \
       /data/nginx/custom/http_top.conf \
+      /data/nginx/custom/server_dead.conf \
       /data/nginx/custom/server_proxy.conf \
       /data/nginx/custom/server_redirect.conf \
       /data/nginx/custom/stream.conf \

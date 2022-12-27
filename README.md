@@ -55,6 +55,7 @@ so that the barrier for entry here is low.
 - Error Log written to console
 - PHP included, you can add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?branch=edge&name=php*&arch=x86_64
 - allows different acme servers
+- up to 64 domains per cert allowed
 
 ## Soon
 - more

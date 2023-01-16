@@ -238,6 +238,10 @@ else
     fi
 fi
 
+export ns="$(cat /etc/resolv.conf | grep -P "^nameserver [0-9\[\].:]+$" | sed "s|nameserver ||g" | tr "\n" " " | sed "s/\(.*\) /\1/" | head -1)"
+echo "using this nameservers: \""$ns"\""
+sed -i "s|resolver localhost;|resolver $ns;|g" /usr/local/nginx/conf/nginx.conf
+
 sed -i "s|#ssl_certificate .*|ssl_certificate "$NPM_CERT";|g" /usr/local/nginx/conf/conf.d/include/default.conf
 sed -i "s|#ssl_certificate_key .*|ssl_certificate_key "$NPM_KEY";|g" /usr/local/nginx/conf/conf.d/include/default.conf
 if [ -n "$NPM_CHAIN" ]; then sed -i "s|#ssl_trusted_certificate .*|ssl_trusted_certificate "$NPM_CHAIN";|g" /usr/local/nginx/conf/conf.d/include/default.conf; fi

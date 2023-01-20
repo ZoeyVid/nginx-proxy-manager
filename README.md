@@ -56,6 +56,10 @@ so that the barrier for entry here is low.
 - PHP included, you can add php extensions, see aviable packages [here](https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php8*-*)
 - allows different acme servers
 - up to 64 domains per cert allowed
+- Brotli can be enabled
+- HTTP/2 always enabled
+- HTTP/2 upload fixed
+- Infinite upload size allowed
 
 ## Soon
 - more

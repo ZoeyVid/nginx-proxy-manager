@@ -1,4 +1,4 @@
-FROM zoeyvid/nginx-quic:32
+FROM zoeyvid/nginx-quic:45
 COPY rootfs          /
 COPY backend         /app
 COPY global          /app/global
@@ -6,7 +6,7 @@ COPY frontend/dist   /app/frontend
 
 WORKDIR /app
 RUN apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates wget tzdata bash coreutils \
+    apk add --no-cache ca-certificates wget tzdata bash grep coreutils \
     python3 \
     nodejs-current npm \
     openssl apache2-utils jq fcgi \

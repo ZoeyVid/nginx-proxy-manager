@@ -14,4 +14,7 @@ services:
 #        - "NGINX_LOG_NOT_FOUND=true" # Allow logging of 404 errors
 #        - "NPM_LISTEN_LOCALHOST=true" # Bind the NPM Dashboard on Port 81 only to localhost
 #        - "NPM_CERT_ID=1" # ID of cert, which should be used instead of dummycerts
-#        - "PHP_APKS=php81-curl php-82-curl" # Add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php8*-*
+#        - "PHP81=true" # Activate PHP81
+#        - "PHP81_APKS=php81-curl php-81-curl" # Add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php81-*
+#        - "PHP82=true" # Activate PHP82
+#        - "PHP82_APKS=php82-curl php-82-curl" # Add php extensions, see aviable packages here: https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php82-*

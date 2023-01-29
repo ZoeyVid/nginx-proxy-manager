@@ -55,7 +55,7 @@ so that the barrier for entry here is low.
 - Error Log written to console
 - PHP optinal, you can add php extensions, see aviable packages [here](https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php81-*) and [here](https://pkgs.alpinelinux.org/packages?branch=edge&repo=community&arch=x86_64&name=php82-*)
 - allows different acme servers
-- up to 64 domains per cert allowed
+- up to 99 domains per cert allowed
 - Brotli can be enabled
 - HTTP/2 always enabled
 - HTTP/2 upload fixed
@@ -72,7 +72,7 @@ so that the barrier for entry here is low.
 # Use as webserver
 
 1. Create a new Proxy Host
-2. Set `Scheme` to `http`, `Forward Hostname / IP` to `0.0.0.0`, `Forward Port` to `1` and enable `Websockets Support` (you can also use other values, since these get fully ignored)
+2. Set `Scheme` to `https`, `Forward Hostname / IP` to `0.0.0.0`, `Forward Port` to `1` and enable `Websockets Support` (you can also use other values, since these get fully ignored)
 3. Maybe set an Access List
 4. Make your SSL Settings
 5. 
@@ -149,14 +149,14 @@ docker compose up -d
 When your docker container is running, connect to it on port `81` for the admin interface.
 Sometimes this can take a little bit because of the entropy of keys.
 You may need to open port 81 in your firewall.
-You may need to use another IP-Adress.
+You may need to use another IP-Address.
 
 [https://127.0.0.1:81](https://127.0.0.1:81)
 
 Default Admin User:
 ```
 Email:    admin@example.com
-Password: 9KcvfmAvcVonB7YOMqdjJGsTG2JL058Rx6xFNMintAeaGETsRBRlSbfXdi1inoCa
+Password: iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX9KfmDQiwkLZH1ZDR9xMjiG2QmoHXi
 ```
 
 Immediately after logging in with this default user you will be asked to modify your details and change your password.

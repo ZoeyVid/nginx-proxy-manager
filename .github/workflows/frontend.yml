@@ -21,9 +21,8 @@ jobs:
         with:
           node-version: 18
           
-      - name: Prepair frontend
+      - name: Prepare frontend
         run: |
-         curl https://api.github.com/repos/${{ github.repository }}/actions/caches?key=frontend -X DELETE --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
          export NODE_OPTIONS=--openssl-legacy-provider
          npm install --global yarn
          cd frontend
@@ -32,6 +31,7 @@ jobs:
          yarn --no-lockfile build
          mkdir dist/.well-known
          cp ../security.txt dist/.well-known
+         curl https://api.github.com/repos/${{ github.repository }}/actions/caches?key=frontend -X DELETE --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
          
       - name: Cache frontend
         uses: actions/cache/save@v3

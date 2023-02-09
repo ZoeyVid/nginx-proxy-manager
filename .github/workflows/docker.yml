@@ -28,7 +28,6 @@ jobs:
 
       - name: Test Backend
         run: |
-         sudo npm install --global cross-env
          sudo pip install certbot
          sudo mkdir -p /usr/local/nginx/conf/conf.d/include /data/tls/certbot /tmp/acme-challenge
          sudo touch /usr/local/nginx/conf/conf.d/include/ip_ranges.conf
@@ -37,7 +36,7 @@ jobs:
          cd backend
          npm install --force
          sudo nginx
-         cross-env NODE_ENV=production sudo -E timeout 30 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
+         NODE_ENV=production sudo -E timeout 30 node --abort_on_uncaught_exception --max_old_space_size=250 index.js || if [ "$?" == "124" ]; then exit 0; else exit 1; fi
 
       - name: Kill workflow
         if: failure()
@@ -81,7 +80,7 @@ jobs:
           password: ${{ github.token }}
          
       - name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile

@@ -1,0 +1,25 @@
+name: eslint
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
+      - name: eslint
+        run: |
+          cd backend
+          npm install --package-lock=false --force --only=dev
+          npx eslint . --fix
+      - name: push changes
+        run: |
+          git add -A
+          git config user.name "GitHub"
+          git config user.email "noreply@github.com"
+          git diff-index --quiet HEAD || git commit -sm "eslint"
+          git push

@@ -60,6 +60,7 @@ so that the barrier for entry here is low.
 - HTTP/2 always enabled
 - HTTP/2 upload fixed
 - Infinite upload size allowed
+- Implemented https://github.com/NginxProxyManager/nginx-proxy-manager/pull/2635
 
 ## Soon
 - more

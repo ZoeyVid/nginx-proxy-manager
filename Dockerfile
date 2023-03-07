@@ -4,6 +4,9 @@ COPY backend         /app
 COPY global          /app/global
 COPY frontend/dist   /app/frontend
 
+ENV NODE_ENV=production \
+    DB_SQLITE_FILE=/data/database.sqlite
+
 WORKDIR /app
 RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates tzdata \
@@ -19,8 +22,5 @@ RUN apk upgrade --no-cache && \
 # Clean
     apk del --no-cache npm build-base libffi-dev
 
-ENV NODE_ENV=production \
-    DB_SQLITE_FILE=/data/database.sqlite
-    
 ENTRYPOINT ["start.sh"]
 HEALTHCHECK CMD check-health.sh

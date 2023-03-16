@@ -229,6 +229,10 @@ touch /data/etc/html/index.html \
       /data/nginx/custom/server_stream_udp.conf \
       /usr/local/nginx/conf/conf.d/include/ip_ranges.conf || sleep inf
 
+if [ -f "$DB_SQLITE_FILE" ]; then
+    node --abort_on_uncaught_exception --max_old_space_size=250 sqlite-vaccum.js || exit 1
+fi
+
 if [ -z "$NPM_CERT_ID" ]; then
     export NPM_CERT=/data/tls/dummycert.pem || sleep inf
     export NPM_KEY=/data/tls/dummykey.pem || sleep inf

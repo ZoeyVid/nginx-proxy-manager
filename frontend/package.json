@@ -24,7 +24,7 @@
     "marionette.approuter": "1.0.2",
     "marionette.templatecache": "1.0.0",
     "@messageformat/core": "3.0.0",
-    "messageformat-loader": "0.8.1",
+    "@messageformat/loader": "1.0.0",
     "mini-css-extract-plugin": "1.6.2",
     "moment": "2.29.4",
     "node-sass": "7.0.3",

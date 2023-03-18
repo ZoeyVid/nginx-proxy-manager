@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ ! -d /data ]; then
+	echo '--------------------------------------'
+	echo "ERROR: \"/data\" is not mounted! Check your compose file!."
+	echo '--------------------------------------'
+    sleep inf || exit 1
+fi
+
 if [ "$PHP81" = true ] || [ "$PHP82" = true ]; then
     apk add --no-cache fcgi
 fi
@@ -142,7 +149,7 @@ if [ -n "$(ls -A /data/ssl 2> /dev/null)" ]; then
     mv -v /data/ssl/* /data/tls || sleep inf
 fi
 
-if [ -n "$CLEAN" ]; then
+if [ -z "$CLEAN" ]; then
     export CLEAN=true
 fi
 
@@ -169,19 +176,18 @@ if [ "$CLEAN" = true ]; then
             /data/nginx/error.log || sleep inf
 fi
 
-if [ -n "$FULLCLEAN" ]; then
+if [ -f "$DB_SQLITE_FILE" ]; then
+    sqlite-vaccum.js || exit 1
+fi
+
+if [ -z "$FULLCLEAN" ]; then
     export FULLCLEAN=false
 fi
 
 if [ "$FULLCLEAN" = true ]; then
     if [ "$PHP81" != true ] && [ "$PHP82" != true ]; then
         rm -vrf /data/php
-    fi
-    
-    if [ -f "$DB_SQLITE_FILE" ]; then
-        sqlite-vaccum.js || exit 1
-    fi
-    
+    fi    
     certbot-cleaner.sh
 fi
 

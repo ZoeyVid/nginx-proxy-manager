@@ -32,7 +32,7 @@ RUN cd /build/backend && \
     node-prune
 
 
-FROM zoeyvid/nginx-quic:87
+FROM zoeyvid/nginx-quic:88
 RUN apk upgrade --no-cache && \
     apk add --no-cache ca-certificates tzdata \
     nodejs-current \

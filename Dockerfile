@@ -28,7 +28,7 @@ RUN apk add --no-cache nodejs-current yarn && \
     node-prune
 
 
-FROM zoeyvid/nginx-quic:87
+FROM zoeyvid/nginx-quic:90
 RUN apk add --no-cache \
     tzdata \
     nodejs-current \

@@ -28,7 +28,7 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     node-prune
 
 
-FROM zoeyvid/nginx-quic:94
+FROM zoeyvid/nginx-quic:95
 RUN apk add --no-cache \
     ca-certificates tzdata \
     nodejs-current \

@@ -7,7 +7,8 @@ RUN apk add --no-cache ca-certificates nodejs yarn git python3 build-base && \
     cd /build/frontend && \
     sed -i "s|\"0.0.0\"|\""$(cat ../global/.version)"\"|g" package.json && \
     yarn --no-lockfile install && \
-    yarn --no-lockfile build
+    yarn --no-lockfile build && \
+    yarn cache clean --all
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 
@@ -25,12 +26,12 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     elif [ "$TARGETARCH" = "arm64" ]; then \
     npm_config_target_platform=linux npm_config_target_arch=arm64 yarn install --no-lockfile; \
     fi && \
-    node-prune
+    node-prune && \
+    yarn cache clean --all
 
 
-FROM zoeyvid/nginx-quic:95
-RUN apk add --no-cache \
-    ca-certificates tzdata \
+FROM zoeyvid/nginx-quic:96
+RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
     openssl apache2-utils \
     coreutils grep jq curl \

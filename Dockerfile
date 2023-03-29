@@ -30,7 +30,7 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     yarn cache clean --all
 
 
-FROM zoeyvid/nginx-quic:96
+FROM zoeyvid/nginx-quic:97
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
     openssl apache2-utils \

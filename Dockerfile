@@ -1,4 +1,4 @@
-FROM --platform="$BUILDPLATFORM" alpine:3.17.2 as frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.17.3 as frontend
 COPY global   /build/global
 COPY frontend /build/frontend
 ARG NODE_ENV=production \
@@ -12,7 +12,7 @@ RUN apk add --no-cache ca-certificates nodejs yarn git python3 build-base && \
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.17.2 as backend
+FROM --platform="$BUILDPLATFORM" alpine:3.17.3 as backend
 COPY backend /build/backend
 COPY global  /build/backend/global
 ARG NODE_ENV=production \

@@ -1,5 +1,6 @@
 const _          = require('underscore');
 const Backbone   = require('backbone');
+const DarkReader = require('darkreader');
 const Mn         = require('../lib/marionette');
 const Cache      = require('./cache');
 const Controller = require('./controller');
@@ -150,6 +151,23 @@ const App = Mn.Application.extend({
         }, 10 * 60 * 1000);
     }
 });
+
+const toggleDarkModeButton = document.querySelector('#toggle-dark-mode-button');
+
+toggleDarkModeButton.addEventListener('click', () => {
+  if (DarkReader.isEnabled()) {
+    DarkReader.disable();
+    localStorage.setItem('darkMode', 'off');
+  } else {
+    DarkReader.enable();
+    localStorage.setItem('darkMode', 'on');
+  }
+});
+
+// Check if Dark Reader was enabled on last visit
+if (localStorage.getItem('darkMode') === 'on') {
+  DarkReader.enable();
+}
 
 const app      = new App();
 module.exports = app;

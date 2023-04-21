@@ -1,5 +1,6 @@
 // This has to exist here so that Webpack picks it up
 import '../scss/styles.scss';
+import DarkReader from 'darkreader';
 
 window.tabler = {
     colors: {
@@ -102,6 +103,24 @@ window.tabler = {
         'gray-dark-lightest': '#ebebec'
     }
 };
+
+const toggleDarkModeButton = document.querySelector('#toggle-dark-mode-button');
+
+toggleDarkModeButton.addEventListener('click', () => {
+  if (DarkReader.isEnabled()) {
+    DarkReader.disable();
+    localStorage.setItem('darkMode', 'off');
+  } else {
+    DarkReader.enable();
+    localStorage.setItem('darkMode', 'on');
+  }
+});
+
+// Check if Dark Reader was enabled on last visit
+if (localStorage.getItem('darkMode') === 'on') {
+  DarkReader.enable();
+}
+
 
 String.prototype.toHtmlEntities = function() {
     return this.replace(/./gm, function(s) {

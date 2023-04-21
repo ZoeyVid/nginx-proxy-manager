@@ -19,6 +19,7 @@ module.exports = {
 	},
 	resolve:   {
 		alias: {
+			'DarkReader':       'darkreader/darkreader.js',
 			'tabler-core':      'tabler-ui/dist/assets/js/core',
 			'bootstrap':        'tabler-ui/dist/assets/js/vendors/bootstrap.bundle.min',
 			'sparkline':        'tabler-ui/dist/assets/js/vendors/jquery.sparkline.min',

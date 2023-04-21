@@ -1,5 +1,6 @@
 const path                 = require('path');
 const webpack              = require('webpack');
+const DarkReader           = require('darkreader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Visualizer           = require('webpack-visualizer-plugin');
 const CopyWebpackPlugin    = require('copy-webpack-plugin');

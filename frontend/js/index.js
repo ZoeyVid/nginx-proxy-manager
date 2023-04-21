@@ -1,6 +1,5 @@
 // This has to exist here so that Webpack picks it up
 import '../scss/styles.scss';
-import DarkReader from 'darkreader';
 
 window.tabler = {
     colors: {

@@ -104,24 +104,6 @@ window.tabler = {
     }
 };
 
-const toggleDarkModeButton = document.querySelector('#toggle-dark-mode-button');
-
-toggleDarkModeButton.addEventListener('click', () => {
-  if (DarkReader.isEnabled()) {
-    DarkReader.disable();
-    localStorage.setItem('darkMode', 'off');
-  } else {
-    DarkReader.enable();
-    localStorage.setItem('darkMode', 'on');
-  }
-});
-
-// Check if Dark Reader was enabled on last visit
-if (localStorage.getItem('darkMode') === 'on') {
-  DarkReader.enable();
-}
-
-
 String.prototype.toHtmlEntities = function() {
     return this.replace(/./gm, function(s) {
         // return "&#" + s.charCodeAt(0) + ";";

@@ -1,5 +1,6 @@
 const _          = require('underscore');
 const Backbone   = require('backbone');
+const DarkReader = require('darkreader');
 const Mn         = require('../lib/marionette');
 const Cache      = require('./cache');
 const Controller = require('./controller');

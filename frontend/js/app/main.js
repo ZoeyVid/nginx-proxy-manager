@@ -152,22 +152,5 @@ const App = Mn.Application.extend({
     }
 });
 
-const toggleDarkModeButton = document.querySelector('#toggle-dark-mode-button');
-
-toggleDarkModeButton.addEventListener('click', () => {
-  if (DarkReader.isEnabled()) {
-    DarkReader.disable();
-    localStorage.setItem('darkMode', 'off');
-  } else {
-    DarkReader.enable();
-    localStorage.setItem('darkMode', 'on');
-  }
-});
-
-// Check if Dark Reader was enabled on last visit
-if (localStorage.getItem('darkMode') === 'on') {
-  DarkReader.enable();
-}
-
 const app      = new App();
 module.exports = app;

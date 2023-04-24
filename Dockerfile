@@ -29,13 +29,11 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     node-prune && \
     yarn cache clean --all
 
-
 FROM python:3.11.3-alpine3.17 as certbot
 RUN apk add --no-cache build-base libffi-dev && \
     python3 -m venv /usr/local/certbot && \
     . /usr/local/certbot/bin/activate && \
     pip install --no-cache-dir certbot
-
 
 FROM zoeyvid/nginx-quic:110
 RUN apk add --no-cache ca-certificates tzdata \

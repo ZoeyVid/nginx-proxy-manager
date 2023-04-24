@@ -411,7 +411,6 @@ chmod -R o-rwx /data/tls \
                /data/etc/access || exit 1
 
 if [ "$PUID" != "0" ]; then
-    apk add --no-cache shadow sudo
     if id -u npmuser > /dev/null 2>&1; then
         usermod -u "$PUID" npmuser || exit 1
     else

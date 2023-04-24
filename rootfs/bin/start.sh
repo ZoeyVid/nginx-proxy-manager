@@ -14,7 +14,7 @@ if [ ! -d /data ]; then
     sleep inf || exit 1
 fi
 
-export PUID="${PUID:-0}"
+export PUID="${PUID:-0}" || exit 1
 if ! echo "$PUID" | grep -q "^[0-9]\+$"; then
     echo "You've set PUID but not to an allowed value." || sleep inf
     echo "It needs to be a string. Allowed are small digits 0-9" || sleep inf
@@ -22,7 +22,7 @@ if ! echo "$PUID" | grep -q "^[0-9]\+$"; then
     sleep inf || exit 1
 fi
 
-export PGID="${PGID:-0}"
+export PGID="${PGID:-0}" || exit 1
 if ! echo "$PGID" | grep -q "^[0-9]\+$"; then
     echo "You've set PGID but not to an allowed value." || sleep inf
     echo "It needs to be a string. Allowed are small digits 0-9" || sleep inf

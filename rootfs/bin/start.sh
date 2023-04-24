@@ -406,7 +406,7 @@ sed -i "s|ssl_certificate_key .*|ssl_certificate_key $NPM_KEY;|g" /data/nginx/de
 if [ -n "$NPM_CHAIN" ]; then sed -i "s|ssl_trusted_certificate .*|ssl_trusted_certificate $NPM_CHAIN;|g" /data/nginx/default.conf || sleep inf; fi
 
 
-chmod -R 600 /data/tls \
+chmod -R o=0 /data/tls \
              /data/etc/npm \
              /data/etc/access
 

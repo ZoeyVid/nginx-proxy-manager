@@ -39,7 +39,7 @@ FROM zoeyvid/nginx-quic:110
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
     openssl apache2-utils \
-    coreutils grep jq curl
+    coreutils grep jq curl shadow sudo
 
 COPY                 rootfs               /
 COPY --from=backend  /build/backend       /app

@@ -408,31 +408,29 @@ if [ -n "$NPM_CHAIN" ]; then sed -i "s|ssl_trusted_certificate .*|ssl_trusted_ce
 
 chmod -R o-rwx /data/tls \
                /data/etc/npm \
-               /data/etc/access
+               /data/etc/access || exit 1
 
 if [ "$PUID" != "0" ]; then
-    if id -u npmuser > /dev/null 2>&1; then
-        usermod -u "$PUID" npmuser || exit 1
+    if id -u npmuser > /dev/null 2>&1 || exit 1; then
+        usermod -u "$PUID" npmuser || exit 1 || exit 1
     else
 	    useradd -o -u "$PUID" -U -d /tmp/npmuserhome -s /bin/false npmuser || exit 1
     fi
     usermod -G "$PGID" npmuser || exit 1
-    if [ "$PGID" != "0" ]; then
-        groupmod -o -g "$PGID" npmuser || exit 1
-    fi
+    groupmod -o -g "$PGID" npmuser || exit 1
     chown -R "$PUID:$PGID" /usr/local/certbot \
                              /usr/local/nginx \
                              /data \
                              /tmp/acme-challenge \
                              /tmp/certbot-work \
-                             /tmp/certbot-log
-    sudo -Eu npmuser launch.sh
+                             /tmp/certbot-log || exit 1
+    sudo -Eu npmuser launch.sh || exit 1
 else
     chown -R 0:0 /usr/local/certbot \
                              /usr/local/nginx \
                              /data \
                              /tmp/acme-challenge \
                              /tmp/certbot-work \
-                             /tmp/certbot-log
-    launch.sh
+                             /tmp/certbot-log || exit 1
+    launch.sh || exit 1
 fi

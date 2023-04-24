@@ -406,6 +406,10 @@ sed -i "s|ssl_certificate_key .*|ssl_certificate_key $NPM_KEY;|g" /data/nginx/de
 if [ -n "$NPM_CHAIN" ]; then sed -i "s|ssl_trusted_certificate .*|ssl_trusted_certificate $NPM_CHAIN;|g" /data/nginx/default.conf || sleep inf; fi
 
 
+chmod -R 600 /data/tls \
+             /data/etc/npm \
+             /data/etc/access
+
 if [ "$PUID" != "0" ]; then
     if id -u npmuser > /dev/null 2>&1; then
         usermod -u "$PUID" npmuser || exit 1

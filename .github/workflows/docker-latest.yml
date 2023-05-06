@@ -20,10 +20,16 @@ jobs:
           registry: ghcr.io
           username: ${{ steps.un.outputs.un }}
           password: ${{ github.token }}
+      - name: Push develop to latest (caddy)
+        run: |
+          docker buildx imagetools create --tag ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:caddy ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:caddy-${{ github.ref_name }}
+          docker buildx imagetools create --tag ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:caddy ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:caddy-${{ github.ref_name }}
       - name: Push develop to latest
         run: |
           docker buildx imagetools create --tag ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:latest ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.ref_name }}
+          docker buildx imagetools create --tag ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.run_number }} ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.ref_name }}
           docker buildx imagetools create --tag ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:latest ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.ref_name }}
+          docker buildx imagetools create --tag ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.run_number }} ghcr.io/${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:${{ github.ref_name }}
       - name: Show Nginx version
         run: |
           docker run --rm --entrypoint nginx ${{ steps.un.outputs.un }}/${{ github.event.repository.name }}:latest -V

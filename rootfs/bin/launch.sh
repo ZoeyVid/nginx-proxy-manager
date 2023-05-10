@@ -9,8 +9,8 @@ echo "
 |_| \_|_|   |_|  |_|
 -------------------------------------
 User:     $(whoami)
-User ID:  $(id -u)
-Group ID: $(id -g)
+User ID:  $(id -u) PUID: $PUID
+Group ID: $(id -g) PGID: $PGID
 -------------------------------------
 "
 

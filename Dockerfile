@@ -34,7 +34,7 @@ RUN apk add --no-cache build-base libffi-dev && \
     . /usr/local/certbot/bin/activate && \
     pip install --no-cache-dir certbot
 
-FROM zoeyvid/nginx-quic:122
+FROM zoeyvid/nginx-quic:126
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
     openssl apache2-utils \

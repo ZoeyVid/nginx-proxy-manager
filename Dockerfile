@@ -50,17 +50,39 @@ RUN apk add --no-cache ca-certificates git build-base && \
     sed -i "s|BAN_TEMPLATE_PATH=.*|BAN_TEMPLATE_PATH=/data/etc/crowdsec/ban.html|g" lua-mod/config_example.conf && \
     sed -i "s|CAPTCHA_TEMPLATE_PATH=.*|CAPTCHA_TEMPLATE_PATH=/data/etc/crowdsec/crowdsec.conf|g" lua-mod/config_example.conf
 
-FROM zoeyvid/nginx-quic:126
+FROM zoeyvid/nginx-quic:133
+COPY rootfs /
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
-    luarocks5.1 wget lua5.1-dev build-base \
     openssl apache2-utils \
-    coreutils grep jq curl shadow sudo && \
+    coreutils grep jq curl shadow sudo \
+    luarocks5.1 wget lua5.1-dev build-base git && \
+    wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended -O /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    wget https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping -O /usr/local/nginx/conf/conf.d/include/unicode.mapping && \
+    sed -i "s|SecRuleEngine .*|SecRuleEngine On|g" /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    echo "Include /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf" | tee -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    echo "Include /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/*-config.conf" | tee -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    echo "Include /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/*-before.conf" | tee -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    echo "Include /usr/local/nginx/conf/conf.d/include/coreruleset/rules/*.conf" | tee -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    echo "Include /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/*-after.conf" | tee -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf && \
+    git clone --recursive https://github.com/coreruleset/coreruleset /tmp/coreruleset && \
+    git clone --recursive https://github.com/coreruleset/nextcloud-rule-exclusions-plugin /tmp/nextcloud && \
+    git clone --recursive https://github.com/coreruleset/wordpress-rule-exclusions-plugin /tmp/wordpress && \
+    mkdir /usr/local/nginx/conf/conf.d/include/coreruleset && \
+    mv /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf && \
+    mv /tmp/coreruleset/rules /usr/local/nginx/conf/conf.d/include/coreruleset/rules && \
+    rename -v ".conf.example" ".conf" /usr/local/nginx/conf/conf.d/include/coreruleset/rules/*.conf.example && \
+    mv /tmp/coreruleset/plugins /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
+    mv /tmp/nextcloud/plugins/*.conf /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
+    mv /tmp/wordpress/plugins/*.conf /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
+    rename -v ".conf.example" ".conf" /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/*.conf.example && \
+    rm -r /tmp/coreruleset && \
+    rm -r /tmp/nextcloud && \
+    rm -r /tmp/wordpress && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-cjson && \
-    apk del --no-cache luarocks5.1 wget lua5.1-dev build-base
+    apk del --no-cache luarocks5.1 wget lua5.1-dev build-base git
 
-COPY                 rootfs                                                     /
 COPY --from=backend  /build/backend                                             /app
 COPY --from=frontend /build/frontend/dist                                       /app/frontend
 COPY --from=certbot  /usr/local/certbot                                         /usr/local/certbot

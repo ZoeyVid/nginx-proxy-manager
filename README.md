@@ -47,6 +47,7 @@ so that the barrier for entry here is low.
 
 - Supports HTTP/3 (QUIC) protocol
 - Supports Crowdsec. Please read below for instructions on how to use it.
+- ModSecurity enabled, including coreruleset with wordpress and nextcloud plugins
 - Darkmode button in the footer for comfortable viewing
 - Fixes proxy to https origin when the origin only accepts TLSv1.3
 - Only enables TLSv1.2 and TLSv1.3 protocols

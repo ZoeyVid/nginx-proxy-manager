@@ -51,6 +51,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
     sed -i "s|CAPTCHA_TEMPLATE_PATH=.*|CAPTCHA_TEMPLATE_PATH=/data/etc/crowdsec/crowdsec.conf|g" lua-mod/config_example.conf
 
 FROM zoeyvid/nginx-quic:126
+COPY rootfs /
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
     openssl apache2-utils \
@@ -65,7 +66,6 @@ RUN apk add --no-cache ca-certificates tzdata \
     luarocks-5.1 install lua-cjson && \
     apk del --no-cache luarocks5.1 wget lua5.1-dev build-base git
 
-COPY                 rootfs                                                     /
 COPY --from=backend  /build/backend                                             /app
 COPY --from=frontend /build/frontend/dist                                       /app/frontend
 COPY --from=certbot  /usr/local/certbot                                         /usr/local/certbot

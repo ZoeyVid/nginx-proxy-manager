@@ -56,8 +56,11 @@ RUN apk add --no-cache ca-certificates tzdata \
     openssl apache2-utils \
     coreutils grep jq curl shadow sudo \
     luarocks5.1 wget lua5.1-dev build-base git && \
-    git clone --recursive https://github.com/coreruleset/coreruleset /usr/local/nginx/conf/conf.d/include/coreruleset && \
-    mv /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf && \
+    git clone --recursive https://github.com/coreruleset/coreruleset /tmp/coreruleset && \
+    mv /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/crs-setup.conf && \
+    mkdir /usr/local/nginx/conf/conf.d/include/coreruleset && \
+    mv /tmp/coreruleset/rules/*.conf /usr/local/nginx/conf/conf.d/include/coreruleset && \
+    rm -r /tmp/coreruleset && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-cjson && \
     apk del --no-cache luarocks5.1 wget lua5.1-dev build-base git

@@ -53,12 +53,14 @@ RUN apk add --no-cache ca-certificates git build-base && \
 FROM zoeyvid/nginx-quic:126
 RUN apk add --no-cache ca-certificates tzdata \
     nodejs-current \
-    luarocks5.1 wget lua5.1-dev build-base \
     openssl apache2-utils \
-    coreutils grep jq curl shadow sudo && \
+    coreutils grep jq curl shadow sudo \
+    luarocks5.1 wget lua5.1-dev build-base git && \
+    git clone --recursive https://github.com/coreruleset/coreruleset /usr/local/nginx/conf/conf.d/include/coreruleset && \
+    mv /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-cjson && \
-    apk del --no-cache luarocks5.1 wget lua5.1-dev build-base
+    apk del --no-cache luarocks5.1 wget lua5.1-dev build-base git
 
 COPY                 rootfs                                                     /
 COPY --from=backend  /build/backend                                             /app

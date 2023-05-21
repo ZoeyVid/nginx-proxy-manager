@@ -48,7 +48,11 @@ so that the barrier for entry here is low.
 - Supports HTTP/3 (QUIC) protocol aviable
 - Supports Crowdsec. Please read below for instructions on how to use it.
 - Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npm/etc/modsecurity` folder.
-- Darkmode button in the footer for comfortable viewing
+  - If coreruleset blocks valid requests, please check the `/data/etc/modsecurity/crs-setup.conf` 
+  - try to whitelist your Content-Type (for example `application/activity+json` for mastodon and `application/dns-message` for DoH) you send
+  - try to whitelist your HTTP request method you use (for example` PUT` is blocked by default, this also kills the NPM)
+  - Note: to fix https://github.com/SpiderLabs/ModSecurity/issues/2848, instead of running `nginx -s reload`, this fork kills nginx and relaunches it
+- Darkmode button in the footer for comfortable viewing (CSS done by [@theraw](https://github.com/theraw))
 - Fixes proxy to https origin when the origin only accepts TLSv1.3
 - Only enables TLSv1.2 and TLSv1.3 protocols
 - Uses OCSP Stapling for enhanced security

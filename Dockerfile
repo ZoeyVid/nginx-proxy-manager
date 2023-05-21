@@ -8,7 +8,7 @@ RUN apk add --no-cache ca-certificates nodejs yarn git python3 build-base && \
     yarn --no-lockfile install && \
     yarn --no-lockfile build && \
     yarn cache clean --all
-COPY darkreader.js /build/frontend/dist/js/darkreader.js
+COPY darkmode.css /build/frontend/dist/css/darkmode.css
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 

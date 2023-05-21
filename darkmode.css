@@ -1,0 +1,126 @@
+ body {
+    color rgb(181, 175, 166) !important;
+    background-color rgb(18, 19, 20) !important;
+}
+-webkit-scrollbar {
+    background-color #202324 !important;
+    color #aba499 !important;
+}
+-webkit-scrollbar {
+    background-color #202324 !important;
+    color #aba499 !important;
+}
+-webkit-scrollbar-thumb {
+    background-color #454a4d !important;
+}
+.avatar {
+    background-color rgb(48, 52, 54) !important;
+    color rgb(161, 152, 140) !important;
+}
+.close {
+    color rgb(232, 230, 227) !important;
+    text-shadow rgb(24, 26, 27) 0px 1px 0px !important;
+}
+.modal-content {
+    background-color rgb(24, 26, 27) !important;
+    border-color rgba(140, 130, 115, 0.2) !important;
+}
+.modal-header {
+    border-bottom-color rgb(121, 113, 100) !important;
+}
+.nav-tabs {
+    color rgb(175, 168, 158) !important;
+}
+.nav-tabs {
+    border-bottom-color rgb(56, 61, 63) !important;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color rgb(181, 175, 166) !important;
+    background-color rgb(28, 30, 31) !important;
+    border-color rgb(56, 61, 63) rgb(56, 61, 63) rgb(30, 46, 76) !important;
+}
+.nav-tabs .nav-link.active {
+    border-color rgb(35, 77, 136) !important;
+    color rgb(85, 151, 211) !important;
+    background-color transparent !important;
+}
+.selectize-input.focus {
+    border-color rgb(35, 77, 136) !important;
+    box-shadow rgba(39, 86, 151, 0.25) 0px 0px 0px 2px !important;
+}
+.selectize-input, .selectize-control.single .selectize-input.input-active {
+    background-color rgb(24, 26, 27) !important;
+}
+.selectize-dropdown, .selectize-input, .selectize-input input {
+    color rgb(181, 175, 166) !important;
+}
+.selectize-input {
+    border-color rgba(124, 115, 101, 0.12) !important;
+}
+.selectize-input, .selectize-control.single .selectize-input.input-active {
+    background-color rgb(24, 26, 27) !important;
+}
+.selectize-control.multi .selectize-input  div {
+    background-color rgb(35, 38, 39) !important;
+    color rgb(181, 175, 166) !important;
+    border-color rgba(124, 115, 101, 0.12) !important;
+}
+.card {
+    background-color rgb(24, 26, 27) !important;
+    border-color rgba(124, 115, 101, 0.12) !important;
+}
+.tag {
+    color rgb(155, 146, 133) !important;
+    background-color rgb(35, 38, 39) !important;
+}
+.header {
+    background-color rgb(24, 26, 27) !important;
+    border-bottom-color rgba(124, 115, 101, 0.12) !important;
+}
+.navbar-light .navbar-brand {
+    color rgba(232, 230, 227, 0.9) !important;
+}
+.nav-tabs {
+    color rgb(174, 167, 156) !important;
+}
+.table th, .text-wrap table th, .table td, .text-wrap table td {
+    border-top-color rgb(56, 61, 63) !important;
+}
+.form-control {
+    color rgb(181, 175, 166) !important;
+    background-color rgb(24, 26, 27) !important;
+    border-color rgba(124, 115, 101, 0.12) !important;
+}
+.footer {
+    background-color rgb(24, 26, 27) !important;
+    border-top-color rgba(124, 115, 101, 0.12) !important;
+    color rgb(174, 167, 156) !important;
+}
+.text-default {
+    color rgb(181, 175, 166) !important;
+}
+selection {
+    background-color #004daa !important;
+    color #e8e6e3 !important;
+}
+.dropdown-menu {
+    color rgb(181, 174, 164) !important;
+    background-color rgb(19, 21, 22) !important;
+    border-color rgba(103, 96, 85, 0.12) !important;
+}
+.dropdown-menu {
+    box-shadow rgba(0, 0, 0, 0.05) 0px 1px 2px 0px !important;
+}
+.dropdown-menu-arrowbefore {
+    border-right-color transparent !important;
+    border-left-color transparent !important;
+    border-bottom-color rgba(84, 91, 95, 0.2) !important;
+}
+.dropdown-divider {
+    border-top-color rgb(53, 58, 60) !important;
+}
+.dropdown-menu-arrowafter {
+    border-right-color transparent !important;
+    border-bottom-color rgb(48, 52, 54) !important;
+    border-left-color transparent !important;
+}

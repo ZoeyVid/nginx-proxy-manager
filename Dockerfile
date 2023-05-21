@@ -8,7 +8,7 @@ RUN apk add --no-cache ca-certificates nodejs yarn git python3 build-base && \
     yarn --no-lockfile install && \
     yarn --no-lockfile build && \
     yarn cache clean --all
-COPY darkreader.js /build/frontend/dist/js/darkreader.js
+COPY darkmode.css /build/frontend/dist/css/darkmode.css
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 
@@ -50,7 +50,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
     sed -i "s|BAN_TEMPLATE_PATH=.*|BAN_TEMPLATE_PATH=/data/etc/crowdsec/ban.html|g" lua-mod/config_example.conf && \
     sed -i "s|CAPTCHA_TEMPLATE_PATH=.*|CAPTCHA_TEMPLATE_PATH=/data/etc/crowdsec/crowdsec.conf|g" lua-mod/config_example.conf
 
-FROM zoeyvid/nginx-quic:136
+FROM zoeyvid/nginx-quic:137
 COPY rootfs /
 RUN apk add --no-cache ca-certificates tzdata \
     lua5.1-lzlib \

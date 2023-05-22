@@ -67,6 +67,7 @@ so that the barrier for entry here is low.
 - Easy application of security headers using [ngx_security_headers](https://github.com/GetPageSpeed/ngx_security_headers)
 - Access Log disabled
 - Error Log written to console
+- `Server` response header hidden
 - PHP optional, with option to add extensions; available packages can be found [here](https://pkgs.alpinelinux.org/packages?branch=v3.17&repo=community&arch=x86_64&name=php81-*) and [here](https://pkgs.alpinelinux.org/packages?branch=v3.17&repo=community&arch=x86_64&name=php82-*)
 - Allows different acme servers/certbot config file (/opt/npm/tls/certbot/config.ini)
 - Supports up to 99 domains per cert 

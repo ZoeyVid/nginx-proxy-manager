@@ -46,7 +46,7 @@ so that the barrier for entry here is low.
 # List of new features
 
 - Supports HTTP/3 (QUIC) protocol available.
-- Supports [CrowdSec IPS.](https://github.com/ZoeyVid/nginx-proxy-manager/tree/develop#crowdsec)
+- Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/nginx-proxy-manager#crowdsec) to enable it.
 - Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npm/etc/modsecurity` folder.
   - If coreruleset blocks valid requests, please check the `/data/etc/modsecurity/crs-setup.conf` 
   - try to whitelist your Content-Type (for example `application/activity+json` for mastodon and `application/dns-message` for DoH) you send

@@ -45,7 +45,7 @@ so that the barrier for entry here is low.
 
 # List of new features
 
-- Supports HTTP/3 (QUIC) protocol available.
+- Supports HTTP/3 (QUIC) protocol.
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/nginx-proxy-manager#crowdsec) to enable it.
 - Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npm/etc/modsecurity` folder.
   - If coreruleset blocks valid requests, please check the `/data/etc/modsecurity/crs-setup.conf` 

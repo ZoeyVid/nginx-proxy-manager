@@ -114,8 +114,8 @@ const internalNginx = {
 	reload: () => {
 		return internalNginx.test()
 			.then(() => {
-				logger.info('Restarting Nginx');
-				return utils.exec('kill $(cat /usr/local/nginx/logs/nginx.pid); nginx');
+				logger.info('Reloading Nginx');
+				return utils.exec('nginx -s reload');
 			});
 	},
 

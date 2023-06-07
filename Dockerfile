@@ -29,7 +29,7 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     yarn cache clean --all
 
 
-FROM python:3.11.3-alpine3.18 as certbot
+FROM python:3.11.4-alpine3.18 as certbot
 RUN apk add --no-cache ca-certificates build-base libffi-dev && \
     python3 -m venv /usr/local/certbot && \
     . /usr/local/certbot/bin/activate && \

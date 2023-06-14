@@ -1,4 +1,4 @@
-FROM --platform="$BUILDPLATFORM" alpine:3.18.0 as frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.18.2 as frontend
 COPY frontend                        /build/frontend
 COPY global/certbot-dns-plugins.js   /build/frontend/certbot-dns-plugins.js
 ARG NODE_ENV=production \
@@ -12,7 +12,7 @@ COPY darkmode.css /build/frontend/dist/css/darkmode.css
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.18.0 as backend
+FROM --platform="$BUILDPLATFORM" alpine:3.18.2 as backend
 COPY backend                        /build/backend
 COPY global/certbot-dns-plugins.js  /build/backend/certbot-dns-plugins.js
 ARG NODE_ENV=production \
@@ -36,7 +36,7 @@ RUN apk add --no-cache ca-certificates build-base libffi-dev && \
     pip install --no-cache-dir certbot
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.18.0 as crowdsec
+FROM --platform="$BUILDPLATFORM" alpine:3.18.2 as crowdsec
 RUN apk add --no-cache ca-certificates git build-base && \
     git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer /src && \
     cd /src && \

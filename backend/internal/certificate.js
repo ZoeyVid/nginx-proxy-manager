@@ -637,7 +637,7 @@ const internalCertificate = {
 	 * @param {String}  private_key    This is the entire key contents as a string
 	 */
 	checkPrivateKey: (private_key) => {
-		return tempWrite(private_key, '/tmp')
+		return tempWrite.sync(private_key, '/tmp')
 			.then((filepath) => {
 				return new Promise((resolve, reject) => {
 					const failTimeout = setTimeout(() => {
@@ -670,7 +670,7 @@ const internalCertificate = {
 	 * @param {Boolean} [throw_expired]  Throw when the certificate is out of date
 	 */
 	getCertificateInfo: (certificate, throw_expired) => {
-		return tempWrite(certificate, '/tmp')
+		return tempWrite.sync(certificate, '/tmp')
 			.then((filepath) => {
 				return internalCertificate.getCertificateInfoFromFile(filepath, throw_expired)
 					.then((certData) => {

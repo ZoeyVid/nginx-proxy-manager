@@ -15,7 +15,7 @@
     "express-fileupload": "1.4.0",
     "gravatar": "1.8.2",
     "jsonwebtoken": "9.0.1",
-    "knex": "2.4.2",
+    "knex": "2.5.1",
     "liquidjs": "10.8.4",
     "lodash": "4.17.21",
     "moment": "2.29.4",

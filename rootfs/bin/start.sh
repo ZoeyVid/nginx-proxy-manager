@@ -127,9 +127,7 @@ apk add --no-cache php81-fpm
 
     mkdir -vp /data/php
     cp -vrnT /etc/php81 /data/php/81
-    sed -i "s|user =.*|user = root|" /data/php/81/php-fpm.d/www.conf
-    sed -i "s|group =.*|group = root|" /data/php/81/php-fpm.d/www.conf
-    sed -i "s|listen =.*|listen = /dev/php81.sock|" /data/php/81/php-fpm.d/www.conf
+    sed -i "s|listen =.*|listen = /var/php81.sock|" /data/php/81/php-fpm.d/www.conf
     sed -i "s|include=.*|include=/data/php/81/php-fpm.d/*.conf|g" /data/php/81/php-fpm.conf
 
 else
@@ -168,9 +166,7 @@ apk add --no-cache php82-fpm
 
     mkdir -vp /data/php
     cp -vrnT /etc/php82 /data/php/82
-    sed -i "s|user =.*|user = root|" /data/php/82/php-fpm.d/www.conf
-    sed -i "s|group =.*|group = root|" /data/php/82/php-fpm.d/www.conf
-    sed -i "s|listen =.*|listen = /dev/php82.sock|" /data/php/82/php-fpm.d/www.conf
+    sed -i "s|listen =.*|listen = /var/php82.sock|" /data/php/82/php-fpm.d/www.conf
     sed -i "s|include=.*|include=/data/php/82/php-fpm.d/*.conf|g" /data/php/82/php-fpm.conf
 
 else
@@ -597,14 +593,32 @@ if [ "$PUID" != "0" ]; then
     chown -R "$PUID:$PGID" /usr/local/certbot \
                            /usr/local/nginx \
                            /data \
+                           /var \
                            /tmp
+    if [ "$PHP81" = "true" ]; then
+        sed -i "s|user =.*|user = $PUID|" /data/php/81/php-fpm.d/www.conf
+        sed -i "s|group =.*|group = $PGID|" /data/php/81/php-fpm.d/www.conf
+    fi
+    if [ "$PHP82" = "true" ]; then
+        sed -i "s|user =.*|user = $PUID|" /data/php/82/php-fpm.d/www.conf
+        sed -i "s|group =.*|group = $PGID|" /data/php/82/php-fpm.d/www.conf
+    fi
     sed -i "s|user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
     sudo -Eu npm launch.sh
 else
     chown -R 0:0 /usr/local/certbot \
                  /usr/local/nginx \
                  /data \
+                 /var \
                  /tmp
+    if [ "$PHP81" = "true" ]; then
+        sed -i "s|user =.*|user = 0|" /data/php/81/php-fpm.d/www.conf
+        sed -i "s|group =.*|group = 0|" /data/php/81/php-fpm.d/www.conf
+    fi
+    if [ "$PHP82" = "true" ]; then
+        sed -i "s|user =.*|user = 0|" /data/php/82/php-fpm.d/www.conf
+        sed -i "s|group =.*|group = 0|" /data/php/82/php-fpm.d/www.conf
+    fi
     sed -i "s|#\?user root;|user root;|g"  /usr/local/nginx/conf/nginx.conf
     launch.sh
 fi

@@ -264,6 +264,7 @@ if [ "$CLEAN" = "true" ]; then
             /data/logs \
             /data/error.log \
             /data/nginx/error.log
+    certbot-cleaner.sh
 fi
 
 if [ -f "$DB_SQLITE_FILE" ]; then
@@ -278,7 +279,6 @@ if [ "$FULLCLEAN" = "true" ]; then
     if [ "$PHP81" != "true" ] && [ "$PHP82" != "true" ]; then
         rm -vrf /data/php
     fi
-    certbot-cleaner.sh
 fi
 
 find /data/nginx -type f -name '*.conf' -exec sed -i "s| http2||g" {} \;

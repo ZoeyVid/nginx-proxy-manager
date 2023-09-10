@@ -44,8 +44,7 @@ const internalCertificate = {
 			const cmd = certbotCommand + ' renew --quiet ' +
 				'--config "' + certbotConfig + '" ' +
 				'--preferred-challenges "dns,http" ' +
-				'--no-random-sleep-on-renew ' +
-				'--disable-hook-validation ';
+				'--no-random-sleep-on-renew';
 
 			return utils.exec(cmd)
 				.then((result) => {
@@ -933,8 +932,7 @@ const internalCertificate = {
 			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
 			'--preferred-challenges "dns,http" ' +
-			'--no-random-sleep-on-renew ' +
-			'--disable-hook-validation ';
+			'--no-random-sleep-on-renew';
 
 		logger.info('Command:', cmd);
 
@@ -962,8 +960,7 @@ const internalCertificate = {
 			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
 			'--preferred-challenges "dns,http" ' +
-			'--no-random-sleep-on-renew ' +
-			'--disable-hook-validation ';
+			'--no-random-sleep-on-renew';
 
 		// Prepend the path to the credentials file as an environment variable
 		if (certificate.meta.dns_provider === 'route53') {
@@ -990,6 +987,7 @@ const internalCertificate = {
 
 		const mainCmd = certbotCommand + ' revoke ' +
 			'--config "' + certbotConfig + '" ' +
+			'--cert-path "/data/tls/certbot/live/npm-' + certificate.id + '/privkey.pem" ' +
 			'--cert-path "/data/tls/certbot/live/npm-' + certificate.id + '/fullchain.pem" ' +
 			'--delete-after-revoke';
 

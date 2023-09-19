@@ -26,9 +26,6 @@
     "signale": "1.4.0",
     "sqlite3": "5.1.6"
   },
-  "resolutions": {
-    "semver": "7.5.4"
-  },
   "author": "Jamie Curnow <jc@jc21.com>",
   "license": "MIT",
   "devDependencies": {

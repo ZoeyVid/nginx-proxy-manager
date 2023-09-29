@@ -31,14 +31,13 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
 
 
 FROM python:3.11.5-alpine3.18 as certbot
+ENV PATH="/usr/local/certbot/bin:$PATH"
 RUN apk add --no-cache ca-certificates build-base libffi-dev && \
     python3 -m venv /usr/local/certbot && \
-    . /usr/local/certbot/bin/activate && \
     pip install --no-cache-dir certbot
 
 
 FROM --platform="$BUILDPLATFORM" alpine:3.18.4 as crowdsec
-WORKDIR /src
 RUN apk add --no-cache ca-certificates git build-base && \
     git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer /src && \
     make && \

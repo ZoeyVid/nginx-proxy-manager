@@ -38,6 +38,7 @@ RUN apk add --no-cache ca-certificates build-base libffi-dev && \
 
 
 FROM --platform="$BUILDPLATFORM" alpine:3.18.4 as crowdsec
+# hadolint ignore=DL3003
 RUN apk add --no-cache ca-certificates git build-base && \
     git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer /src && \
     make && \

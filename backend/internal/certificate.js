@@ -852,6 +852,10 @@ const internalCertificate = {
 			mainCmd = 'AWS_CONFIG_FILE=\'' + credentialsLocation + '\' ' + mainCmd;
 		}
 
+		if (certificate.meta.dns_provider === 'duckdns') {
+			mainCmd = mainCmd + ' --dns-duckdns-no-txt-restore';
+		}
+
 		logger.info('Command:', `${credentialsCmd} && ${prepareCmd} && ${mainCmd}`);
 
 		return utils.exec(credentialsCmd)

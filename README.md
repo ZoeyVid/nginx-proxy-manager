@@ -1,7 +1,6 @@
 
 <p align="center" class="items-center">
 	<h1>NPMplus</h1>
- 
 	<!---
 	<img src="https://nginxproxymanager.com/github.png">
 	

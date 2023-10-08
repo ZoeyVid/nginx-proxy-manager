@@ -126,6 +126,17 @@ if [ "$PGID" != "0" ] && [ "$PUID" = "0" ]; then
     export PGID="0"
 fi
 
+if ! echo "$NC_AIO" | grep -q "^true$\|^false$"; then
+    echo "NC_AIO needs to be true or false."
+    sleep inf
+fi
+
+if ! echo "$NC_DOMAIN" | grep -q "^[a-z0-9.]\+$"; then
+    echo "NC_DOMAIN can consist of lower letters a-z, numbers 0-9 and dots."
+    sleep inf
+fi
+
+
 if [ "$NPM_LISTEN_LOCALHOST" = "true" ]; then
     export NPM_IPV4_BINDING="127.0.0.1"
     export NPM_IPV6_BINDING="[::1]"

@@ -1,6 +1,11 @@
+
 <p align="center" class="items-center">
+
+	<h1>NPMplus</h1>
+ 
+	<!---
 	<img src="https://nginxproxymanager.com/github.png">
-    <!---
+	
 	<br><br>
 	<img src="https://img.shields.io/badge/version-2.10.4-green.svg?style=for-the-badge">
 	<a href="https://hub.docker.com/r/zoeyvid/npmplus">
@@ -9,7 +14,7 @@
 	<a href="https://hub.docker.com/r/zoeyvid/npmplus">
 		<img src="https://img.shields.io/docker/pulls/zoeyvid/npmplus.svg?style=for-the-badge">
 	</a>
-    --->
+        --->
 </p>
 
 

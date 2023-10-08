@@ -1,6 +1,5 @@
 
 <p align="center" class="items-center">
-
 	<h1>NPMplus</h1>
  
 	<!---

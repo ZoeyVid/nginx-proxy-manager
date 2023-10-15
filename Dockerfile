@@ -32,9 +32,9 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
 
 FROM python:3.12.0-alpine3.18 as certbot
 ENV PATH="/usr/local/certbot/bin:$PATH"
-RUN apk add --no-cache ca-certificates build-base libffi-dev && \
+RUN apk add --no-cache ca-certificates build-base libffi-dev go && \
     python3 -m venv /usr/local/certbot && \
-    pip install --no-cache-dir certbot
+    pip install --no-cache-dir certbot certbot-dns-multi
 
 
 FROM --platform="$BUILDPLATFORM" alpine:3.18.4 as crowdsec

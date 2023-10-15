@@ -16,7 +16,7 @@
     "gravatar": "1.8.2",
     "jsonwebtoken": "9.0.2",
     "knex": "3.0.1",
-    "liquidjs": "10.9.2",
+    "liquidjs": "10.9.3",
     "lodash": "4.17.21",
     "moment": "2.29.4",
     "mysql": "2.18.1",

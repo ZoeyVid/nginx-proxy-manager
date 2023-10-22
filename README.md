@@ -5,8 +5,9 @@ This project comes as a pre-built docker image that enables you to easily forwar
 running at home or otherwise, including free TLS, without having to know too much about Nginx or Letsencrypt.
 
 - [Quick Setup](#quick-setup)
+<!---
 - [Screenshots](https://nginxproxymanager.com/screenshots)
-
+--->
 
 **Note: To fix [this issue](https://github.com/SpiderLabs/ModSecurity/issues/2848), instead of running `nginx -s reload`, this fork stops nginx and starts it again. This can result in a 502 error when you update your hosts. See https://github.com/ZoeyVid/NPMplus/issues/296 and https://github.com/ZoeyVid/NPMplus/issues/283.** <br>
 **Note: Reloading the NPMplus UI can cause a 502 error. See https://github.com/ZoeyVid/NPMplus/issues/241.** <br>

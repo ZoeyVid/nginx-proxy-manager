@@ -2,7 +2,7 @@
 # NPMplus
 
 This project comes as a pre-built docker image that enables you to easily forward to your websites
-running at home or otherwise, including free TLS, without having to know too much about Nginx or Letsencrypt.
+running at home or otherwise, including free TLS, without having to know too much about Nginx or Certbot.
 
 - [Quick Setup](#quick-setup)
 <!---

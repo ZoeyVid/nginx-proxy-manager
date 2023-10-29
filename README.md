@@ -95,17 +95,15 @@ so that the barrier for entry here is low.
 - since this fork has dependency on `network_mode: host`, please don't forget to open port 80 and 443 (and maybe 81) in your firewall
 
 # Crowdsec
-1. Install crowdsec: https://doc.crowdsec.net/docs/getting_started/install_crowdsec
+1. Install crowdsec using this compose file: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.crowdsec.yaml
 2. make sure to use `network_mode: host` in your compose file
-3. run `cscli bouncers add npm -o raw` and save the output
-4. run `cscli config show --key "Config.API.Client.Credentials.URL"` and save the output
-5. open `/data/etc/crowdsec/crowdsec.conf`
-6. set `ENABLED` to `true`
-7. use the output of step 4 as `API_KEY`
-8. use the output of step 5 as `API_URL` - But remove the `/` at the end (correct: `http://127.0.0.1:8080` - incorrect: `http://127.0.0.1:8080/`)
-9. make your changes
-10. save the file
-11. restart the npm
+3. run `docker exec crowdsec cscli bouncers add npmplus -o raw` and save the output
+4. open `/data/etc/crowdsec/crowdsec.conf`
+5. set `ENABLED` to `true`
+6. use the output of step 4 as `API_KEY`
+7. make sure `API_URL` is set to `http://127.0.0.1:8080`
+9. save the file
+10. restart the npm
 
 # Use as webserver
 
@@ -153,43 +151,7 @@ location / {
 - [Docker Install documentation](https://docs.docker.com/engine)
 - [Docker Compose Install documentation](https://docs.docker.com/compose/install/linux)
 
-2. Create a compose.yaml file similar to this (or use it as a portainer stack):
-
-```yml
-version: "3"
-services:
-  npmplus:
-    container_name: npmplus
-    image: zoeyvid/npmplus
-    restart: always
-    network_mode: host
-    volumes:
-      - "/opt/npm:/data"
-#      - "/var/www:/var/www" # optional, if you want to use it as webserver for html/php
-#      - "/opt/npm-letsencrypt:/etc/letsencrypt" # Only needed for first time migration from original nginx-proxy-manager to this fork
-    environment:
-      - "TZ=Europe/Berlin" # set timezone, required
-#      - "PUID=1000" # set group id, default 0 (root)
-#      - "PGID=1000" # set user id, default 0 (root)
-#      - "NIBEP=48694" # internal port, always bound to 127.0.0.1, default 48693, you need to change it, if you want to run multiple npm instances in network mode host
-#      - "NPM_PORT=82" # Port the NPM backend should be bound to, default 81, you need to change it, if you want to run multiple npm instances in network mode host
-#      - "IPV4_BINDING=127.0.0.1" # IPv4 address to bind, defaults to all
-#      - "NPM_IPV4_BINDING=127.0.0.1" # IPv4 address to bind for the NPM backend, defaults to all
-#      - "IPV6_BINDING=[::1]" # IPv6 address to bind, defaults to all
-#      - "NPM_IPV6_BINDING=[::1]" # IPv6 address to bind for the NPM backend, defaults to all
-#      - "DISABLE_IPV6=true" # disable IPv6, overrides with IPV6_BINDING, default false
-#      - "NPM_DISABLE_IPV6=true" # disable IPv6 for the NPM backend, overrides with NPM_IPV6_BINDING, default false, overrides NPM_LISTEN_LOCALHOST
-#      - "NPM_LISTEN_LOCALHOST=true" # Bind the NPM Dashboard on Port 81 only to localhost, overrides with NPM_IPV4_BINDING/NPM_IPV6_BINDING, default false
-#      - "NPM_CERT_ID=1" # ID of cert, which should be used instead of dummycerts, default 0/unset/dummycerts
-#      - "DISABLE_HTTP=true" # disables nginx to listen on port 80, default false
-#      - "NGINX_LOG_NOT_FOUND=true" # Allow logging of 404 errors, default false
-#      - "CLEAN=false" # Clean folders, default true
-#      - "FULLCLEAN=true" # Clean unused config folders, default false
-#      - "PHP81=true" # Activate PHP81, default false
-#      - "PHP81_APKS=php81-curl php-81-curl" # Add php extensions, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.18&repo=community&arch=x86_64&name=php81-*, default none
-#      - "PHP82=true" # Activate PHP82, default false
-#      - "PHP82_APKS=php82-curl php-82-curl" # Add php extensions, see available packages here: https://pkgs.alpinelinux.org/packages?branch=v3.18&repo=community&arch=x86_64&name=php82-*, default none
-```
+2. Create a compose.yaml file similar to [this](https://github.com/ZoeyVid/NPMplus/blob/develop/compose.yaml) (or use it as a portainer stack):´
 
 3. Bring up your stack by running (or deploy your portainer stack)
 ```bash

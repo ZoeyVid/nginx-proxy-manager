@@ -359,7 +359,6 @@ find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling/d" {} \;
 find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling_verify/d" {} \;
 
 touch /data/etc/html/index.html \
-      /data/etc/modsecurity/modsecurity.conf \
       /data/nginx/default.conf \
       /data/nginx/ip_ranges.conf \
       /data/nginx/custom/root.conf \
@@ -374,7 +373,9 @@ touch /data/etc/html/index.html \
       /data/nginx/custom/server_stream_tcp.conf \
       /data/nginx/custom/server_stream_udp.conf
 
-cp -vn /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /data/etc/modsecurity/crs-setup.conf
+if [ ! -f /data/etc/modsecurity/crs-setup.conf ]; then
+      cp -vn /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /data/etc/modsecurity/crs-setup.conf
+fi
 cp /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /data/etc/modsecurity/crs-setup.conf.example
 
 if [ "$NPM_CERT_ID" = "0" ]; then
@@ -548,22 +549,25 @@ fi
 if [ ! -f /data/tls/certbot/config.ini ]; then
     cp -vn /etc/tls/certbot.ini /data/tls/certbot/config.ini
 fi
+cp /etc/tls/certbot.ini /data/tls/certbot/config.ini.example
 
 if [ ! -f /data/etc/crowdsec/ban.html ]; then
     cp -vn /usr/local/nginx/conf/conf.d/include/ban.html /data/etc/crowdsec/ban.html
 fi
+cp /usr/local/nginx/conf/conf.d/include/ban.html /data/etc/crowdsec/ban.html.example
 
 if [ ! -f /data/etc/crowdsec/captcha.html ]; then
     cp -vn /usr/local/nginx/conf/conf.d/include/captcha.html /data/etc/crowdsec/captcha.html
 fi
+cp /usr/local/nginx/conf/conf.d/include/captcha.html /data/etc/crowdsec/captcha.html.example
 
 if [ ! -f /data/etc/crowdsec/crowdsec.conf ]; then
     cp -vn /usr/local/nginx/conf/conf.d/include/crowdsec.conf /data/etc/crowdsec/crowdsec.conf
-else
-    sed -i "s|crowdsec.conf|captcha.html|g" /data/etc/crowdsec/crowdsec.conf
 fi
+cp /usr/local/nginx/conf/conf.d/include/crowdsec.conf /data/etc/crowdsec/crowdsec.conf.example
+sed -i "s|crowdsec.conf|captcha.html|g" /data/etc/crowdsec/crowdsec.conf
 
-if grep -iq "^ENABLED[ ]\+\?=[ ]\+\?true$" /data/etc/crowdsec/crowdsec.conf; then
+if grep -iq "^ENABLED[ ]*=[ ]*true$" /data/etc/crowdsec/crowdsec.conf; then
     cp -vn /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf /usr/local/nginx/conf/conf.d/crowdsec.conf
 else
     rm -vf /usr/local/nginx/conf/conf.d/crowdsec.conf

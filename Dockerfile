@@ -31,9 +31,12 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
 
 
 FROM --platform="$BUILDPLATFORM" alpine:3.18.5 as crowdsec
+
+ARG CSNB_VER=v1.0.5
+
 WORKDIR /src
 RUN apk add --no-cache ca-certificates git build-base && \
-    git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer /src && \
+    git clone --recursive https://github.com/crowdsecurity/cs-nginx-bouncer --branch "$CSNB_VER" /src && \
     make && \
     tar xzf crowdsec-nginx-bouncer.tgz && \
     mv crowdsec-nginx-bouncer-* crowdsec-nginx-bouncer && \
@@ -49,6 +52,9 @@ FROM zoeyvid/certbot-docker:15 as certbot
 
 FROM zoeyvid/nginx-quic:219
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+
+ARG CRS_VER=v4.0/dev
+
 COPY rootfs /
 RUN apk add --no-cache ca-certificates tzdata tini \
     lua5.1-lzlib \
@@ -56,11 +62,7 @@ RUN apk add --no-cache ca-certificates tzdata tini \
     openssl apache2-utils \
     coreutils grep jq curl shadow sudo \
     luarocks5.1 wget lua5.1-dev build-base git yarn && \
-    wget -q https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended -O /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example && \
-    wget -q https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping -O /usr/local/nginx/conf/conf.d/include/unicode.mapping && \
-    sed -i "s|SecRuleEngine.*|SecRuleEngine On|g" /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example && \
-    sed -i "s|unicode.mapping|/usr/local/nginx/conf/conf.d/include/unicode.mapping|g" /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example && \
-    git clone https://github.com/coreruleset/coreruleset /tmp/coreruleset && \
+    git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
     mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \
     mv -v /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example && \
     mv -v /tmp/coreruleset/rules /usr/local/nginx/conf/conf.d/include/coreruleset/rules && \

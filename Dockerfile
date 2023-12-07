@@ -50,7 +50,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
 
 FROM zoeyvid/certbot-docker:15 as certbot
 
-FROM zoeyvid/nginx-quic:219
+FROM zoeyvid/nginx-quic:225
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG CRS_VER=v4.0/dev

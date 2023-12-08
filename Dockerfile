@@ -1,4 +1,4 @@
-FROM --platform="$BUILDPLATFORM" alpine:3.18.5 as frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.19.0 as frontend
 COPY frontend                        /build/frontend
 COPY global/certbot-dns-plugins.js   /build/frontend/certbot-dns-plugins.js
 ARG NODE_ENV=production \
@@ -12,7 +12,7 @@ COPY darkmode.css /build/frontend/dist/css/darkmode.css
 COPY security.txt /build/frontend/dist/.well-known/security.txt
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.18.5 as backend
+FROM --platform="$BUILDPLATFORM" alpine:3.19.0 as backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY backend                        /build/backend
 COPY global/certbot-dns-plugins.js  /build/backend/certbot-dns-plugins.js
@@ -30,7 +30,7 @@ RUN apk add --no-cache ca-certificates nodejs-current yarn && \
     yarn cache clean --all
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.18.5 as crowdsec
+FROM --platform="$BUILDPLATFORM" alpine:3.19.0 as crowdsec
 
 ARG CSNB_VER=v1.0.5
 

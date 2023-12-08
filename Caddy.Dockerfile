@@ -1,3 +1,3 @@
-FROM caddy:2.7.5
+FROM caddy:2.7.6
 RUN apk add --no-cache ca-certificates tzdata
 COPY Caddyfile /etc/caddy/Caddyfile

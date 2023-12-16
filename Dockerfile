@@ -72,7 +72,7 @@ RUN apk add --no-cache ca-certificates tzdata tini \
 
 COPY --from=backend                    /build/backend                                             /app
 COPY --from=frontend                   /build/frontend/dist                                       /app/frontend
-COPY --from=zoeyvid/certbot-docker:17  /usr/local/certbot                                         /usr/local/certbot
+COPY --from=zoeyvid/certbot-docker:18  /usr/local/certbot                                         /usr/local/certbot
 COPY --from=crowdsec                   /src/crowdsec-nginx-bouncer/lua-mod/lib/plugins            /usr/local/nginx/lib/lua/plugins
 COPY --from=crowdsec                   /src/crowdsec-nginx-bouncer/lua-mod/lib/crowdsec.lua       /usr/local/nginx/lib/lua/crowdsec.lua
 COPY --from=crowdsec                   /src/crowdsec-nginx-bouncer/lua-mod/templates/ban.html     /usr/local/nginx/conf/conf.d/include/ban.html

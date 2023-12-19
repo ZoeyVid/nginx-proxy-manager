@@ -51,7 +51,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
 FROM zoeyvid/nginx-quic:235
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
-ARG CRS_VER=v4.0/dev
+ARG CRS_VER=v4.0.0-rc2
 
 COPY rootfs /
 RUN apk add --no-cache ca-certificates tzdata tini \

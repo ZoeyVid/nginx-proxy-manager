@@ -159,7 +159,7 @@ location / {
 - [Docker Install documentation](https://docs.docker.com/engine)
 - [Docker Compose Install documentation](https://docs.docker.com/compose/install/linux)
 
-2. Create a compose.yaml file similar to [this](https://github.com/ZoeyVid/NPMplus/blob/develop/compose.yaml) (or use it as a portainer stack):´
+2. Create a compose.yaml file similar to [this](https://github.com/ZoeyVid/NPMplus/blob/develop/compose.yaml) (or use it as a portainer stack):
 
 3. Bring up your stack by running (or deploy your portainer stack)
 ```bash

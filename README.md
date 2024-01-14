@@ -1,3 +1,5 @@
+[NPMplus.md](https://github.com/chocology/NPMplus/files/13931770/NPMplus.md)
+
 NPMplus
 
 This project comes as a pre-built docker image which enables you to easily and safely expose  your websites running at home or otherwise, including free TLS, without having to know too much about Nginx or Certbot. This fork also adds many new features in comparison to the upstream NPM.
@@ -178,6 +180,27 @@ Goaccess (Optional)
 Open this file: nano compose.yaml
 
 Uncomment the environment variable "GOA_IPV4_BINDING=127.0.0.1" and/or "IPV6_BINDING=[::1]" as required
+
+Restart the docker container with docker compose up -d
+
+Access the Goaccess portal on https://<IP address>:91
+
+
+Geoipupdate (Optional)
+
+Under /opt create a folder mkdir geoipudate
+
+Create this file: nano /opt/npm/geoipupdate/docker-compose.yaml and paste the contents of this file
+
+Amend the "TZ=Europe/Berlin" as required
+
+The next steps will require an account from MaxMind
+
+ Also append "GEOIPUPDATE_ACCOUNT_ID=<your-account-id>"
+
+"GEOIPUPDATE_LICENSE_KEY=<your-license-key>" 
+
+Close the file and start the container.
 
 Use as web server
 

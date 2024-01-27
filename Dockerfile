@@ -54,7 +54,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG CRS_VER=v4.0/dev
 
 COPY rootfs /
-COPY --from=zoeyvid/certbot-docker:19  /usr/local          /usr/local
+COPY --from=zoeyvid/certbot-docker:20  /usr/local          /usr/local
 COPY --from=zoeyvid/curl-quic:364      /usr/local/bin/curl /usr/local/bin/curl
 
 RUN apk add --no-cache ca-certificates tzdata tini \

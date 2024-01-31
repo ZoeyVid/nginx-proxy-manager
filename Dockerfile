@@ -55,7 +55,7 @@ ARG CRS_VER=v4.0/dev
 
 COPY rootfs /
 COPY --from=zoeyvid/certbot-docker:21  /usr/local          /usr/local
-COPY --from=zoeyvid/curl-quic:367      /usr/local/bin/curl /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:370      /usr/local/bin/curl /usr/local/bin/curl
 
 RUN apk add --no-cache ca-certificates tzdata tini \
     patch bash nano \

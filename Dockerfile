@@ -52,7 +52,7 @@ RUN apk add --no-cache ca-certificates git build-base && \
     echo "#APPSEC_FAILURE_ACTION=deny # see https://github.com/crowdsecurity/lua-cs-bouncer/issues/63" | tee -a /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf && \
     sed -i "s|BOUNCING_ON_TYPE=all|BOUNCING_ON_TYPE=ban|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
-FROM zoeyvid/nginx-quic:256
+FROM zoeyvid/nginx-quic:257
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG CRS_VER=v4.0/dev

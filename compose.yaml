@@ -4,6 +4,10 @@ services:
     container_name: npmplus
     image: zoeyvid/npmplus
     restart: always
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 3s
     network_mode: host
     volumes:
       - "/opt/npm:/data"

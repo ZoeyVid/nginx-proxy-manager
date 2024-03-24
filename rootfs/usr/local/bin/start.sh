@@ -30,9 +30,14 @@ if [ -n "$NPM_CERT_ID" ] && [ -z "$DEFAULT_CERT_ID" ]; then
     export DEFAULT_CERT_ID="$NPM_CERT_ID"
 fi
 
+if [ -n "$NPM_CERT_ID" ] && [ -n "$DEFAULT_CERT_ID" ]; then
+    echo "You've set DEFAULT_CERT_ID, but didn't removed NPM_CERT_ID, please remove it."
+    sleep inf
+fi
 
-if [ -z "$TZ" ] || ! echo "$TZ" | grep -q "^[A-Za-z0-9/_+-]\+$"; then
-    echo "TZ is unset or invalid, it can consist of lower and upper letters a-z A-Z, numbers 0-9, slashes, underscores, plus and minus signs."
+
+if [ -z "$TZ" ] || ! echo "$TZ" | grep -q "^[A-Za-z0-9_+-]\+/[A-Za-z0-9_+-]\+$"; then
+    echo "TZ is unset or invalid, it can consist of lower and upper letters a-z A-Z, numbers 0-9, underscores, plus and minus signs which are splitted by a slash."
     sleep inf
 fi
 

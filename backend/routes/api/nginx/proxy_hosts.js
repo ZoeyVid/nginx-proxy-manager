@@ -4,7 +4,7 @@ const jwtdecode         = require('../../../lib/express/jwt-decode');
 const internalProxyHost = require('../../../internal/proxy-host');
 const apiValidator      = require('../../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -20,7 +20,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/nginx/proxy-hosts
 	 *
 	 * Retrieve all proxy-hosts
@@ -50,13 +50,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * POST /api/nginx/proxy-hosts
 	 *
 	 * Create a new proxy-host
 	 */
 	.post((req, res, next) => {
-		apiValidator({$ref: 'endpoints/proxy-hosts#/links/1/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/proxy-hosts#/links/1/schema' }, req.body)
 			.then((payload) => {
 				return internalProxyHost.create(res.locals.access, payload);
 			})
@@ -79,7 +79,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/nginx/proxy-hosts/123
 	 *
 	 * Retrieve a specific proxy-host
@@ -113,13 +113,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * PUT /api/nginx/proxy-hosts/123
 	 *
 	 * Update and existing proxy-host
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/proxy-hosts#/links/2/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/proxy-hosts#/links/2/schema' }, req.body)
 			.then((payload) => {
 				payload.id = parseInt(req.params.host_id, 10);
 				return internalProxyHost.update(res.locals.access, payload);
@@ -131,13 +131,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * DELETE /api/nginx/proxy-hosts/123
 	 *
 	 * Update and existing proxy-host
 	 */
 	.delete((req, res, next) => {
-		internalProxyHost.delete(res.locals.access, {id: parseInt(req.params.host_id, 10)})
+		internalProxyHost.delete(res.locals.access, { id: parseInt(req.params.host_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -157,11 +157,11 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/proxy-hosts/123/enable
 	 */
 	.post((req, res, next) => {
-		internalProxyHost.enable(res.locals.access, {id: parseInt(req.params.host_id, 10)})
+		internalProxyHost.enable(res.locals.access, { id: parseInt(req.params.host_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -181,11 +181,11 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/proxy-hosts/123/disable
 	 */
 	.post((req, res, next) => {
-		internalProxyHost.disable(res.locals.access, {id: parseInt(req.params.host_id, 10)})
+		internalProxyHost.disable(res.locals.access, { id: parseInt(req.params.host_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);

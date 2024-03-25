@@ -10,7 +10,7 @@ const logger       = require('../logger').migrate;
  * @param   {Promise} Promise
  * @returns {Promise}
  */
-exports.up = function (knex/*, Promise*/) {
+exports.up = function (knex/*, Promise */) {
 	logger.info('[' + migrate_name + '] Migrating Up...');
 
 	return knex.schema.table('proxy_host', function (proxy_host) {
@@ -19,7 +19,6 @@ exports.up = function (knex/*, Promise*/) {
 		.then(() => {
 			logger.info('[' + migrate_name + '] proxy_host Table altered');
 		});
-
 };
 
 /**

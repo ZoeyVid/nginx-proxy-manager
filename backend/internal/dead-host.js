@@ -19,16 +19,16 @@ const internalDeadHost = {
 	 * @returns {Promise}
 	 */
 	create: (access, data) => {
-		let create_certificate = data.certificate_id === 'new';
+		const create_certificate = data.certificate_id === 'new';
 
 		if (create_certificate) {
 			delete data.certificate_id;
 		}
 
 		return access.can('dead_hosts:create', data)
-			.then((/*access_data*/) => {
+			.then((/* access_data */) => {
 				// Get a list of the domain names and check each of them against existing records
-				let domain_name_check_promises = [];
+				const domain_name_check_promises = [];
 
 				data.domain_names.map(function (domain_name) {
 					domain_name_check_promises.push(internalHost.isHostnameTaken(domain_name));
@@ -107,16 +107,16 @@ const internalDeadHost = {
 	 * @return {Promise}
 	 */
 	update: (access, data) => {
-		let create_certificate = data.certificate_id === 'new';
+		const create_certificate = data.certificate_id === 'new';
 
 		if (create_certificate) {
 			delete data.certificate_id;
 		}
 
 		return access.can('dead_hosts:update', data.id)
-			.then((/*access_data*/) => {
+			.then((/* access_data */) => {
 				// Get a list of the domain names and check each of them against existing records
-				let domain_name_check_promises = [];
+				const domain_name_check_promises = [];
 
 				if (typeof data.domain_names !== 'undefined') {
 					data.domain_names.map(function (domain_name) {
@@ -134,7 +134,7 @@ const internalDeadHost = {
 				}
 			})
 			.then(() => {
-				return internalDeadHost.get(access, {id: data.id});
+				return internalDeadHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (row.id !== data.id) {
@@ -168,7 +168,7 @@ const internalDeadHost = {
 
 				return deadHostModel
 					.query()
-					.where({id: data.id})
+					.where({ id: data.id })
 					.patch(data)
 					.then((saved_row) => {
 						// Add to audit log
@@ -215,7 +215,7 @@ const internalDeadHost = {
 
 		return access.can('dead_hosts:get', data.id)
 			.then((access_data) => {
-				let query = deadHostModel
+				const query = deadHostModel
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
@@ -254,7 +254,7 @@ const internalDeadHost = {
 	delete: (access, data) => {
 		return access.can('dead_hosts:delete', data.id)
 			.then(() => {
-				return internalDeadHost.get(access, {id: data.id});
+				return internalDeadHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -348,7 +348,7 @@ const internalDeadHost = {
 	disable: (access, data) => {
 		return access.can('dead_hosts:update', data.id)
 			.then(() => {
-				return internalDeadHost.get(access, {id: data.id});
+				return internalDeadHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -398,7 +398,7 @@ const internalDeadHost = {
 	getAll: (access, expand, search_query) => {
 		return access.can('dead_hosts:list')
 			.then((access_data) => {
-				let query = deadHostModel
+				const query = deadHostModel
 					.query()
 					.where('is_deleted', 0)
 					.groupBy('id')
@@ -439,7 +439,7 @@ const internalDeadHost = {
 	 * @returns {Promise}
 	 */
 	getCount: (user_id, visibility) => {
-		let query = deadHostModel
+		const query = deadHostModel
 			.query()
 			.count('id as count')
 			.where('is_deleted', 0);

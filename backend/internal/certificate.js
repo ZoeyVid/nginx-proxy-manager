@@ -18,7 +18,7 @@ const { isArray }      = require('lodash');
 const certbotConfig  = '/data/tls/certbot/config.ini';
 const certbotCommand = 'certbot --logs-dir /tmp/certbot-log --work-dir /tmp/certbot-work --config-dir /data/tls/certbot';
 
-function omissions() {
+function omissions () {
 	return ['is_deleted'];
 }
 
@@ -67,7 +67,7 @@ const internalCertificate = {
 						.andWhere('provider', 'letsencrypt')
 						.then((certificates) => {
 							if (certificates && certificates.length) {
-								let promises = [];
+								const promises = [];
 
 								certificates.map(function (certificate) {
 									promises.push(
@@ -123,14 +123,14 @@ const internalCertificate = {
 			})
 			.then((certificate) => {
 				if (certificate.provider === 'letsencrypt') {
-				// Request a new Cert using Certbot. Let the fun begin.
+					// Request a new Cert using Certbot. Let the fun begin.
 					if (certificate.meta.dns_challenge) {
 						return internalCertificate.requestLetsEncryptSslWithDnsChallenge(certificate)
 							.then(() => {
 								return certificate;
 							})
 							.catch((err) => {
-							// In the event of failure, throw err back
+								// In the event of failure, throw err back
 								throw err;
 							});
 					} else {
@@ -139,7 +139,7 @@ const internalCertificate = {
 								return certificate;
 							})
 							.catch((err) => {
-							// In the event of failure, throw err back
+								// In the event of failure, throw err back
 								throw err;
 							});
 					}
@@ -161,12 +161,12 @@ const internalCertificate = {
 								.patchAndFetchById(certificate.id, {
 									expires_on: moment(cert_info.dates.to, 'X').format(
 										'YYYY-MM-DD HH:mm:ss'
-									),
+									)
 								})
 								.then((saved_row) => {
 									// Add cert data for audit log
 									saved_row.meta = _.assign({}, saved_row.meta, {
-										letsencrypt_certificate: cert_info,
+										letsencrypt_certificate: cert_info
 									});
 
 									return saved_row;
@@ -182,7 +182,6 @@ const internalCertificate = {
 				}
 			})
 			.then((certificate) => {
-
 				data.meta = _.assign({}, data.meta || {}, certificate.meta);
 
 				// Add to audit log
@@ -198,7 +197,6 @@ const internalCertificate = {
 			});
 	},
 
-
 	/**
 	 * @param  {Access}  access
 	 * @param  {Object}  data
@@ -209,8 +207,8 @@ const internalCertificate = {
 	 */
 	update: (access, data) => {
 		return access.can('certificates:update', data.id)
-			.then((/*access_data*/) => {
-				return internalCertificate.get(access, {id: data.id});
+			.then((/* access_data */) => {
+				return internalCertificate.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (row.id !== data.id) {
@@ -260,7 +258,7 @@ const internalCertificate = {
 
 		return access.can('certificates:get', data.id)
 			.then((access_data) => {
-				let query = certificateModel
+				const query = certificateModel
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
@@ -309,7 +307,7 @@ const internalCertificate = {
 							throw new error.ItemNotFoundError('Certificate ' + certificate.nice_name + ' does not exists');
 						}
 
-						let certFiles      = fs.readdirSync(zipDirectory)
+						const certFiles    = fs.readdirSync(zipDirectory)
 							.filter((fn) => fn.endsWith('.pem'))
 							.map((fn) => fs.realpathSync(path.join(zipDirectory, fn)));
 						const downloadName = 'npm-' + data.id + '-' + `${Date.now()}.zip`;
@@ -334,14 +332,14 @@ const internalCertificate = {
 	* @param   {String}  out
 	* @returns {Promise}
 	*/
-	zipFiles(source, out) {
+	zipFiles (source, out) {
 		const archive = archiver('zip', { zlib: { level: 9 } });
 		const stream  = fs.createWriteStream(out);
 
 		return new Promise((resolve, reject) => {
 			source
 				.map((fl) => {
-					let fileName = path.basename(fl);
+					const fileName = path.basename(fl);
 					logger.debug(fl, 'added to certificate zip');
 					archive.file(fl, { name: fileName });
 				});
@@ -364,7 +362,7 @@ const internalCertificate = {
 	delete: (access, data) => {
 		return access.can('certificates:delete', data.id)
 			.then(() => {
-				return internalCertificate.get(access, {id: data.id});
+				return internalCertificate.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -411,7 +409,7 @@ const internalCertificate = {
 	getAll: (access, expand, search_query) => {
 		return access.can('certificates:list')
 			.then((access_data) => {
-				let query = certificateModel
+				const query = certificateModel
 					.query()
 					.where('is_deleted', 0)
 					.groupBy('id')
@@ -445,7 +443,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	getCount: (user_id, visibility) => {
-		let query = certificateModel
+		const query = certificateModel
 			.query()
 			.count('id as count')
 			.where('is_deleted', 0);
@@ -545,7 +543,7 @@ const internalCertificate = {
 	validate: (data) => {
 		return new Promise((resolve) => {
 			// Put file contents into an object
-			let files = {};
+			const files = {};
 			_.map(data.files, (file, name) => {
 				if (internalCertificate.allowedSslFiles.indexOf(name) !== -1) {
 					files[name] = file.data.toString();
@@ -557,7 +555,7 @@ const internalCertificate = {
 			.then((files) => {
 				// For each file, create a temp file and write the contents to it
 				// Then test it depending on the file type
-				let promises = [];
+				const promises = [];
 				_.map(files, (content, type) => {
 					promises.push(new Promise((resolve) => {
 						if (type === 'certificate_key') {
@@ -567,7 +565,7 @@ const internalCertificate = {
 							resolve(internalCertificate.getCertificateInfo(content, true));
 						}
 					}).then((res) => {
-						return {[type]: res};
+						return { [type]: res };
 					}));
 				});
 
@@ -592,7 +590,7 @@ const internalCertificate = {
 	 * @returns {Promise}
 	 */
 	upload: (access, data) => {
-		return internalCertificate.get(access, {id: data.id})
+		return internalCertificate.get(access, { id: data.id })
 			.then((row) => {
 				if (row.provider !== 'other') {
 					throw new error.ValidationError('Cannot upload certificates for this type of provider');
@@ -689,7 +687,7 @@ const internalCertificate = {
 	 * @param {Boolean} [throw_expired]  Throw when the certificate is out of date
 	 */
 	getCertificateInfoFromFile: (certificate_file, throw_expired) => {
-		let certData = {};
+		const certData = {};
 
 		return utils.exec('openssl x509 -in ' + certificate_file + ' -subject -noout')
 			.then((result) => {
@@ -701,7 +699,7 @@ const internalCertificate = {
 					throw new error.ValidationError('Could not determine subject from certificate: ' + result);
 				}
 
-				certData['cn'] = match[1];
+				certData.cn = match[1];
 			})
 			.then(() => {
 				return utils.exec('openssl x509 -in ' + certificate_file + ' -issuer -noout');
@@ -714,7 +712,7 @@ const internalCertificate = {
 					throw new error.ValidationError('Could not determine issuer from certificate: ' + result);
 				}
 
-				certData['issuer'] = match[1];
+				certData.issuer = match[1];
 			})
 			.then(() => {
 				return utils.exec('openssl x509 -in ' + certificate_file + ' -dates -noout');
@@ -749,7 +747,7 @@ const internalCertificate = {
 					throw new error.ValidationError('Certificate has expired');
 				}
 
-				certData['dates'] = {
+				certData.dates = {
 					from: validFrom,
 					to:   validTo
 				};
@@ -835,9 +833,9 @@ const internalCertificate = {
 			'--authenticator ' + dnsPlugin.full_plugin_name + ' ' +
 			'--' + dnsPlugin.full_plugin_name + '-credentials "' + credentialsLocation + '"' +
 			(
-				certificate.meta.propagation_seconds !== undefined
-					? ' --' + dnsPlugin.full_plugin_name + '-propagation-seconds ' + certificate.meta.propagation_seconds
-					: ''
+			  certificate.meta.propagation_seconds !== undefined
+			    ? ' --' + dnsPlugin.full_plugin_name + '-propagation-seconds ' + certificate.meta.propagation_seconds
+			    : ''
 			);
 
 		if (certificate.meta.letsencrypt_email === '') {
@@ -860,7 +858,6 @@ const internalCertificate = {
 			throw err;
 		}
 	},
-
 
 	/**
 	 * @param   {Access}  access
@@ -941,7 +938,7 @@ const internalCertificate = {
 
 		logger.info(`Renewing Certbot certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
-		let mainCmd = certbotCommand + ' renew --force-renewal ' +
+		const mainCmd = certbotCommand + ' renew --force-renewal ' +
 			'--config "' + certbotConfig + '" ' +
 			'--cert-name "npm-' + certificate.id + '" ' +
 			'--preferred-challenges "dns,http" ' +
@@ -1009,7 +1006,7 @@ const internalCertificate = {
 	 */
 	disableInUseHosts: (in_use_result) => {
 		if (in_use_result.total_count) {
-			let promises = [];
+			const promises = [];
 
 			if (in_use_result.proxy_hosts.length) {
 				promises.push(internalNginx.bulkDeleteConfigs('proxy_host', in_use_result.proxy_hosts));
@@ -1024,7 +1021,6 @@ const internalCertificate = {
 			}
 
 			return Promise.all(promises);
-
 		} else {
 			return Promise.resolve();
 		}
@@ -1039,7 +1035,7 @@ const internalCertificate = {
 	 */
 	enableInUseHosts: (in_use_result) => {
 		if (in_use_result.total_count) {
-			let promises = [];
+			const promises = [];
 
 			if (in_use_result.proxy_hosts.length) {
 				promises.push(internalNginx.bulkGenerateConfigs('proxy_host', in_use_result.proxy_hosts));
@@ -1054,7 +1050,6 @@ const internalCertificate = {
 			}
 
 			return Promise.all(promises);
-
 		} else {
 			return Promise.resolve();
 		}
@@ -1073,8 +1068,8 @@ const internalCertificate = {
 		// Create a test challenge file
 		const testChallengeDir  = '/tmp/acme-challenge/.well-known/acme-challenge';
 		const testChallengeFile = testChallengeDir + '/test-challenge';
-		fs.mkdirSync(testChallengeDir, {recursive: true});
-		fs.writeFileSync(testChallengeFile, 'Success', {encoding: 'utf8'});
+		fs.mkdirSync(testChallengeDir, { recursive: true });
+		fs.writeFileSync(testChallengeFile, 'Success', { encoding: 'utf8' });
 
 		async function performTestForDomain (domain) {
 			logger.info('Testing http challenge for ' + domain);
@@ -1085,14 +1080,13 @@ const internalCertificate = {
 				headers: {
 					'Content-Type':   'application/x-www-form-urlencoded',
 					'Content-Length': Buffer.byteLength(formBody),
-					'Connection':     'keep-alive',
+					Connection:       'keep-alive',
 					'User-Agent':     'NPMplus',
-					'Accept':         '*/*'
+					Accept:           '*/*'
 				}
 			};
 
 			const result = await new Promise((resolve) => {
-
 				const req = https.request('https://www.site24x7.com/tools/restapi-tester', options, function (res) {
 					let responseBody = '';
 
@@ -1120,8 +1114,10 @@ const internalCertificate = {
 				// Make sure to write the request body.
 				req.write(formBody);
 				req.end();
-				req.on('error', function (e) { logger.warn(`Failed to test HTTP challenge for domain ${domain}`, e);
-					resolve(undefined); });
+				req.on('error', function (e) {
+					logger.warn(`Failed to test HTTP challenge for domain ${domain}`, e);
+					resolve(undefined);
+				});
 			});
 
 			if (!result) {
@@ -1154,7 +1150,7 @@ const internalCertificate = {
 
 		const results = {};
 
-		for (const domain of domains){
+		for (const domain of domains) {
 			results[domain] = await performTestForDomain(domain);
 		}
 

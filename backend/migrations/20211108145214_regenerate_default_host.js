@@ -2,7 +2,7 @@ const migrate_name  = 'stream_domain';
 const logger        = require('../logger').migrate;
 const internalNginx = require('../internal/nginx');
 
-async function regenerateDefaultHost(knex) {
+async function regenerateDefaultHost (knex) {
 	const row = await knex('setting').select('*').where('id', 'default-site').first();
 
 	if (!row) {

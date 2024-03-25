@@ -4,7 +4,7 @@ const jwtdecode       = require('../../lib/express/jwt-decode');
 const internalSetting = require('../../internal/setting');
 const apiValidator    = require('../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -20,7 +20,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/settings
 	 *
 	 * Retrieve all settings
@@ -46,7 +46,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /settings/something
 	 *
 	 * Retrieve a specific setting
@@ -75,13 +75,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * PUT /api/settings/something
 	 *
 	 * Update and existing setting
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/settings#/links/1/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/settings#/links/1/schema' }, req.body)
 			.then((payload) => {
 				payload.id = req.params.setting_id;
 				return internalSetting.update(res.locals.access, payload);

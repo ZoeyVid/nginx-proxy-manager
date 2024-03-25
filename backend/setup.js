@@ -24,13 +24,13 @@ const setupDefaultUser = () => {
 				// Create a new user and set password
 				logger.info('Creating a new user: admin@example.com with password: iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX9KfmDQiwkLZH1ZDR9xMjiG2QmoHXi');
 
-				let data = {
+				const data = {
 					is_deleted: 0,
 					email:      'admin@example.com',
 					name:       'Administrator',
 					nickname:   'Admin',
 					avatar:     '',
-					roles:      ['admin'],
+					roles:      ['admin']
 				};
 
 				return userModel
@@ -43,7 +43,7 @@ const setupDefaultUser = () => {
 								user_id: user.id,
 								type:    'password',
 								secret:  'iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX9KfmDQiwkLZH1ZDR9xMjiG2QmoHXi',
-								meta:    {},
+								meta:    {}
 							})
 							.then(() => {
 								return userPermissionModel.query().insert({
@@ -54,7 +54,7 @@ const setupDefaultUser = () => {
 									dead_hosts:        'manage',
 									streams:           'manage',
 									access_lists:      'manage',
-									certificates:      'manage',
+									certificates:      'manage'
 								});
 							});
 					})
@@ -76,7 +76,7 @@ const setupDefaultSettings = () => {
 	return settingModel
 		.query()
 		.select(settingModel.raw('COUNT(`id`) as `count`'))
-		.where({id: 'default-site'})
+		.where({ id: 'default-site' })
 		.first()
 		.then((row) => {
 			if (!row.count) {
@@ -87,7 +87,7 @@ const setupDefaultSettings = () => {
 						name:        'Default Site',
 						description: 'What to show when Nginx is hit with an unknown Host',
 						value:       'congratulations',
-						meta:        {},
+						meta:        {}
 					})
 					.then(() => {
 						logger.info('Default settings added');
@@ -111,8 +111,8 @@ const setupCertbotPlugins = () => {
 		.andWhere('provider', 'letsencrypt')
 		.then((certificates) => {
 			if (certificates && certificates.length) {
-				let plugins  = [];
-				let promises = [];
+				const plugins  = [];
+				const promises = [];
 
 				certificates.map(function (certificate) {
 					if (certificate.meta && certificate.meta.dns_challenge === true) {

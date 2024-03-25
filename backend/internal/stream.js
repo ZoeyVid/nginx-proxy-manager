@@ -18,7 +18,7 @@ const internalStream = {
 	 */
 	create: (access, data) => {
 		return access.can('streams:create', data)
-			.then((/*access_data*/) => {
+			.then((/* access_data */) => {
 				// TODO: At this point the existing ports should have been checked
 				data.owner_user_id = access.token.getUserId(1);
 
@@ -35,7 +35,7 @@ const internalStream = {
 				// Configure nginx
 				return internalNginx.configure(streamModel, 'stream', row)
 					.then(() => {
-						return internalStream.get(access, {id: row.id, expand: ['owner']});
+						return internalStream.get(access, { id: row.id, expand: ['owner'] });
 					});
 			})
 			.then((row) => {
@@ -60,9 +60,9 @@ const internalStream = {
 	 */
 	update: (access, data) => {
 		return access.can('streams:update', data.id)
-			.then((/*access_data*/) => {
+			.then((/* access_data */) => {
 				// TODO: at this point the existing streams should have been checked
-				return internalStream.get(access, {id: data.id});
+				return internalStream.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (row.id !== data.id) {
@@ -77,7 +77,7 @@ const internalStream = {
 					.then((saved_row) => {
 						return internalNginx.configure(streamModel, 'stream', saved_row)
 							.then(() => {
-								return internalStream.get(access, {id: row.id, expand: ['owner']});
+								return internalStream.get(access, { id: row.id, expand: ['owner'] });
 							});
 					})
 					.then((saved_row) => {
@@ -110,7 +110,7 @@ const internalStream = {
 
 		return access.can('streams:get', data.id)
 			.then((access_data) => {
-				let query = streamModel
+				const query = streamModel
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
@@ -149,7 +149,7 @@ const internalStream = {
 	delete: (access, data) => {
 		return access.can('streams:delete', data.id)
 			.then(() => {
-				return internalStream.get(access, {id: data.id});
+				return internalStream.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -243,7 +243,7 @@ const internalStream = {
 	disable: (access, data) => {
 		return access.can('streams:update', data.id)
 			.then(() => {
-				return internalStream.get(access, {id: data.id});
+				return internalStream.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -293,7 +293,7 @@ const internalStream = {
 	getAll: (access, expand, search_query) => {
 		return access.can('streams:list')
 			.then((access_data) => {
-				let query = streamModel
+				const query = streamModel
 					.query()
 					.where('is_deleted', 0)
 					.groupBy('id')
@@ -327,7 +327,7 @@ const internalStream = {
 	 * @returns {Promise}
 	 */
 	getCount: (user_id, visibility) => {
-		let query = streamModel
+		const query = streamModel
 			.query()
 			.count('id as count')
 			.where('is_deleted', 0);

@@ -3,7 +3,7 @@ const validator        = require('../../lib/validator');
 const jwtdecode        = require('../../lib/express/jwt-decode');
 const internalAuditLog = require('../../internal/audit-log');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -19,7 +19,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/audit-log
 	 *
 	 * Retrieve all logs

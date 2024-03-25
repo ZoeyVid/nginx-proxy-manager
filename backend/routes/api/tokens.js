@@ -3,7 +3,7 @@ const jwtdecode     = require('../../lib/express/jwt-decode');
 const internalToken = require('../../internal/token');
 const apiValidator  = require('../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -15,7 +15,7 @@ router
 		res.sendStatus(204);
 	})
 
-	/**
+/**
 	 * GET /tokens
 	 *
 	 * Get a new Token, given they already have a token they want to refresh
@@ -34,13 +34,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * POST /tokens
 	 *
 	 * Create a new Token
 	 */
 	.post((req, res, next) => {
-		apiValidator({$ref: 'endpoints/tokens#/links/0/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/tokens#/links/0/schema' }, req.body)
 			.then((payload) => {
 				return internalToken.getTokenFromEmail(payload);
 			})

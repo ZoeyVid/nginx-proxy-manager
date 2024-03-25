@@ -14,7 +14,7 @@ const configure = () => {
 		let configData;
 		try {
 			configData = require(filename);
-		} catch (err) {
+		} catch {
 			// do nothing
 		}
 
@@ -29,8 +29,8 @@ const configure = () => {
 	const envMysqlHost = process.env.DB_MYSQL_HOST || null;
 	const envMysqlUser = process.env.DB_MYSQL_USER || null;
 	const envMysqlName = process.env.DB_MYSQL_NAME || null;
-	const envMysqlTls  = process.env.DB_MYSQL_TLS  || null;
-	const envMysqlCa   = process.env.DB_MYSQL_CA   || '/etc/ssl/certs/ca-certificates.crt';
+	const envMysqlTls  = process.env.DB_MYSQL_TLS || null;
+	const envMysqlCa   = process.env.DB_MYSQL_CA || '/etc/ssl/certs/ca-certificates.crt';
 	if (envMysqlHost && envMysqlUser && envMysqlName) {
 		// we have enough mysql creds to go with mysql
 		logger.info('Using MySQL configuration');
@@ -42,9 +42,9 @@ const configure = () => {
 				user:     envMysqlUser,
 				password: process.env.DB_MYSQL_PASSWORD,
 				name:     envMysqlName,
-				ssl:      envMysqlTls ? { ca: fs.readFileSync(envMysqlCa) } : false,
+				ssl:      envMysqlTls ? { ca: fs.readFileSync(envMysqlCa) } : false
 			},
-			keys: getKeys(),
+			keys: getKeys()
 		};
 		return;
 	}
@@ -62,7 +62,7 @@ const configure = () => {
 				useNullAsDefault: true
 			}
 		},
-		keys: getKeys(),
+		keys: getKeys()
 	};
 };
 
@@ -89,7 +89,7 @@ const generateKeys = () => {
 
 	const keys = {
 		key: key.exportKey('private').toString(),
-		pub: key.exportKey('public').toString(),
+		pub: key.exportKey('public').toString()
 	};
 
 	// Write keys config
@@ -109,12 +109,12 @@ module.exports = {
 	 * @param   {string}  key   ie: 'database' or 'database.engine'
 	 * @returns {boolean}
 	 */
-	has: function(key) {
+	has: function (key) {
 		instance === null && configure();
 		const keys = key.split('.');
 		let level  = instance;
 		let has    = true;
-		keys.forEach((keyItem) =>{
+		keys.forEach((keyItem) => {
 			if (typeof level[keyItem] === 'undefined') {
 				has = false;
 			} else {

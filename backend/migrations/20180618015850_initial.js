@@ -10,7 +10,7 @@ const logger       = require('../logger').migrate;
  * @param   {Promise} Promise
  * @returns {Promise}
  */
-exports.up = function (knex/*, Promise*/) {
+exports.up = function (knex/*, Promise */) {
 	logger.info('[' + migrate_name + '] Migrating Up...');
 
 	return knex.schema.createTable('auth', (table) => {
@@ -189,7 +189,6 @@ exports.up = function (knex/*, Promise*/) {
 		.then(() => {
 			logger.info('[' + migrate_name + '] audit_log Table created');
 		});
-
 };
 
 /**

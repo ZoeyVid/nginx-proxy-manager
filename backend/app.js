@@ -11,7 +11,7 @@ const log         = require('./logger').express;
 const app = express();
 app.use(fileUpload());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Gzip
 app.use(compression());
@@ -59,7 +59,7 @@ app.use('/', require('./routes/api/main'));
 // eslint-disable-next-line
 app.use(function (err, req, res, next) {
 
-	let payload = {
+	const payload = {
 		error: {
 			code:    err.status,
 			message: err.public ? err.message : 'Internal Error'
@@ -77,7 +77,7 @@ app.use(function (err, req, res, next) {
 	if (typeof err.stack !== 'undefined' && err.stack) {
 		if (config.debug()) {
 			log.debug(err.stack);
-		} else if (typeof err.public == 'undefined' || !err.public) {
+		} else if (typeof err.public === 'undefined' || !err.public) {
 			log.warn(err.message);
 		}
 	}

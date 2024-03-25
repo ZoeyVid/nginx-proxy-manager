@@ -17,7 +17,7 @@ module.exports = {
 	 * @returns {Promise}
 	 */
 	getTokenFromEmail: (data, issuer) => {
-		let Token = new TokenModel();
+		const Token = new TokenModel();
 
 		data.scope  = data.scope || 'user';
 		data.expiry = data.expiry || '1d';
@@ -41,7 +41,6 @@ module.exports = {
 								return auth.verifyPassword(data.secret)
 									.then((valid) => {
 										if (valid) {
-
 											if (data.scope !== 'user' && _.indexOf(user.roles, data.scope) === -1) {
 												// The scope requested doesn't exist as a role against the user,
 												// you shall not pass.
@@ -49,7 +48,7 @@ module.exports = {
 											}
 
 											// Create a moment of the expiry expression
-											let expiry = helpers.parseDatePeriod(data.expiry);
+											const expiry = helpers.parseDatePeriod(data.expiry);
 											if (expiry === null) {
 												throw new error.AuthError('Invalid expiry time: ' + data.expiry);
 											}
@@ -90,20 +89,19 @@ module.exports = {
 	 * @returns {Promise}
 	 */
 	getFreshToken: (access, data) => {
-		let Token = new TokenModel();
+		const Token = new TokenModel();
 
 		data        = data || {};
 		data.expiry = data.expiry || '1d';
 
 		if (access && access.token.getUserId(0)) {
-
 			// Create a moment of the expiry expression
-			let expiry = helpers.parseDatePeriod(data.expiry);
+			const expiry = helpers.parseDatePeriod(data.expiry);
 			if (expiry === null) {
 				throw new error.AuthError('Invalid expiry time: ' + data.expiry);
 			}
 
-			let token_attrs = {
+			const token_attrs = {
 				id: access.token.getUserId(0)
 			};
 
@@ -119,7 +117,7 @@ module.exports = {
 
 			return Token.create({
 				iss:       'api',
-				scope:     scope,
+				scope,
 				attrs:     token_attrs,
 				expiresIn: data.expiry
 			})
@@ -155,7 +153,7 @@ module.exports = {
 				return {
 					token:   signed.token,
 					expires: expiry.toISOString(),
-					user:    user
+					user
 				};
 			});
 	}

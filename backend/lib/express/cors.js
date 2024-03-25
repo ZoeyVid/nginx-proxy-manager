@@ -1,9 +1,7 @@
 const validator = require('../validator');
 
 module.exports = function (req, res, next) {
-
 	if (req.headers.origin) {
-
 		const originSchema = {
 			oneOf: [
 				{
@@ -31,10 +29,8 @@ module.exports = function (req, res, next) {
 				next();
 			})
 			.catch(next);
-
 	} else {
 		// No origin
 		next();
 	}
-
 };

@@ -10,8 +10,7 @@ const logger       = require('../logger').migrate;
  * @param   {Promise} Promise
  * @returns {Promise}
  */
-exports.up = function (knex/*, Promise*/) {
-
+exports.up = function (knex/*, Promise */) {
 	logger.info('[' + migrate_name + '] Migrating Up...');
 
 	return knex.schema.createTable('access_list_client', (table) => {
@@ -22,7 +21,6 @@ exports.up = function (knex/*, Promise*/) {
 		table.string('address').notNull();
 		table.string('directive').notNull();
 		table.json('meta').notNull();
-
 	})
 		.then(function () {
 			logger.info('[' + migrate_name + '] access_list_client Table created');
@@ -43,7 +41,7 @@ exports.up = function (knex/*, Promise*/) {
  * @param {Promise} Promise
  * @returns {Promise}
  */
-exports.down = function (knex/*, Promise*/) {
+exports.down = function (knex/*, Promise */) {
 	logger.info('[' + migrate_name + '] Migrating Down...');
 
 	return knex.schema.dropTable('access_list_client')

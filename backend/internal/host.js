@@ -17,7 +17,7 @@ const internalHost = {
 	cleanSslHstsData: function (data, existing_data) {
 		existing_data = existing_data === undefined ? {} : existing_data;
 
-		let combined_data = _.assign({}, existing_data, data);
+		const combined_data = _.assign({}, existing_data, data);
 
 		if (!combined_data.certificate_id) {
 			combined_data.ssl_forced      = false;
@@ -69,7 +69,7 @@ const internalHost = {
 	 * @returns {Promise}
 	 */
 	getHostsWithDomains: function (domain_names) {
-		let promises = [
+		const promises = [
 			proxyHostModel
 				.query()
 				.where('is_deleted', 0),
@@ -83,7 +83,7 @@ const internalHost = {
 
 		return Promise.all(promises)
 			.then((promises_results) => {
-				let response_object = {
+				const response_object = {
 					total_count:       0,
 					dead_hosts:        [],
 					proxy_hosts:       [],
@@ -121,7 +121,7 @@ const internalHost = {
 	 * @returns {Promise}
 	 */
 	isHostnameTaken: function (hostname, ignore_type, ignore_id) {
-		let promises = [
+		const promises = [
 			proxyHostModel
 				.query()
 				.where('is_deleted', 0)
@@ -162,8 +162,8 @@ const internalHost = {
 				}
 
 				return {
-					hostname: hostname,
-					is_taken: is_taken
+					hostname,
+					is_taken
 				};
 			});
 	},
@@ -203,7 +203,7 @@ const internalHost = {
 	 * @returns {Array}
 	 */
 	_getHostsWithDomains: function (hosts, domain_names) {
-		let response = [];
+		const response = [];
 
 		if (hosts && hosts.length) {
 			hosts.map(function (host) {

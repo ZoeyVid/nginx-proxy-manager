@@ -67,7 +67,7 @@ const certbot = {
 			.catch((err) => {
 				throw err;
 			});
-	},
+	}
 };
 
 module.exports = certbot;

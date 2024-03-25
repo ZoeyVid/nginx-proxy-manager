@@ -19,10 +19,10 @@ const roleSchema     = require('./access/roles.json');
 const permsSchema    = require('./access/permissions.json');
 
 module.exports = function (token_string) {
-	let Token                 = new TokenModel();
+	const Token               = new TokenModel();
 	let token_data            = null;
 	let initialized           = false;
-	let object_cache          = {};
+	const object_cache        = {};
 	let allow_internal_access = false;
 	let user_roles            = [];
 	let permissions           = {};
@@ -78,7 +78,6 @@ module.exports = function (token_string) {
 											user_roles  = user.roles;
 											permissions = user.permissions;
 										}
-
 									} else {
 										throw new error.AuthError('User cannot be loaded for Token');
 									}
@@ -105,12 +104,11 @@ module.exports = function (token_string) {
 				if (typeof token_data.attrs.id === 'undefined' || !token_data.attrs.id) {
 					reject(new error.AuthError('User Token supplied without a User ID'));
 				} else {
-					let token_user_id = token_data.attrs.id ? token_data.attrs.id : 0;
+					const token_user_id = token_data.attrs.id ? token_data.attrs.id : 0;
 					let query;
 
 					if (typeof object_cache[object_type] === 'undefined') {
 						switch (object_type) {
-
 						// USERS - should only return yourself
 						case 'users':
 							resolve(token_user_id ? [token_user_id] : []);
@@ -129,7 +127,7 @@ module.exports = function (token_string) {
 
 							resolve(query
 								.then((rows) => {
-									let result = [];
+									const result = [];
 									_.forEach(rows, (rule_row) => {
 										result.push(rule_row.id);
 									});
@@ -170,9 +168,9 @@ module.exports = function (token_string) {
 	 * @returns {Object}
 	 */
 	this.getObjectSchema = (permission_label) => {
-		let base_object_type = permission_label.split(':').shift();
+		const base_object_type = permission_label.split(':').shift();
 
-		let schema = {
+		const schema = {
 			$id:                  'objects',
 			$schema:              'http://json-schema.org/draft-07/schema#',
 			description:          'Actor Properties',
@@ -223,7 +221,7 @@ module.exports = function (token_string) {
 		 * @returns {Promise}
 		 */
 		load: (allow_internal) => {
-			return new Promise(function (resolve/*, reject*/) {
+			return new Promise(function (resolve/*, reject */) {
 				if (token_string) {
 					resolve(Token.load(token_string));
 				} else {
@@ -244,16 +242,16 @@ module.exports = function (token_string) {
 		can: (permission, data) => {
 			if (allow_internal_access === true) {
 				return Promise.resolve(true);
-				//return true;
+				// return true;
 			} else {
 				return this.init()
 					.then(() => {
 						// initialized, token decoded ok
 						return this.getObjectSchema(permission)
 							.then((objectSchema) => {
-								let data_schema = {
+								const data_schema = {
 									[permission]: {
-										data:                         data,
+										data,
 										scope:                        Token.get('scope'),
 										roles:                        user_roles,
 										permission_visibility:        permissions.visibility,
@@ -266,7 +264,7 @@ module.exports = function (token_string) {
 									}
 								};
 
-								let permissionSchema = {
+								const permissionSchema = {
 									$schema:              'http://json-schema.org/draft-07/schema#',
 									$async:               true,
 									$id:                  'permissions',
@@ -280,7 +278,7 @@ module.exports = function (token_string) {
 								// logger.info('permissionSchema', JSON.stringify(permissionSchema, null, 2));
 								// logger.info('data_schema', JSON.stringify(data_schema, null, 2));
 
-								let ajv = validator({
+								const ajv = validator({
 									verbose:      true,
 									allErrors:    true,
 									format:       'full',

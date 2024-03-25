@@ -4,16 +4,15 @@ const spawn      = require('child_process').spawn;
 const execFile   = require('child_process').execFile;
 const { Liquid } = require('liquidjs');
 const error      = require('./error');
-//const logger     = require('../logger').global;
+// const logger     = require('../logger').global;
 
 module.exports = {
-
 
 	/**
 	 * @param   {String} cmd
 	 */
-	exec: async function(cmd, options = {}) {
-		//logger.debug('CMD:', cmd);
+	exec: async function (cmd, options = {}) {
+		// logger.debug('CMD:', cmd);
 
 		const { stdout, stderr } = await new Promise((resolve, reject) => {
 			const child = exec(cmd, options, (isError, stdout, stderr) => {
@@ -36,7 +35,7 @@ module.exports = {
 	 * @param   {Array}  args
 	 */
 	execFile: async function (cmd, args, options = {}) {
-		//logger.debug('CMD: ' + cmd + ' ' + (args ? args.join(' ') : ''));
+		// logger.debug('CMD: ' + cmd + ' ' + (args ? args.join(' ') : ''));
 
 		const { stdout, stderr } = await new Promise((resolve, reject) => {
 			const child = execFile(cmd, args, options, (isError, stdout, stderr) => {

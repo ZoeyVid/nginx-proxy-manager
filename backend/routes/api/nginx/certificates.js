@@ -4,7 +4,7 @@ const jwtdecode           = require('../../../lib/express/jwt-decode');
 const internalCertificate = require('../../../internal/certificate');
 const apiValidator        = require('../../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -20,7 +20,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/nginx/certificates
 	 *
 	 * Retrieve all certificates
@@ -50,13 +50,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * POST /api/nginx/certificates
 	 *
 	 * Create a new certificate
 	 */
 	.post((req, res, next) => {
-		apiValidator({$ref: 'endpoints/certificates#/links/1/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/certificates#/links/1/schema' }, req.body)
 			.then((payload) => {
 				req.setTimeout(900000); // 15 minutes timeout
 				return internalCertificate.create(res.locals.access, payload);
@@ -106,7 +106,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/nginx/certificates/123
 	 *
 	 * Retrieve a specific certificate
@@ -140,13 +140,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * PUT /api/nginx/certificates/123
 	 *
 	 * Update and existing certificate
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/certificates#/links/2/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/certificates#/links/2/schema' }, req.body)
 			.then((payload) => {
 				payload.id = parseInt(req.params.certificate_id, 10);
 				return internalCertificate.update(res.locals.access, payload);
@@ -158,13 +158,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * DELETE /api/nginx/certificates/123
 	 *
 	 * Update and existing certificate
 	 */
 	.delete((req, res, next) => {
-		internalCertificate.delete(res.locals.access, {id: parseInt(req.params.certificate_id, 10)})
+		internalCertificate.delete(res.locals.access, { id: parseInt(req.params.certificate_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -184,7 +184,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/certificates/123/upload
 	 *
 	 * Upload certificates
@@ -192,7 +192,7 @@ router
 	.post((req, res, next) => {
 		if (!req.files) {
 			res.status(400)
-				.send({error: 'No files were uploaded'});
+				.send({ error: 'No files were uploaded' });
 		} else {
 			internalCertificate.upload(res.locals.access, {
 				id:    parseInt(req.params.certificate_id, 10),
@@ -218,7 +218,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/certificates/123/renew
 	 *
 	 * Renew certificate
@@ -247,7 +247,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/nginx/certificates/123/download
 	 *
 	 * Renew certificate
@@ -275,7 +275,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/certificates/validate
 	 *
 	 * Validate certificates
@@ -283,7 +283,7 @@ router
 	.post((req, res, next) => {
 		if (!req.files) {
 			res.status(400)
-				.send({error: 'No files were uploaded'});
+				.send({ error: 'No files were uploaded' });
 		} else {
 			internalCertificate.validate({
 				files: req.files

@@ -2,7 +2,7 @@ const express = require('express');
 const pjson   = require('../../package.json');
 const error   = require('../../lib/error');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -12,8 +12,8 @@ let router = express.Router({
  * Health Check
  * GET /api
  */
-router.get('/', (req, res/*, next*/) => {
-	let version = pjson.version.split('-').shift().split('.');
+router.get('/', (req, res/*, next */) => {
+	const version = pjson.version.split('-').shift().split('.');
 
 	res.status(200).send({
 		status:  'OK',

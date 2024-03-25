@@ -7,7 +7,7 @@ RegExp.prototype.toJSON = RegExp.prototype.toString;
 const ajv = require('ajv')({
 	verbose:     true,
 	allErrors:   true,
-	format:      'full',  // strict regexes for format checks
+	format:      'full', // strict regexes for format checks
 	coerceTypes: true,
 	schemas:     [
 		definitions
@@ -26,24 +26,20 @@ function validator (schema, payload) {
 			reject(new error.InternalValidationError('Payload is falsy'));
 		} else {
 			try {
-				let validate = ajv.compile(schema);
+				const validate = ajv.compile(schema);
 
-				let valid = validate(payload);
+				const valid = validate(payload);
 				if (valid && !validate.errors) {
 					resolve(_.cloneDeep(payload));
 				} else {
-					let message = ajv.errorsText(validate.errors);
+					const message = ajv.errorsText(validate.errors);
 					reject(new error.InternalValidationError(message));
 				}
-
 			} catch (err) {
 				reject(err);
 			}
-
 		}
-
 	});
-
 }
 
 module.exports = validator;

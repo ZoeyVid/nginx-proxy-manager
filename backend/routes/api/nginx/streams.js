@@ -4,7 +4,7 @@ const jwtdecode      = require('../../../lib/express/jwt-decode');
 const internalStream = require('../../../internal/stream');
 const apiValidator   = require('../../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -20,7 +20,7 @@ router
 	})
 	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
 
-	/**
+/**
 	 * GET /api/nginx/streams
 	 *
 	 * Retrieve all streams
@@ -50,13 +50,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * POST /api/nginx/streams
 	 *
 	 * Create a new stream
 	 */
 	.post((req, res, next) => {
-		apiValidator({$ref: 'endpoints/streams#/links/1/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/streams#/links/1/schema' }, req.body)
 			.then((payload) => {
 				return internalStream.create(res.locals.access, payload);
 			})
@@ -79,7 +79,7 @@ router
 	})
 	.all(jwtdecode()) // preferred so it doesn't apply to nonexistent routes
 
-	/**
+/**
 	 * GET /api/nginx/streams/123
 	 *
 	 * Retrieve a specific stream
@@ -113,13 +113,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * PUT /api/nginx/streams/123
 	 *
 	 * Update and existing stream
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/streams#/links/2/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/streams#/links/2/schema' }, req.body)
 			.then((payload) => {
 				payload.id = parseInt(req.params.stream_id, 10);
 				return internalStream.update(res.locals.access, payload);
@@ -131,13 +131,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * DELETE /api/nginx/streams/123
 	 *
 	 * Update and existing stream
 	 */
 	.delete((req, res, next) => {
-		internalStream.delete(res.locals.access, {id: parseInt(req.params.stream_id, 10)})
+		internalStream.delete(res.locals.access, { id: parseInt(req.params.stream_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -157,11 +157,11 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/streams/123/enable
 	 */
 	.post((req, res, next) => {
-		internalStream.enable(res.locals.access, {id: parseInt(req.params.host_id, 10)})
+		internalStream.enable(res.locals.access, { id: parseInt(req.params.host_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -181,11 +181,11 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/nginx/streams/123/disable
 	 */
 	.post((req, res, next) => {
-		internalStream.disable(res.locals.access, {id: parseInt(req.params.host_id, 10)})
+		internalStream.disable(res.locals.access, { id: parseInt(req.params.host_id, 10) })
 			.then((result) => {
 				res.status(200)
 					.send(result);

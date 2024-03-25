@@ -12,7 +12,6 @@ const logger = require('../logger').global;
 const ALGO   = 'RS256';
 
 module.exports = function () {
-
 	let token_data = {};
 
 	const self = {
@@ -41,8 +40,8 @@ module.exports = function () {
 					} else {
 						token_data = payload;
 						resolve({
-							token:   token,
-							payload: payload
+							token,
+							payload
 						});
 					}
 				});
@@ -62,15 +61,13 @@ module.exports = function () {
 					if (!token || token === null || token === 'null') {
 						reject(new error.AuthError('Empty token'));
 					} else {
-						jwt.verify(token, config.getPublicKey(), {ignoreExpiration: false, algorithms: [ALGO]}, (err, result) => {
+						jwt.verify(token, config.getPublicKey(), { ignoreExpiration: false, algorithms: [ALGO] }, (err, result) => {
 							if (err) {
-
 								if (err.name === 'TokenExpiredError') {
 									reject(new error.AuthError('Token has expired', err));
 								} else {
 									reject(err);
 								}
-
 							} else {
 								token_data = result;
 								resolve(token_data);
@@ -81,7 +78,6 @@ module.exports = function () {
 					reject(err);
 				}
 			});
-
 		},
 
 		/**

@@ -59,8 +59,8 @@ const internalNginx = {
 						// It will always look like this:
 						//   nginx: [alert] could not open error log file: open() "/dev/null" failed (6: No such device or address)
 
-						let valid_lines = [];
-						let err_lines   = err.message.split('\n');
+						const valid_lines = [];
+						const err_lines   = err.message.split('\n');
 						err_lines.map(function (line) {
 							if (line.indexOf('/dev/null') === -1) {
 								valid_lines.push(line);
@@ -155,7 +155,7 @@ const internalNginx = {
 			let template;
 
 			try {
-				template = fs.readFileSync(__dirname + '/../templates/_location.conf', {encoding: 'utf8'});
+				template = fs.readFileSync(__dirname + '/../templates/_location.conf', { encoding: 'utf8' });
 			} catch (err) {
 				reject(new error.ConfigurationError(err.message));
 				return;
@@ -166,11 +166,11 @@ const internalNginx = {
 
 			const locationRendering = async () => {
 				for (let i = 0; i < host.locations.length; i++) {
-					let locationCopy = Object.assign({}, {access_list_id: host.access_list_id}, {certificate_id: host.certificate_id},
-						{ssl_forced: host.ssl_forced}, {caching_enabled: host.caching_enabled}, {block_exploits: host.block_exploits},
-						{allow_websocket_upgrade: host.allow_websocket_upgrade}, {http2_support: host.http2_support},
-						{hsts_enabled: host.hsts_enabled}, {hsts_subdomains: host.hsts_subdomains}, {access_list: host.access_list},
-						{certificate: host.certificate}, host.locations[i]);
+					const locationCopy = Object.assign({}, { access_list_id: host.access_list_id }, { certificate_id: host.certificate_id },
+						{ ssl_forced: host.ssl_forced }, { caching_enabled: host.caching_enabled }, { block_exploits: host.block_exploits },
+						{ allow_websocket_upgrade: host.allow_websocket_upgrade }, { http2_support: host.http2_support },
+						{ hsts_enabled: host.hsts_enabled }, { hsts_subdomains: host.hsts_subdomains }, { access_list: host.access_list },
+						{ certificate: host.certificate }, host.locations[i]);
 
 					if (locationCopy.forward_host.indexOf('/') > -1) {
 						const split = locationCopy.forward_host.split('/');
@@ -182,11 +182,9 @@ const internalNginx = {
 					// eslint-disable-next-line
 					renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
 				}
-
 			};
 
 			locationRendering().then(() => resolve(renderedLocations));
-
 		});
 	},
 
@@ -205,11 +203,11 @@ const internalNginx = {
 		const renderEngine = utils.getRenderEngine();
 
 		return new Promise((resolve, reject) => {
-			let template = null;
-			let filename = internalNginx.getConfigName(nice_host_type, host.id);
+			let template   = null;
+			const filename = internalNginx.getConfigName(nice_host_type, host.id);
 
 			try {
-				template = fs.readFileSync(__dirname + '/../templates/' + nice_host_type + '.conf', {encoding: 'utf8'});
+				template = fs.readFileSync(__dirname + '/../templates/' + nice_host_type + '.conf', { encoding: 'utf8' });
 			} catch (err) {
 				reject(new error.ConfigurationError(err.message));
 				return;
@@ -227,7 +225,7 @@ const internalNginx = {
 			}
 
 			if (host.locations) {
-				//logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
+				// logger.info ('host.locations = ' + JSON.stringify(host.locations, null, 2));
 				origLocations    = [].concat(host.locations);
 				locationsPromise = internalNginx.renderLocations(host).then((renderedLocations) => {
 					host.locations = renderedLocations;
@@ -239,7 +237,6 @@ const internalNginx = {
 						host.use_default_location = false;
 					}
 				});
-
 			} else {
 				locationsPromise = Promise.resolve();
 			}
@@ -251,7 +248,7 @@ const internalNginx = {
 				renderEngine
 					.parseAndRender(template, host)
 					.then((config_text) => {
-						fs.writeFileSync(filename, config_text, {encoding: 'utf8'});
+						fs.writeFileSync(filename, config_text, { encoding: 'utf8' });
 
 						if (config.debug()) {
 							logger.success('Wrote config:', filename, config_text);
@@ -296,7 +293,6 @@ const internalNginx = {
 		return host_type.replace(new RegExp('-', 'g'), '_');
 	},
 
-
 	/**
 	 * @param   {String}  host_type
 	 * @param   {Object}  [host]
@@ -307,7 +303,7 @@ const internalNginx = {
 		const config_file     = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
 		const config_file_err = config_file + '.err';
 
-		return new Promise((resolve/*, reject*/) => {
+		return new Promise((resolve/*, reject */) => {
 			internalNginx.deleteFile(config_file);
 			if (delete_err_file) {
 				internalNginx.deleteFile(config_file_err);
@@ -325,7 +321,7 @@ const internalNginx = {
 		const config_file     = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
 		const config_file_err = config_file + '.err';
 
-		return new Promise((resolve/*, reject*/) => {
+		return new Promise((resolve/*, reject */) => {
 			fs.unlink(config_file, () => {
 				// ignore result, continue
 				fs.rename(config_file, config_file_err, () => {
@@ -342,7 +338,7 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	bulkGenerateConfigs: (host_type, hosts) => {
-		let promises = [];
+		const promises = [];
 		hosts.map(function (host) {
 			promises.push(internalNginx.generateConfig(host_type, host));
 		});
@@ -356,7 +352,7 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	bulkDeleteConfigs: (host_type, hosts) => {
-		let promises = [];
+		const promises = [];
 		hosts.map(function (host) {
 			promises.push(internalNginx.deleteConfig(host_type, host, true));
 		});

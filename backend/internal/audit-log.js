@@ -14,7 +14,7 @@ const internalAuditLog = {
 	getAll: (access, expand, search_query) => {
 		return access.can('auditlog:list')
 			.then(() => {
-				let query = auditLogModel
+				const query = auditLogModel
 					.query()
 					.orderBy('created_on', 'DESC')
 					.orderBy('id', 'DESC')

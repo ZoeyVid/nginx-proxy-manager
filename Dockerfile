@@ -63,7 +63,7 @@ ARG CRS_VER=v4.1.0
 
 COPY rootfs /
 COPY --from=zoeyvid/certbot-docker:27 /usr/local          /usr/local
-COPY --from=zoeyvid/curl-quic:377     /usr/local/bin/curl /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:378     /usr/local/bin/curl /usr/local/bin/curl
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \

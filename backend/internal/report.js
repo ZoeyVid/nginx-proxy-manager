@@ -12,9 +12,9 @@ const internalReport = {
 	getHostsReport: (access) => {
 		return access.can('reports:hosts', 1)
 			.then((access_data) => {
-				let user_id = access.token.getUserId(1);
+				const user_id = access.token.getUserId(1);
 
-				let promises = [
+				const promises = [
 					internalProxyHost.getCount(user_id, access_data.visibility),
 					internalRedirectionHost.getCount(user_id, access_data.visibility),
 					internalStream.getCount(user_id, access_data.visibility),
@@ -31,7 +31,6 @@ const internalReport = {
 					dead:        counts.shift()
 				};
 			});
-
 	}
 };
 

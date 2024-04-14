@@ -91,7 +91,7 @@ module.exports = {
 		this.message  = stdErr;
 		this.code     = code;
 		this.public   = false;
-	},
+	}
 };
 
 _.forEach(module.exports, function (error) {

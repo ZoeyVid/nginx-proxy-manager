@@ -19,7 +19,7 @@ const internalProxyHost = {
 	 * @returns {Promise}
 	 */
 	create: (access, data) => {
-		let create_certificate = data.certificate_id === 'new';
+		const create_certificate = data.certificate_id === 'new';
 
 		if (create_certificate) {
 			delete data.certificate_id;
@@ -28,7 +28,7 @@ const internalProxyHost = {
 		return access.can('proxy_hosts:create', data)
 			.then(() => {
 				// Get a list of the domain names and check each of them against existing records
-				let domain_name_check_promises = [];
+				const domain_name_check_promises = [];
 
 				data.domain_names.map(function (domain_name) {
 					domain_name_check_promises.push(internalHost.isHostnameTaken(domain_name));
@@ -108,16 +108,16 @@ const internalProxyHost = {
 	 * @return {Promise}
 	 */
 	update: (access, data) => {
-		let create_certificate = data.certificate_id === 'new';
+		const create_certificate = data.certificate_id === 'new';
 
 		if (create_certificate) {
 			delete data.certificate_id;
 		}
 
 		return access.can('proxy_hosts:update', data.id)
-			.then((/*access_data*/) => {
+			.then((/* access_data */) => {
 				// Get a list of the domain names and check each of them against existing records
-				let domain_name_check_promises = [];
+				const domain_name_check_promises = [];
 
 				if (typeof data.domain_names !== 'undefined') {
 					data.domain_names.map(function (domain_name) {
@@ -135,7 +135,7 @@ const internalProxyHost = {
 				}
 			})
 			.then(() => {
-				return internalProxyHost.get(access, {id: data.id});
+				return internalProxyHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (row.id !== data.id) {
@@ -169,7 +169,7 @@ const internalProxyHost = {
 
 				return proxyHostModel
 					.query()
-					.where({id: data.id})
+					.where({ id: data.id })
 					.patch(data)
 					.then(utils.omitRow(omissions()))
 					.then((saved_row) => {
@@ -221,7 +221,7 @@ const internalProxyHost = {
 
 		return access.can('proxy_hosts:get', data.id)
 			.then((access_data) => {
-				let query = proxyHostModel
+				const query = proxyHostModel
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
@@ -261,7 +261,7 @@ const internalProxyHost = {
 	delete: (access, data) => {
 		return access.can('proxy_hosts:delete', data.id)
 			.then(() => {
-				return internalProxyHost.get(access, {id: data.id});
+				return internalProxyHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -355,7 +355,7 @@ const internalProxyHost = {
 	disable: (access, data) => {
 		return access.can('proxy_hosts:update', data.id)
 			.then(() => {
-				return internalProxyHost.get(access, {id: data.id});
+				return internalProxyHost.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (!row) {
@@ -405,7 +405,7 @@ const internalProxyHost = {
 	getAll: (access, expand, search_query) => {
 		return access.can('proxy_hosts:list')
 			.then((access_data) => {
-				let query = proxyHostModel
+				const query = proxyHostModel
 					.query()
 					.where('is_deleted', 0)
 					.groupBy('id')
@@ -446,7 +446,7 @@ const internalProxyHost = {
 	 * @returns {Promise}
 	 */
 	getCount: (user_id, visibility) => {
-		let query = proxyHostModel
+		const query = proxyHostModel
 			.query()
 			.count('id as count')
 			.where('is_deleted', 0);

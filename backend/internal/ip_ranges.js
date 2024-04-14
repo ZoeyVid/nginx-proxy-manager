@@ -57,7 +57,7 @@ const internalIpRanges = {
 
 			return internalIpRanges.fetchUrl(CLOUDFRONT_URL)
 				.then((cloudfront_data) => {
-					let data = JSON.parse(cloudfront_data);
+					const data = JSON.parse(cloudfront_data);
 
 					if (data && typeof data.prefixes !== 'undefined') {
 						data.prefixes.map((item) => {
@@ -79,18 +79,18 @@ const internalIpRanges = {
 					return internalIpRanges.fetchUrl(CLOUDFARE_V4_URL);
 				})
 				.then((cloudfare_data) => {
-					let items = cloudfare_data.split('\n').filter((line) => regIpV4.test(line));
-					ip_ranges = [... ip_ranges, ... items];
+					const items = cloudfare_data.split('\n').filter((line) => regIpV4.test(line));
+					ip_ranges   = [...ip_ranges, ...items];
 				})
 				.then(() => {
 					return internalIpRanges.fetchUrl(CLOUDFARE_V6_URL);
 				})
 				.then((cloudfare_data) => {
-					let items = cloudfare_data.split('\n').filter((line) => regIpV6.test(line));
-					ip_ranges = [... ip_ranges, ... items];
+					const items = cloudfare_data.split('\n').filter((line) => regIpV6.test(line));
+					ip_ranges   = [...ip_ranges, ...items];
 				})
 				.then(() => {
-					let clean_ip_ranges = [];
+					const clean_ip_ranges = [];
 					ip_ranges.map((range) => {
 						if (range) {
 							clean_ip_ranges.push(range);
@@ -123,19 +123,19 @@ const internalIpRanges = {
 	generateConfig: (ip_ranges) => {
 		const renderEngine = utils.getRenderEngine();
 		return new Promise((resolve, reject) => {
-			let template = null;
-			let filename = '/data/nginx/ip_ranges.conf';
+			let template   = null;
+			const filename = '/data/nginx/ip_ranges.conf';
 			try {
-				template = fs.readFileSync(__dirname + '/../templates/ip_ranges.conf', {encoding: 'utf8'});
+				template = fs.readFileSync(__dirname + '/../templates/ip_ranges.conf', { encoding: 'utf8' });
 			} catch (err) {
 				reject(new error.ConfigurationError(err.message));
 				return;
 			}
 
 			renderEngine
-				.parseAndRender(template, {ip_ranges: ip_ranges})
+				.parseAndRender(template, { ip_ranges })
 				.then((config_text) => {
-					fs.writeFileSync(filename, config_text, {encoding: 'utf8'});
+					fs.writeFileSync(filename, config_text, { encoding: 'utf8' });
 					resolve(true);
 				})
 				.catch((err) => {

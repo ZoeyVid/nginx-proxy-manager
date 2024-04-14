@@ -21,7 +21,7 @@ module.exports = {
 	 * @returns {Object}
 	 */
 	parseDatePeriod: function (expression) {
-		let matches = expression.match(/^([0-9]+)(y|Q|M|w|d|h|m|s|ms)$/m);
+		const matches = expression.match(/^([0-9]+)(y|Q|M|w|d|h|m|s|ms)$/m);
 		if (matches) {
 			return moment().add(matches[1], matches[2]);
 		}

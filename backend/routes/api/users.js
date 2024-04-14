@@ -5,7 +5,7 @@ const userIdFromMe = require('../../lib/express/user-id-from-me');
 const internalUser = require('../../internal/user');
 const apiValidator = require('../../lib/validator/api');
 
-let router = express.Router({
+const router = express.Router({
 	caseSensitive: true,
 	strict:        true,
 	mergeParams:   true
@@ -21,7 +21,7 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * GET /api/users
 	 *
 	 * Retrieve all users
@@ -51,13 +51,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * POST /api/users
 	 *
 	 * Create a new User
 	 */
 	.post((req, res, next) => {
-		apiValidator({$ref: 'endpoints/users#/links/1/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/users#/links/1/schema' }, req.body)
 			.then((payload) => {
 				return internalUser.create(res.locals.access, payload);
 			})
@@ -81,7 +81,7 @@ router
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
-	/**
+/**
 	 * GET /users/123 or /users/me
 	 *
 	 * Retrieve a specific user
@@ -116,13 +116,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * PUT /api/users/123
 	 *
 	 * Update and existing user
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/users#/links/2/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/users#/links/2/schema' }, req.body)
 			.then((payload) => {
 				payload.id = req.params.user_id;
 				return internalUser.update(res.locals.access, payload);
@@ -134,13 +134,13 @@ router
 			.catch(next);
 	})
 
-	/**
+/**
 	 * DELETE /api/users/123
 	 *
 	 * Update and existing user
 	 */
 	.delete((req, res, next) => {
-		internalUser.delete(res.locals.access, {id: req.params.user_id})
+		internalUser.delete(res.locals.access, { id: req.params.user_id })
 			.then((result) => {
 				res.status(200)
 					.send(result);
@@ -161,13 +161,13 @@ router
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
-	/**
+/**
 	 * PUT /api/users/123/auth
 	 *
 	 * Update password for a user
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/users#/links/4/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/users#/links/4/schema' }, req.body)
 			.then((payload) => {
 				payload.id = req.params.user_id;
 				return internalUser.setPassword(res.locals.access, payload);
@@ -192,13 +192,13 @@ router
 	.all(jwtdecode())
 	.all(userIdFromMe)
 
-	/**
+/**
 	 * PUT /api/users/123/permissions
 	 *
 	 * Set some or all permissions for a user
 	 */
 	.put((req, res, next) => {
-		apiValidator({$ref: 'endpoints/users#/links/5/schema'}, req.body)
+		apiValidator({ $ref: 'endpoints/users#/links/5/schema' }, req.body)
 			.then((payload) => {
 				payload.id = req.params.user_id;
 				return internalUser.setPermissions(res.locals.access, payload);
@@ -222,13 +222,13 @@ router
 	})
 	.all(jwtdecode())
 
-	/**
+/**
 	 * POST /api/users/123/login
 	 *
 	 * Log in as a user
 	 */
 	.post((req, res, next) => {
-		internalUser.loginAs(res.locals.access, {id: parseInt(req.params.user_id, 10)})
+		internalUser.loginAs(res.locals.access, { id: parseInt(req.params.user_id, 10) })
 			.then((result) => {
 				res.status(201)
 					.send(result);

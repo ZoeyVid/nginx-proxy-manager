@@ -6,7 +6,7 @@ const fs      = require('fs');
 const bcrypt  = require('bcrypt');
 const sqlite3 = require('sqlite3');
 
-function usage() {
+function usage () {
 	console.log(`usage: node ${process.argv[1]} USER_EMAIL PASSWORD
 
 Reset password of a NPMplus user.
@@ -46,13 +46,13 @@ if (fs.existsSync(process.env.DB_SQLITE_FILE)) {
      (SELECT * FROM user WHERE user.id = auth.user_id AND user.email = ?)`,
 			[PASSWORD_HASH, USER_EMAIL],
 			function (err) {
-				if (err) {
-					console.error(err);
-					process.exit(1);
-				}
+			  if (err) {
+			    console.error(err);
+			    process.exit(1);
+			  }
 
-				console.log(`Password for user ${USER_EMAIL} has been reset.`);
-				process.exit(0);
+			  console.log(`Password for user ${USER_EMAIL} has been reset.`);
+			  process.exit(0);
 			}
 		);
 	});

@@ -20,7 +20,7 @@ const internalUser = {
 	 * @returns {Promise}
 	 */
 	create: (access, data) => {
-		let auth = data.auth || null;
+		const auth = data.auth || null;
 		delete data.auth;
 
 		data.avatar = data.avatar || '';
@@ -32,7 +32,7 @@ const internalUser = {
 
 		return access.can('users:create', data)
 			.then(() => {
-				data.avatar = gravatar.url(data.email, {default: 'mm'});
+				data.avatar = gravatar.url(data.email, { default: 'mm' });
 
 				return userModel
 					.query()
@@ -58,7 +58,7 @@ const internalUser = {
 			})
 			.then((user) => {
 				// Create permissions row as well
-				let is_admin = data.roles.indexOf('admin') !== -1;
+				const is_admin = data.roles.indexOf('admin') !== -1;
 
 				return userPermissionModel
 					.query()
@@ -73,7 +73,7 @@ const internalUser = {
 						certificates:      'manage'
 					})
 					.then(() => {
-						return internalUser.get(access, {id: user.id, expand: ['permissions']});
+						return internalUser.get(access, { id: user.id, expand: ['permissions'] });
 					});
 			})
 			.then((user) => {
@@ -105,12 +105,10 @@ const internalUser = {
 
 		return access.can('users:update', data.id)
 			.then(() => {
-
 				// Make sure that the user being updated doesn't change their email to another user that is already using it
 				// 1. get user we want to update
-				return internalUser.get(access, {id: data.id})
+				return internalUser.get(access, { id: data.id })
 					.then((user) => {
-
 						// 2. if email is to be changed, find other users with that email
 						if (typeof data.email !== 'undefined') {
 							data.email = data.email.toLowerCase().trim();
@@ -137,7 +135,7 @@ const internalUser = {
 					throw new error.InternalValidationError('User could not be updated, IDs do not match: ' + user.id + ' !== ' + data.id);
 				}
 
-				data.avatar = gravatar.url(data.email || user.email, {default: 'mm'});
+				data.avatar = gravatar.url(data.email || user.email, { default: 'mm' });
 
 				return userModel
 					.query()
@@ -145,7 +143,7 @@ const internalUser = {
 					.then(utils.omitRow(omissions()));
 			})
 			.then(() => {
-				return internalUser.get(access, {id: data.id});
+				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				// Add to audit log
@@ -180,7 +178,7 @@ const internalUser = {
 
 		return access.can('users:get', data.id)
 			.then(() => {
-				let query = userModel
+				const query = userModel
 					.query()
 					.where('is_deleted', 0)
 					.andWhere('id', data.id)
@@ -213,7 +211,7 @@ const internalUser = {
 	 * @param user_id
 	 */
 	isEmailAvailable: (email, user_id) => {
-		let query = userModel
+		const query = userModel
 			.query()
 			.where('email', '=', email.toLowerCase().trim())
 			.where('is_deleted', 0)
@@ -239,7 +237,7 @@ const internalUser = {
 	delete: (access, data) => {
 		return access.can('users:delete', data.id)
 			.then(() => {
-				return internalUser.get(access, {id: data.id});
+				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (!user) {
@@ -282,7 +280,7 @@ const internalUser = {
 	getCount: (access, search_query) => {
 		return access.can('users:list')
 			.then(() => {
-				let query = userModel
+				const query = userModel
 					.query()
 					.count('id as count')
 					.where('is_deleted', 0)
@@ -314,7 +312,7 @@ const internalUser = {
 	getAll: (access, expand, search_query) => {
 		return access.can('users:list')
 			.then(() => {
-				let query = userModel
+				const query = userModel
 					.query()
 					.where('is_deleted', 0)
 					.groupBy('id')
@@ -363,7 +361,7 @@ const internalUser = {
 	setPassword: (access, data) => {
 		return access.can('users:password', data.id)
 			.then(() => {
-				return internalUser.get(access, {id: data.id});
+				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (user.id !== data.id) {
@@ -445,7 +443,7 @@ const internalUser = {
 	setPermissions: (access, data) => {
 		return access.can('users:permissions', data.id)
 			.then(() => {
-				return internalUser.get(access, {id: data.id});
+				return internalUser.get(access, { id: data.id });
 			})
 			.then((user) => {
 				if (user.id !== data.id) {
@@ -467,12 +465,12 @@ const internalUser = {
 							return userPermissionModel
 								.query()
 								.where('user_id', user.id)
-								.patchAndFetchById(existing_auth.id, _.assign({user_id: user.id}, data));
+								.patchAndFetchById(existing_auth.id, _.assign({ user_id: user.id }, data));
 						} else {
 							// insert
 							return userPermissionModel
 								.query()
-								.insertAndFetch(_.assign({user_id: user.id}, data));
+								.insertAndFetch(_.assign({ user_id: user.id }, data));
 						}
 					})
 					.then((permissions) => {
@@ -482,11 +480,10 @@ const internalUser = {
 							object_type: 'user',
 							object_id:   user.id,
 							meta:        {
-								name:        user.name,
-								permissions: permissions
+								name: user.name,
+								permissions
 							}
 						});
-
 					});
 			})
 			.then(() => {

@@ -15,21 +15,21 @@ const ajv = require('ajv')({
  * @param {Object} payload
  * @returns {Promise}
  */
-function apiValidator (schema, payload/*, description*/) {
+function apiValidator (schema, payload/*, description */) {
 	return new Promise(function Promise_apiValidator (resolve, reject) {
 		if (typeof payload === 'undefined') {
 			reject(new error.ValidationError('Payload is undefined'));
 		}
 
-		let validate = ajv.compile(schema);
-		let valid    = validate(payload);
+		const validate = ajv.compile(schema);
+		const valid    = validate(payload);
 
 		if (valid && !validate.errors) {
 			resolve(payload);
 		} else {
-			let message = ajv.errorsText(validate.errors);
-			let err     = new error.ValidationError(message);
-			err.debug   = [validate.errors, payload];
+			const message = ajv.errorsText(validate.errors);
+			const err     = new error.ValidationError(message);
+			err.debug     = [validate.errors, payload];
 			reject(err);
 		}
 	});

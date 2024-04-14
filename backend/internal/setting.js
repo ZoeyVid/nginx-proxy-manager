@@ -13,8 +13,8 @@ const internalSetting = {
 	 */
 	update: (access, data) => {
 		return access.can('settings:update', data.id)
-			.then((/*access_data*/) => {
-				return internalSetting.get(access, {id: data.id});
+			.then((/* access_data */) => {
+				return internalSetting.get(access, { id: data.id });
 			})
 			.then((row) => {
 				if (row.id !== data.id) {
@@ -24,7 +24,7 @@ const internalSetting = {
 
 				return settingModel
 					.query()
-					.where({id: data.id})
+					.where({ id: data.id })
 					.patch(data);
 			})
 			.then(() => {
@@ -36,7 +36,7 @@ const internalSetting = {
 				if (row.id === 'default-site') {
 					// write the html if we need to
 					if (row.value === 'html') {
-						fs.writeFileSync('/data/nginx/etc/index.html', row.meta.html, {encoding: 'utf8'});
+						fs.writeFileSync('/data/nginx/etc/index.html', row.meta.html, { encoding: 'utf8' });
 					}
 
 					// Configure nginx
@@ -53,7 +53,7 @@ const internalSetting = {
 						.then(() => {
 							return row;
 						})
-						.catch((/*err*/) => {
+						.catch((/* err */) => {
 							internalNginx.deleteConfig('default')
 								.then(() => {
 									return internalNginx.test();

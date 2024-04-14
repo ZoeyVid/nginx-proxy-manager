@@ -11,7 +11,7 @@ Model.knex(db);
 
 function encryptPassword () {
 	/* jshint -W040 */
-	let _this = this;
+	const _this = this;
 
 	if (_this.type === 'password' && _this.secret) {
 		return bcrypt.hash(_this.secret, 13)

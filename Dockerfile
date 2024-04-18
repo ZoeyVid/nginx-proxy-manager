@@ -145,3 +145,7 @@ ENV PUID=0 \
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
 HEALTHCHECK CMD healthcheck.sh
+EXPOSE 80/tcp
+EXPOSE 81/tcp
+EXPOSE 443/tcp
+EXPOSE 443/udp

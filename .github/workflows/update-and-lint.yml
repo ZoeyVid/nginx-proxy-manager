@@ -31,9 +31,9 @@ jobs:
       - name: nginxbeautifier
         run: |
           yarn global add nginxbeautifier
-          #mv rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf block-exploits.conf
+          mv rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf block-exploits.conf
           nginxbeautifier -s 4 -r rootfs/usr/local/nginx/conf
-          #mv block-exploits.conf rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf
+          mv block-exploits.conf rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf
       - name: push changes
         run: |
           git add -A

@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "phpmailer/phpmailer": "6.9.1",
-        "chillerlan/php-qrcode": "5.0.2"
+        "endroid/qr-code": "5.0.0"
     },
     "license": "AGPL-3.0",
     "version": "v0.0.1-alpha",

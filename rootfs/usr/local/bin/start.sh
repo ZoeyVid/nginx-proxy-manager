@@ -216,6 +216,11 @@ if [ -n "$PHP82_APKS" ] && ! echo "$PHP82_APKS" | grep -q "^[a-z0-9 _-]\+$"; the
     sleep inf
 fi
 
+if ! echo "$PHP83" | grep -q "^true$\|^false$"; then
+    echo "PHP83 needs to be true or false."
+    sleep inf
+fi
+
 if [ -n "$PHP83_APKS" ] && ! echo "$PHP83_APKS" | grep -q "^[a-z0-9 _-]\+$"; then
     echo "PHP83_APKS can consist of lower letters a-z, numbers 0-9, spaces, underscores and hyphens."
     sleep inf
@@ -303,9 +308,9 @@ if [ "$PHP81" = "true" ]; then
 
     mkdir -vp /data/php
     cp -varnT /etc/php81 /data/php/81
-    sed -i "s|listen =.*|listen = /run/php81.sock|" /data/php/81/php-fpm.d/www.conf
-    sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/81/php-fpm.conf
-    sed -i "s|include=.*|include=/data/php/81/php-fpm.d/*.conf|g" /data/php/81/php-fpm.conf
+    sed -i "s|;\?listen\s*=.*|listen = /run/php81.sock|g" /data/php/81/php-fpm.d/www.conf
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /data/php/81/php-fpm.conf
+    sed -i "s|;\?include\s*=.*|include = /data/php/81/php-fpm.d/*.conf|g" /data/php/81/php-fpm.conf
 
 elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/php/81
@@ -334,42 +339,52 @@ if [ "$PHP82" = "true" ]; then
 
     mkdir -vp /data/php
     cp -varnT /etc/php82 /data/php/82
-    sed -i "s|listen =.*|listen = /run/php82.sock|" /data/php/82/php-fpm.d/www.conf
-    sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/82/php-fpm.conf
-    sed -i "s|include=.*|include=/data/php/82/php-fpm.d/*.conf|g" /data/php/82/php-fpm.conf
+    sed -i "s|;\?listen\s*=.*|listen = /run/php82.sock|g" /data/php/82/php-fpm.d/www.conf
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /data/php/82/php-fpm.conf
+    sed -i "s|;\?include\s*=.*|include = /data/php/82/php-fpm.d/*.conf|g" /data/php/82/php-fpm.conf
 
 elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/php/82
 fi
 
-# From https://github.com/nextcloud/all-in-one/pull/1377/files
-if [ -n "$PHP83_APKS" ]; then
-    for apk in $(echo "$PHP83_APKS" | tr " " "\n"); do
-        if ! echo "$apk" | grep -q "^php83-.*$"; then
-            echo "$apk is a non allowed value."
-            echo "It needs to start with \"php83-\"."
-            echo "It is set to \"$apk\"."
-            sleep inf
-        fi
+if [ "$PHP83" = "true" ]; then
 
-        echo "Installing $apk via apk..."
-        if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
-            echo "The apk \"$apk\" was not installed!"
-        fi
-    done
+    apk add --no-cache php83-fpm
+
+    # From https://github.com/nextcloud/all-in-one/pull/1377/files
+    if [ -n "$PHP83_APKS" ]; then
+        for apk in $(echo "$PHP83_APKS" | tr " " "\n"); do
+            if ! echo "$apk" | grep -q "^php83-.*$"; then
+                echo "$apk is a non allowed value."
+                echo "It needs to start with \"php83-\"."
+                echo "It is set to \"$apk\"."
+                sleep inf
+            fi
+
+            echo "Installing $apk via apk..."
+            if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
+                echo "The apk \"$apk\" was not installed!"
+            fi
+        done
+    fi
+
+    mkdir -vp /data/php
+    cp -varnT /etc/php83 /data/php/83
+    sed -i "s|;\?listen\s*=.*|listen = /run/php83.sock|g" /data/php/83/php-fpm.d/www.conf
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /data/php/83/php-fpm.conf
+    sed -i "s|;\?include\s*=.*|include = /data/php/83/php-fpm.d/*.conf|g" /data/php/83/php-fpm.conf
+
+elif [ "$FULLCLEAN" = "true" ]; then
+    rm -vrf /data/php/83
 fi
-mkdir -vp /data/php
-cp -varnT /etc/php83 /data/php/83
-sed -i "s|listen =.*|listen = /run/php83.sock|" /data/php/83/php-fpm.d/www.conf
-sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/83/php-fpm.conf
-sed -i "s|include=.*|include=/data/php/83/php-fpm.d/*.conf|g" /data/php/83/php-fpm.conf
+
 
 if [ "$LOGROTATE" = "true" ]; then
     apk add --no-cache logrotate
     sed -i "s|rotate [0-9]\+|rotate $LOGROTATIONS|g" /etc/logrotate
     touch /data/nginx/access.log \
           /data/nginx/stream.log
-elif [ "$FULLCLEAN" = "true" ]; then
+elif [ "$CLEAN" = "true" ]; then
     rm -vrf /data/etc/logrotate.status \
             /data/nginx/access.log \
             /data/nginx/access.log.* \
@@ -690,13 +705,13 @@ sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/ngi
 sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/no-server-name.conf
 if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/no-server-name.conf; fi
 
-sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npm.conf
-sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npm.conf
-if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npm.conf; fi
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npmplus.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npmplus.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npmplus.conf; fi
 
-sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
-sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
-if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf; fi
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf; fi
 
 sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
@@ -706,9 +721,6 @@ sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/ngi
 sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/goaccess-no-server-name.conf
 if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/include/goaccess-no-server-name.conf; fi
 
-
-sed -i "s|48693|$NIBEP|g" /app/index.js
-sed -i "s|48693|$NIBEP|g" /usr/local/nginx/conf/conf.d/npm.conf
 
 sed -i "s|48683|$GOAIWSP|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 
@@ -734,15 +746,15 @@ else
     find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" {} \;
 fi
 
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm.conf
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 
 if [ "$NPM_DISABLE_IPV6" = "true" ]; then
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npm.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 else
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 fi
 
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $GOA_IPV4_BINDING:$GOA_PORT/g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
@@ -899,12 +911,14 @@ if [ "$PUID" != "0" ]; then
         echo "ERROR: Unable to set group against the user properly"
         sleep inf
     fi
+    
     find /usr/local \
          /data \
          /run \
          /tmp \
-	 -not \( -uid "$PUID" -and -gid "$PGID" \) \
-         -exec chown "$PUID:$PGID" {} \;
+        -not \( -uid "$PUID" -and -gid "$PGID" \) \
+        -exec chown "$PUID:$PGID" {} \;
+    
     if [ "$PHP81" = "true" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/81/php-fpm.d/www.conf
         sed -i "s|group =.*|;group = root|" /data/php/81/php-fpm.d/www.conf
@@ -917,15 +931,20 @@ if [ "$PUID" != "0" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|group =.*|;group = root|" /data/php/83/php-fpm.d/www.conf
     fi
+    sed -i "s|user =.*|;user = root|" /etc/php/php-fpm.d/www.conf
+    sed -i "s|group =.*|;group = root|" /etc/php/php-fpm.d/www.conf
+    
     sed -i "s|user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
+    
     exec su-exec "$PUID:$PGID" launch.sh
 else
     find /usr/local \
          /data \
          /run \
          /tmp \
-	 -not \( -uid 0 -and -gid 0 \) \
-         -exec chown 0:0 {} \;
+        -not \( -uid 0 -and -gid 0 \) \
+        -exec chown 0:0 {} \;
+    
     if [ "$PHP81" = "true" ]; then
         sed -i "s|;user =.*|user = root|" /data/php/81/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/81/php-fpm.d/www.conf
@@ -938,6 +957,10 @@ else
         sed -i "s|;user =.*|user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/83/php-fpm.d/www.conf
     fi
+    sed -i "s|;user =.*|user = root|" /etc/php/php-fpm.d/www.conf
+    sed -i "s|;group =.*|group = root|" /etc/php/php-fpm.d/www.conf
+    
     sed -i "s|#user root;|user root;|g"  /usr/local/nginx/conf/nginx.conf
+    
     exec launch.sh
 fi

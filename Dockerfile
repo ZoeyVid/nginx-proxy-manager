@@ -29,28 +29,46 @@ ARG CRS_VER=v4.2.0
 
 COPY rootfs /
 COPY src /html/app
-COPY --from=zoeyvid/curl-quic:384 /usr/local/bin/curl /usr/local/bin/curl
+
+COPY --from=zoeyvid/curl-quic:384    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/valkey-static:5 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
     bash nano \
     openssl apache2-utils \
     lua5.1-lzlib lua5.1-socket \
-    coreutils grep findutils jq shadow su-exec \
+    coreutils grep findutils jq shadow su-exec fcgi \
     luarocks5.1 lua5.1-dev lua5.1-sec build-base git \
-    fcgi php83-fpm php83-phar php83-iconv php83-mbstring php83-openssl php83-ctype php83-curl php83-session php-sqlite3 && \
+    php83-fpm php83-openssl php83-iconv php83-ctype php83-curl php83-session php83-sqlite3 php83-pecl-redis && \
+    \
+    cp -var /etc/php83 /etc/php && \
+    sed -i "s|;\?listen\s*=.*|listen = /run/php.sock|g" /etc/php/php-fpm.d/www.conf && \
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /etc/php/php-fpm.conf && \
+    sed -i "s|;\?include\s*=.*|include = /etc/php/php-fpm.d/*.conf|g" /etc/php/php-fpm.conf && \
+    sed -i "s|;\?session.save_handler\s*=.*|session.save_handler = redis|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.save_path\s*=.*|session.save_path = unix:///run/valkey.sock|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.auto_start\s*=.*|session.auto_start = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.use_strict_mode\s*=.*|session.use_strict_mode = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_secure\s*=.*|session.cookie_secure = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_httponly\s*=.*|session.cookie_httponly = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_samesite\s*=.*|session.cookie_samesite = Strict|g" /etc/php/php.ini && \
+    \
     curl https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh | sh -s -- --install-online --home /usr/local/acme.sh --nocron && \
     ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
+    \
     git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
     mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \
     mv -v /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example && \
     mv -v /tmp/coreruleset/plugins /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
     mv -v /tmp/coreruleset/rules /usr/local/nginx/conf/conf.d/include/coreruleset/rules && \
     rm -r /tmp/* && \
+    \
     luarocks-5.1 install lua-cjson && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
     luarocks-5.1 install lua-resty-openssl && \
+    \
     apk del --no-cache luarocks5.1 lua5.1-dev lua5.1-sec build-base git
 
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/lib/plugins            /usr/local/nginx/lib/lua/plugins
@@ -59,10 +77,6 @@ COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/templates/ban.html     
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/templates/captcha.html /usr/local/nginx/conf/conf.d/include/captcha.html
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf    /usr/local/nginx/conf/conf.d/include/crowdsec.conf
 COPY --from=crowdsec /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf      /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf
-
-ENV NODE_ENV=production \
-    NODE_CONFIG_DIR=/data/etc/npm \
-    DB_SQLITE_FILE=/data/etc/npm/database.sqlite
 
 ENV PUID=0 \
     PGID=0 \
@@ -97,9 +111,9 @@ ENV PUID=0 \
     GOA=false \
     GOACLA="--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string" \
     PHP81=false \
-    PHP82=false
+    PHP82=false \
+    PHP83=false
 
-WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
 HEALTHCHECK CMD healthcheck.sh
 EXPOSE 80/tcp

@@ -29,7 +29,7 @@ ARG CRS_VER=v4.2.0
 
 COPY rootfs /
 COPY src /html/app
-COPY --from=zoeyvid/curl-quic:380     /usr/local/bin/curl /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:383     /usr/local/bin/curl /usr/local/bin/curl
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \

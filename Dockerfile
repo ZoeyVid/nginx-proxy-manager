@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.19.1 as crowdsec
+FROM --platform="$BUILDPLATFORM" alpine:3.20.0 as crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG CSNB_VER=v1.0.8
@@ -22,7 +22,7 @@ RUN apk upgrade --no-cache -a && \
     echo "APPSEC_FAILURE_ACTION=deny" | tee -a /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf && \
     sed -i "s|BOUNCING_ON_TYPE=all|BOUNCING_ON_TYPE=ban|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
-FROM zoeyvid/nginx-quic:283
+FROM zoeyvid/nginx-quic:287
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG CRS_VER=v4.2.0
@@ -30,8 +30,9 @@ ARG CRS_VER=v4.2.0
 COPY rootfs /
 COPY src /html/app
 
-COPY --from=zoeyvid/curl-quic:384    /usr/local/bin/curl          /usr/local/bin/curl
-COPY --from=zoeyvid/valkey-static:5 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
+COPY --from=zoeyvid/curl-quic:388    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/valkey-static:12 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
+COPY --from=zoeyvid/valkey-static:12 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \

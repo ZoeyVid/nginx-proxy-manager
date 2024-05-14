@@ -1,4 +1,12 @@
 <?php
+require_once __DIR__ . "/../../../functions/database.php";
+$db = db();
+if ($db->querySingle("SELECT COUNT(*) FROM auth") === 0) {
+    session_unset();
+    session_destroy();
+    header('Location: /auth/setup', true, 307);
+    exit;
+}
 if (array_key_exists("AUTH", $_SESSION) && $_SESSION["AUTH"] === true && array_key_exists("LOGIN_TIME", $_SESSION) && (time() - $_SESSION["LOGIN_TIME"] < 3600)) {
     header("Location: /", true, 307);
     exit;
@@ -30,19 +38,20 @@ if (array_key_exists("AUTH", $_SESSION) && $_SESSION["AUTH"] === true && array_k
         <input type="submit" value="Login" onClick="this.hidden=true;">
         <b></b>
     </form>
-        <?php
-        $msg = match($_GET["msg"]) {
-            "adne" => "Account does not exist.",
-            "wpw" => "Wrong password.",
-            "mtotp" => "Missing TOTP.",
-            "wtotp" => "Wrong TOTP.",
-            default => "Please login.",
-        };
+        <?php if (array_key_exists("msg", $_GET)) {
+            $msg = match ($_GET["msg"]) {
+                "adne" => "Account does not exist.",
+                "wpw" => "Wrong password.",
+                "mtotp" => "Missing TOTP.",
+                "wtotp" => "Wrong TOTP.",
+                default => "Please login.",
+            };
+        } else {
+            $msg = "Please login.";
+        }
         echo "<p><b>Note: " . $msg . "</b></p>";
     } else {
         require_once __DIR__ . "/../../../functions/email.php";
-        require_once __DIR__ . "/../../../require/database.php";
-        $db = db();
         $_SESSION["LOGIN_TIME"] = time();
         $pswd = $_POST["pswd"];
         $email = $_POST["email"];
@@ -55,7 +64,7 @@ if (array_key_exists("AUTH", $_SESSION) && $_SESSION["AUTH"] === true && array_k
         $result = $query->execute()->fetchArray();
 
         if (is_array($result) && validateEmail($email)) {
-            if ($pswd !== $result["pswd"]) {
+            if (!password_verify($pswd, $result["pswd"])) {
                 sendMail($email, "login", $_SERVER["REMOTE_ADDR"] . " failed to login into your account.");
                 header("Location: /auth/login?msg=wpw", true, 307);
                 exit;

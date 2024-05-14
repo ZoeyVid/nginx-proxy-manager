@@ -1,3 +1,3 @@
 <?php
-require_once '../require/session.php';
+require_once __DIR__ . '/../require/session.php';
 phpinfo();

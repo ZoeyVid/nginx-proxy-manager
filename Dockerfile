@@ -31,7 +31,7 @@ COPY rootfs /
 COPY src /html/app
 
 COPY --from=zoeyvid/curl-quic:384    /usr/local/bin/curl          /usr/local/bin/curl
-COPY --from=zoeyvid/valkey-static:5 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
+COPY --from=zoeyvid/valkey-static:6 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \

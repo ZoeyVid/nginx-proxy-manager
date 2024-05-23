@@ -6,8 +6,9 @@ ARG NODE_ENV=production \
     NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /build/frontend
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs yarn git python3 build-base && \
+    apk add --no-cache ca-certificates nodejs yarn git python3 py3-pip build-base && \
     yarn global add clean-modules && \
+    pip install --no-cache-dir setuptools && \
     yarn --no-lockfile install && \
     clean-modules --yes && \
     yarn --no-lockfile build && \

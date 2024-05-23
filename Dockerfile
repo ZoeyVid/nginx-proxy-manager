@@ -8,7 +8,7 @@ WORKDIR /build/frontend
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates nodejs yarn git python3 py3-pip build-base && \
     yarn global add clean-modules && \
-    pip install --no-cache-dir setuptools && \
+    pip install setuptools --no-cache-dir --break-system-packages && \
     yarn --no-lockfile install && \
     clean-modules --yes && \
     yarn --no-lockfile build && \

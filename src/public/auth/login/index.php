@@ -14,7 +14,6 @@ if (isAuthenticated()) {
 } else {
     session_unset();
     ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

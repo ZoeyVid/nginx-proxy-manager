@@ -15,4 +15,4 @@ jobs:
         with:
           check_filenames: true
           check_hidden: true
-          skip: .git,.gitignore,./rootfs/nftd,./src/vendor
+          skip: .git,.gitignore,./rootfs/app/nftd,./src/vendor

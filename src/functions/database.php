@@ -1,5 +1,5 @@
 <?php
-function db() : SQLite3
+function db(): SQLite3
 {
     require_once __DIR__ . "/../config.php";
     $db = new SQLite3(data_path() . "/npmplus.sqlite");

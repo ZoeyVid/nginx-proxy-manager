@@ -3,7 +3,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/../functions/database.php";
 use PHPMailer\PHPMailer\PHPMailer;
 
-function sendMail($to, $subject, $body) : bool
+function sendMail($to, $subject, $body): bool
 {
     $db = db();
     $mail_host = $db->querySingle("SELECT value FROM config WHERE key = 'mail_host'");
@@ -31,7 +31,7 @@ function sendMail($to, $subject, $body) : bool
     }
 }
 
-function validateEmail($email) : bool
+function validateEmail($email): bool
 {
     return PHPMailer::validateAddress($email);
 }

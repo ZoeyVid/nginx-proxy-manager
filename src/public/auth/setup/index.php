@@ -3,8 +3,9 @@ require_once __DIR__ . "/../../../functions/database.php";
 $db = db();
 if ($db->querySingle("SELECT COUNT(*) FROM auth") !== 0) {
     header("Location: /", true, 307);
-    exit;
-} else { ?>
+    exit();
+} else {
+     ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +16,8 @@ if ($db->querySingle("SELECT COUNT(*) FROM auth") !== 0) {
     <meta name="author" content="ZoeyVid">
     <meta name="description" content="Login Page for NPMplus">
     <meta name="keywords" content="NPMplus, Setup">
+    <link rel="stylesheet" href="/tailwind.css">
     <link rel="icon" type="image/webp" href="/favicon.webp">
-    <!--<script src="https://js.hcaptcha.com/1/api.js?hl=en&render=onload&recaptchacompat=off" async defer></script>-->
 </head>
-<?php }
+<?php
+}

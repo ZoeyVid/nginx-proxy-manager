@@ -1,8 +1,6 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "baseBranches": ["develop", "php"],
+  "extends": ["config:base"],
+  "baseBranches": [],
   "includeForks": true,
   "automerge": false,
   "branchPrefix": "renovate-deps-update-",

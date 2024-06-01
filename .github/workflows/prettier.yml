@@ -1,0 +1,24 @@
+name: prettier
+on:
+  push:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: prettier
+        run: |
+          yarn global add prettier @prettier/plugin-php prettier-plugin-tailwindcss
+          cd src
+          prettier . -w --end-of-line crlf --print-width 10000 --plugin /home/runner/.config/yarn/global/node_modules/@prettier/plugin-php/standalone.js --plugin /home/runner/.config/yarn/global/node_modules/prettier-plugin-tailwindcss/dist/index.mjs
+      - name: push
+        run: |
+          git add -A
+          git config user.name "GitHub"
+          git config user.email "noreply@github.com"
+          git diff-index --quiet HEAD || git commit -sm "prettier"
+          git push

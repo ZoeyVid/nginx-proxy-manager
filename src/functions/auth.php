@@ -1,7 +1,7 @@
 <?php
 function isAuthenticated(): bool
 {
-    if (!array_key_exists("AUTH_EMAIL", $_SESSION) || empty($_SESSION["AUTH_EMAIL"]) || !array_key_exists("AUTH_PW_HASH", $_SESSION) || empty($_SESSION["AUTH_PW_HASH"]) || !array_key_exists("LOGIN_TIME", $_SESSION) || empty($_SESSION["LOGIN_TIME"]) || (time() - $_SESSION["LOGIN_TIME"] > 3600)) {
+    if (!array_key_exists("AUTH_EMAIL", $_SESSION) || empty($_SESSION["AUTH_EMAIL"]) || !array_key_exists("AUTH_PW_HASH", $_SESSION) || empty($_SESSION["AUTH_PW_HASH"]) || !array_key_exists("LOGIN_TIME", $_SESSION) || empty($_SESSION["LOGIN_TIME"]) || time() - $_SESSION["LOGIN_TIME"] > 3600) {
         return false;
     } else {
         require_once __DIR__ . "/database.php";

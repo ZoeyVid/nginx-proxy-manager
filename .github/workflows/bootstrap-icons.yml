@@ -1,0 +1,30 @@
+name: bootstrap-icons
+on:
+  push:
+    paths:
+      - src/bootstrap-icons.json
+      - .github/workflows/bootstrap-icons.yml
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+jobs:
+  bootstrap-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: update bootstrap-icons
+        run: |
+          curl -sL $(curl -sL https://api.github.com/repos/twbs/icons/releases/latest --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" | jq -r .assets[].browser_download_url) -o bootstrap-icons.zip
+          unzip bootstrap-icons.zip
+          rm -rf src/public/bootstrap-icons bootstrap-icons.zip
+          mv bootstrap-icons-* bootstrap-icons
+          mkdir src/public/bootstrap-icons
+          for icon in $(jq -r .[] src/bootstrap-icons.json); do mv bootstrap-icons/"$icon".svg src/public/bootstrap-icons/"$icon".svg; done
+      - name: push changes
+        run: |
+          git add src/public/bootstrap-icons
+          git config user.name "GitHub"
+          git config user.email "noreply@github.com"
+          git diff-index --quiet HEAD || git commit -sm "bootstrap-icons"
+          git push

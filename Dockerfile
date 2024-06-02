@@ -118,6 +118,7 @@ ENV PUID=0 \
     PHP82=false \
     PHP83=false
 
+LABEL com.centurylinklabs.watchtower.monitor-only="true"
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
 HEALTHCHECK CMD healthcheck.sh
 EXPOSE 80/tcp

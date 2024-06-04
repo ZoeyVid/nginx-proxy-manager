@@ -1,0 +1,5 @@
+src/public/tailwind.css
+src/composer.lock
+src/vendor
+
+rootfs/app/nftd

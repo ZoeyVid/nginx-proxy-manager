@@ -8,11 +8,12 @@ running at home or otherwise, including free TLS, without having to know too muc
 - [Quick Setup](#quick-setup)
 <!---
 - [Screenshots](https://nginxproxymanager.com/screenshots)
---->
+  --->
 
 <!---
 **Note: To fix [this issue](https://github.com/SpiderLabs/ModSecurity/issues/2848), instead of running `nginx -s reload`, this fork stops nginx and starts it again. This can result in a 502 error when you update your hosts. See https://github.com/ZoeyVid/NPMplus/issues/296 and https://github.com/ZoeyVid/NPMplus/issues/283.** <br>
 --->
+
 **Note: Reloading the NPMplus UI can cause a 502 error. See https://github.com/ZoeyVid/NPMplus/issues/241.** <br>
 **Note: NO armv7, route53 and aws cloudfront ip ranges support.** <br>
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
@@ -24,8 +25,8 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
 
-
 ## Project Goal
+
 I created this project to fill a personal need to provide users with an easy way to accomplish reverse
 proxying hosts with TLS termination and it had to be so easy that a monkey could do it. This goal hasn't changed.
 While there might be advanced options they are optional and the project should be as simple as possible
@@ -36,7 +37,6 @@ so that the barrier for entry here is low.
 <a href="https://www.buymeacoffee.com/jc21" target="_blank"><img src="http://public.jc21.com/github/by-me-a-coffee.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 --->
 
-
 ## Features
 
 - Beautiful and Secure Admin Interface based on [Tabler](https://tabler.github.io)
@@ -45,7 +45,6 @@ so that the barrier for entry here is low.
 - Access Lists and basic HTTP Authentication for your hosts
 - Advanced Nginx configuration available for super users
 - User management, permissions and audit log
-
 
 # List of new features
 
@@ -56,9 +55,9 @@ so that the barrier for entry here is low.
   - If the core ruleset blocks valid requests, please check the `/opt/npm/etc/modsecurity/crs-setup.conf` file.
   - Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH).
   - Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also affects NPM).
-<!---
+  <!---
   - Note: To fix [this issue](https://github.com/SpiderLabs/ModSecurity/issues/2848), instead of running `nginx -s reload`, this fork stops nginx and starts it again. This will result in a 502 error when you update your hosts. See https://github.com/ZoeyVid/NPMplus/issues/296 and https://github.com/ZoeyVid/NPMplus/issues/283.
---->
+    --->
 - Darkmode button in the footer for comfortable viewing (CSS done by [@theraw](https://github.com/theraw))
 - Fixes proxy to https origin when the origin only accepts TLSv1.3
 - Only enables TLSv1.2 and TLSv1.3 protocols
@@ -93,6 +92,7 @@ so that the barrier for entry here is low.
 - If you want to redirect all HTTP traffic to HTTPS, you can use the `compose.override.yaml` file.
 
 ## migration
+
 - **NOTE: migrating back to the original is not possible**, so make first a **backup** before migration, so you can use the backup to switch back
 - if you use custom certificates, you need to upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/tls/custom/npm-[certificate-id]` folder
 - some buttons have changed, check if they are still correct
@@ -101,8 +101,10 @@ so that the barrier for entry here is low.
 - if you have a healthcheck defined in your compose yaml file, remove it - this fork defines its own healthcheck in the Dockerfile, so you don't need to have it in compose anymore
 
 # Crowdsec
+
 1. Install crowdsec using this compose file: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.crowdsec.yaml
 2. open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` and fill it with:
+
 ```yaml
 filenames:
   - /opt/npm/nginx/access.log
@@ -111,13 +113,13 @@ labels:
 ---
 source: docker
 container_name:
- - npmplus
+  - npmplus
 labels:
   type: npmplus
 ---
 source: docker
 container_name:
- - npmplus
+  - npmplus
 labels:
   type: modsecurity
 ---
@@ -128,6 +130,7 @@ source: appsec
 labels:
   type: appsec
 ```
+
 3. make sure to use `network_mode: host` in your compose file
 4. run `docker exec crowdsec cscli bouncers add npmplus -o raw` and save the output
 5. open `/opt/npm/etc/crowdsec/crowdsec.conf`
@@ -138,29 +141,35 @@ labels:
 10. redeploy the `compose.yaml`
 
 # coreruleset plugins
+
 1. Download the plugin (all files inside the `plugins` folder of the git repo), most time: `<plugin-name>-before.conf`, `<plugin-name>-config.conf` and `<plugin-name>-after.conf` and sometimes `<plugin-name>.data` and/or `<plugin-name>.lua` or somilar files
 2. put them into the `/opt/npm/etc/modsecurity/crs-plugins` folder
 3. maybe open the `/opt/npm/etc/modsecurity/crs-plugins/<plugin-name>-config.conf` and configure the plugin
 
 # Use as webserver
+
 1. Create a new Proxy Host
 2. Set `Scheme` to `https`, `Forward Hostname / IP` to `0.0.0.0`, `Forward Port` to `1` and enable `Websockets Support` (you can also use other values, since these get fully ignored)
 3. Maybe set an Access List
 4. Make your TLS Settings
-5.
-a) Custom Nginx Configuration (advanced tab), which looks the following for file server:
+5. a) Custom Nginx Configuration (advanced tab), which looks the following for file server:
+
 - Note: the slash at the end of the file path is important
+
 ```
 location / {
     include conf.d/include/acme-challenge.conf;
     alias /var/www/<your-html-site-folder-name>/;
 }
 ```
+
 b) Custom Nginx Configuration (advanced tab), which looks the following for file server and **php**:
+
 - Note: the slash at the end of the file path is important
 - Note: first enable `PHP82` and/or `PHP83` inside your compose file
 - Note: you can replace `fastcgi_pass php82;` with `fastcgi_pass php83;`
 - Note: to add more php extension using envs you can set in the compose file
+
 ```
 location / {
     include conf.d/include/acme-challenge.conf;
@@ -177,51 +186,64 @@ location / {
 ```
 
 # custom acme server
+
 1. Open this file: `nano` `/opt/npm/ssl/certbot/config.ini`
 2. uncomment the server line and change it to your acme server
 3. maybe set eab keys
 4. create your cert using the npm web ui
 
 # Quick Setup
+
 1. Install Docker and Docker Compose (or portainer)
+
 - [Docker Install documentation](https://docs.docker.com/engine)
 - [Docker Compose Install documentation](https://docs.docker.com/compose/install/linux)
+
 2. Create a compose.yaml file similar to [this](https://github.com/ZoeyVid/NPMplus/blob/develop/compose.yaml) (or use it as a portainer stack):
 3. Bring up your stack by running (or deploy your portainer stack)
+
 ```bash
 docker compose up -d
 ```
+
 4. Log in to the Admin UI
-When your docker container is running, connect to it on port `81` for the admin interface.
-Sometimes this can take a little bit because of the entropy of keys.
-You may need to open port 81 in your firewall.
-You may need to use another IP-Address.
-[https://127.0.0.1:81](https://127.0.0.1:81)
-Default Admin User:
+   When your docker container is running, connect to it on port `81` for the admin interface.
+   Sometimes this can take a little bit because of the entropy of keys.
+   You may need to open port 81 in your firewall.
+   You may need to use another IP-Address.
+   [https://127.0.0.1:81](https://127.0.0.1:81)
+   Default Admin User:
+
 ```
 Email:    admin@example.com
 Password: iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX9KfmDQiwkLZH1ZDR9xMjiG2QmoHXi
 ```
+
 Immediately after logging in with this default user you will be asked to modify your details and change your password.
 
 ### prerun scripts (EXPERT option) - if you don't know what this is, ignore it
+
 run order: entrypoint.sh (prerun scripts) => start.sh => launch.sh <br>
 if you need to run scripts before NPMplus launches put them under: `/opt/npm/etc/prerun/*.sh` (please add `#!/bin/sh` / `#!/bin/bash` to the top of the script) <br>
 you need to create this folder yourself - **NOTE:** I won't help you creating those patches/scripts if you need them you also need to know how to create them
 
 ## Contributing
+
 All are welcome to create pull requests for this project, against the `develop` branch.
 CI is used in this project. All PR's must pass before being considered. After passing,
 docker builds for PR's are available on ghcr for manual verifications.
 
 ## Contributors/Sponsor upstream NPM
+
 Special thanks to [all of our contributors](https://github.com/NginxProxyManager/nginx-proxy-manager/graphs/contributors).
 If you want to sponsor them, please see [here](https://github.com/NginxProxyManager/nginx-proxy-manager/blob/master/README.md).
 
 # Please report Bugs first to this fork before reporting them to the upstream Repository
+
 ## Getting Support
+
 1. [Found a bug?](https://github.com/ZoeyVid/NPMplus/issues)
 2. [Discussions](https://github.com/ZoeyVid/NPMplus/discussions)
 <!---
 3. [Reddit](https://reddit.com/r/nginxproxymanager)
---->
+   --->

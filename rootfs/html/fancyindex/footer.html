@@ -25,6 +25,16 @@
       tableDiv.id = "tableDiv";
       tableDiv.appendChild(document.querySelector("table"));
       document.getElementById("search").after(tableDiv);
+
+      var headers = document.querySelectorAll("th");
+      headers.forEach((header) => {
+        var links = header.querySelectorAll("a");
+        var ascendingLink = document.createElement("a");
+        ascendingLink.textContent = "&nbsp;↑&nbsp;";
+        ascendingLink.href = links[0].href;
+        links[0].removeAttribute("href");
+        links[1].after(ascendingLink);
+      });
     </script>
   </body>
 </html>

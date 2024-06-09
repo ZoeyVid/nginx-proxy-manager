@@ -158,8 +158,9 @@ labels:
 
 ```
 location / {
-    include conf.d/include/acme-challenge.conf;
+    include conf.d/include/always.conf;
     alias /var/www/<your-html-site-folder-name>/;
+    fancyindex off; # alternative to nginxs "index" option (looks better and has more options)
 }
 ```
 
@@ -172,8 +173,9 @@ b) Custom Nginx Configuration (advanced tab), which looks the following for file
 
 ```
 location / {
-    include conf.d/include/acme-challenge.conf;
+    include conf.d/include/always.conf;
     alias /var/www/<your-html-site-folder-name>/;
+    fancyindex off; # alternative to nginxs "index" option (looks better and has more options)
 
     location ~ [^/]\.php(/|$) {
         fastcgi_pass php82;

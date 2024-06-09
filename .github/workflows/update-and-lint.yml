@@ -1,5 +1,4 @@
 name: update-and-lint
-# todo: php entfernen und lint (plasm/php -l) und prettier workflow
 on:
   push:
     branches:
@@ -11,24 +10,15 @@ on:
 jobs:
   update-and-lint:
     runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'develop' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: lint
-        run: |
-          cd src
-      - name: update
-        run: |
-          curl -L https://unpkg.com/xregexp/xregexp-all.js -o rootfs/app/nftd/xregexp-all.js
-          curl -L https://unpkg.com/showdown/dist/showdown.min.js -o rootfs/app/nftd/showdown.min.js
-          curl -L https://code.jquery.com/jquery-"$(git ls-remote --tags https://github.com/jquery/jquery | cut -d/ -f3 | sort -V | tail -1)".min.js -o rootfs/app/nftd/jquery.min.js
       - name: nginxbeautifier
         run: |
           yarn global add nginxbeautifier
-          mv rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf block-exploits.conf
+          mv -v rootfs/usr/local/nginx/conf/exploits.conf exploits.conf
           nginxbeautifier -s 4 -r rootfs/usr/local/nginx/conf
-          mv block-exploits.conf rootfs/usr/local/nginx/conf/conf.d/include/block-exploits.conf
+          mv -v exploits.conf rootfs/usr/local/nginx/conf/exploits.conf
       - name: push changes
         run: |
           git add -A

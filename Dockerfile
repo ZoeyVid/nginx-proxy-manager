@@ -30,7 +30,7 @@ ARG CRS_VER=v4.3.0
 COPY rootfs /
 COPY src /app/src
 
-COPY --from=zoeyvid/curl-quic:390    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:393    /usr/local/bin/curl          /usr/local/bin/curl
 COPY --from=zoeyvid/valkey-static:14 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
 COPY --from=zoeyvid/valkey-static:14 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 

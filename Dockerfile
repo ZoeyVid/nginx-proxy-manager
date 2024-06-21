@@ -24,7 +24,7 @@ RUN apk upgrade --no-cache -a && \
 FROM zoeyvid/nginx-quic:294
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
-COPY src /  app/src
+COPY src    /app/src
 
 COPY --from=zoeyvid/curl-quic:397    /usr/local/bin/curl          /usr/local/bin/curl
 COPY --from=zoeyvid/valkey-static:22 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli

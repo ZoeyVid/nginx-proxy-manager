@@ -4,7 +4,7 @@ const definitions = require('../../schema/definitions.json');
 
 RegExp.prototype.toJSON = RegExp.prototype.toString;
 
-const Ajv = require("ajv")
+const Ajv = require('ajv');
 const ajv = new Ajv({
 	verbose: true,
 	allErrors: true,

@@ -2,7 +2,8 @@ const error = require('../error');
 const path = require('path');
 const parser = require('@apidevtools/json-schema-ref-parser');
 
-const ajv = require('ajv')({
+const Ajv = require("ajv")
+const ajv = new Ajv({
 	verbose: true,
 	validateSchema: true,
 	allErrors: false,

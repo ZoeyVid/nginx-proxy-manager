@@ -807,7 +807,7 @@ const internalCertificate = {
 
 		const credentialsLocation = '/data/tls/certbot/credentials/credentials-' + certificate.id;
 		fs.mkdirSync('/etc/letsencrypt/credentials', { recursive: true });
-		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, {mode: 0o600});
+		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 
 		let mainCmd = certbotCommand + ' certonly ' + '--config "' + certbotConfig + '" ' + '--cert-name "npm-' + certificate.id + '" ' + '--domains "' + certificate.domain_names.join(',') + '" ' + '--authenticator ' + dnsPlugin.full_plugin_name + ' ' + '--' + dnsPlugin.full_plugin_name + '-credentials "' + credentialsLocation + '"' + (certificate.meta.propagation_seconds !== undefined ? ' --' + dnsPlugin.full_plugin_name + '-propagation-seconds ' + certificate.meta.propagation_seconds : '');
 

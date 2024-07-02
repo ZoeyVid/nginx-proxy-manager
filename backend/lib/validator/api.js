@@ -3,7 +3,7 @@ const path = require('path');
 const parser = require('@apidevtools/json-schema-ref-parser');
 
 const Ajv = require('ajv');
-const addFormats = require("ajv-formats")
+const addFormats = require('ajv-formats');
 const ajv = new Ajv({
 	verbose: true,
 	validateSchema: true,
@@ -11,7 +11,7 @@ const ajv = new Ajv({
 	coerceTypes: true,
 	strict: 'log',
 });
-addFormats(ajv)
+addFormats(ajv);
 
 /**
  * @param {Object} schema

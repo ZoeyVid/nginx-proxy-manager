@@ -5,6 +5,7 @@ const definitions = require('../../schema/definitions.json');
 RegExp.prototype.toJSON = RegExp.prototype.toString;
 
 const Ajv = require('ajv');
+const addFormats = require("ajv-formats")
 const ajv = new Ajv({
 	verbose: true,
 	allErrors: true,
@@ -13,6 +14,7 @@ const ajv = new Ajv({
 	schemas: [definitions],
 	strict: 'log',
 });
+addFormats(ajv)
 
 /**
  *

@@ -18,7 +18,7 @@ const roleSchema = require('./access/roles.json');
 const permsSchema = require('./access/permissions.json');
 
 const Ajv = require('ajv');
-const addFormats = require("ajv-formats");
+const addFormats = require('ajv-formats');
 const validator = new Ajv();
 addFormats(validator);
 

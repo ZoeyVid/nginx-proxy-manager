@@ -10,13 +10,17 @@
 
 const _ = require('lodash');
 const logger = require('../logger').access;
-const validator = require('ajv');
 const error = require('./error');
 const userModel = require('../models/user');
 const proxyHostModel = require('../models/proxy_host');
 const TokenModel = require('../models/token');
 const roleSchema = require('./access/roles.json');
 const permsSchema = require('./access/permissions.json');
+
+const Ajv = require('ajv');
+const addFormats = require("ajv-formats");
+const validator = new Ajv();
+addFormats(validator);
 
 module.exports = function (token_string) {
 	const Token = new TokenModel();

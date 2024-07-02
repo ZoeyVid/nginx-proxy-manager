@@ -9,7 +9,7 @@ const ajv = new Ajv({
 	validateSchema: true,
 	allErrors: false,
 	coerceTypes: true,
-	strict: 'log',
+	strict: false,
 });
 addFormats(ajv);
 

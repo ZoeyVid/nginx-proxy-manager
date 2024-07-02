@@ -19,8 +19,6 @@ const permsSchema = require('./access/permissions.json');
 
 const Ajv = require('ajv');
 const addFormats = require('ajv-formats');
-const validator = new Ajv();
-addFormats(validator);
 
 module.exports = function (token_string) {
 	const Token = new TokenModel();
@@ -276,15 +274,16 @@ module.exports = function (token_string) {
 							// logger.info('permissionSchema', JSON.stringify(permissionSchema, null, 2));
 							// logger.info('data_schema', JSON.stringify(data_schema, null, 2));
 
-							const ajv = validator({
+							const ajv = new Ajv({
 								verbose: true,
 								allErrors: true,
-								format: 'full',
 								missingRefs: 'fail',
 								breakOnError: true,
 								coerceTypes: true,
 								schemas: [roleSchema, permsSchema, objectSchema, permissionSchema],
+								strict: 'log',
 							});
+                                                        addFormats(ajv);
 
 							return ajv.validate('permissions', data_schema).then(() => {
 								return data_schema[permission];

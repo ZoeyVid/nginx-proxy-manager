@@ -9,6 +9,7 @@ const ajv = new Ajv({
 	allErrors: false,
 	format: 'full',
 	coerceTypes: true,
+	strict: 'log',
 });
 
 /**

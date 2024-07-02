@@ -280,7 +280,7 @@ module.exports = function (token_string) {
 								breakOnError: true,
 								coerceTypes: true,
 								schemas: [roleSchema, permsSchema, objectSchema, permissionSchema],
-								strict: 'log',
+								strict: false,
 							});
 							addFormats(ajv);
 

@@ -12,7 +12,7 @@ const ajv = new Ajv({
 	format: 'full', // strict regexes for format checks
 	coerceTypes: true,
 	schemas: [definitions],
-	strict: 'log',
+	strict: false,
 });
 addFormats(ajv);
 

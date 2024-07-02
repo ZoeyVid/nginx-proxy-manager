@@ -283,7 +283,7 @@ module.exports = function (token_string) {
 								schemas: [roleSchema, permsSchema, objectSchema, permissionSchema],
 								strict: 'log',
 							});
-                                                        addFormats(ajv);
+							addFormats(ajv);
 
 							return ajv.validate('permissions', data_schema).then(() => {
 								return data_schema[permission];

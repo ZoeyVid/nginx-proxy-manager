@@ -180,6 +180,11 @@ if ! echo "$NGINX_DISABLE_PROXY_BUFFERING" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if ! echo "$DISABLE_NGINX_BEAUTIFIER" | grep -q "^true$\|^false$"; then
+    echo "DISABLE_NGINX_BEAUTIFIER needs to be true or false."
+    sleep inf
+fi
+
 if ! echo "$CLEAN" | grep -q "^true$\|^false$"; then
     echo "CLEAN needs to be true or false."
     sleep inf
@@ -883,7 +888,9 @@ elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/etc/goaccess
 fi
 
-nginxbeautifier -s 4 -r /data/nginx
+if [ "$DISABLE_NGINX_BEAUTIFIER" = "false" ]; then
+    nginxbeautifier -s 4 -r /data/nginx
+fi
 
 #find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s|add_header alt-svc 'h3=\":443\"; ma=86400, h3-29=\":443\"; ma=86400';|add_header Alt-Svc 'h3=\":443\"; ma=86400';|g" {} \;
 #find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s|add_header alt-svc 'h3=\":443\";|add_header Alt-Svc 'h3=\":443\"; ma=86400';|g" {} \;

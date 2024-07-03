@@ -138,6 +138,7 @@ ENV PUID=0 \
     NGINX_LOG_NOT_FOUND=false \
     NGINX_404_REDIRECT=false \
     NGINX_DISABLE_PROXY_BUFFERING=false \
+    DISABLE_NGINX_BEAUTIFIER=false \
     CLEAN=true \
     FULLCLEAN=false \
     SKIP_IP_RANGES=false \

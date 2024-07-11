@@ -175,6 +175,11 @@ if ! echo "$NGINX_DISABLE_PROXY_BUFFERING" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if ! echo "$DISABLE_NGINX_BEAUTIFIER" | grep -q "^true$\|^false$"; then
+    echo "DISABLE_NGINX_BEAUTIFIER needs to be true or false."
+    sleep inf
+fi
+
 if ! echo "$CLEAN" | grep -q "^true$\|^false$"; then
     echo "CLEAN needs to be true or false."
     sleep inf
@@ -425,6 +430,10 @@ if [ -s /data/nginx/dummykey.pem ]; then
     mv -vn /data/nginx/dummykey.pem /data/tls/dummykey.pem
 fi
 
+if [ -f /data/nginx/custom/root.conf ]; then
+    mv -vn /data/nginx/custom/root.conf /data/nginx/custom/root_top.conf
+fi
+
 if [ -n "$(ls -A /data/nginx/html 2> /dev/null)" ]; then
     mv -vn /data/nginx/html/* /data/etc/html
 fi
@@ -514,10 +523,10 @@ fi
 
 touch /data/etc/html/index.html \
       /data/nginx/ip_ranges.conf \
-      /data/nginx/custom/root.conf \
       /data/nginx/custom/events.conf \
       /data/nginx/custom/http.conf \
       /data/nginx/custom/http_top.conf \
+      /data/nginx/custom/root_top.conf \
       /data/nginx/custom/server_dead.conf \
       /data/nginx/custom/server_proxy.conf \
       /data/nginx/custom/server_redirect.conf \
@@ -720,7 +729,7 @@ sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen 
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" /app/templates/default.conf
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\({{ incoming_port }}\)/listen $IPV4_BINDING:\2/g" /app/templates/stream.conf
 find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" {} \;
-find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" {} \;
+find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9-]\+\)/listen $IPV4_BINDING:\2/g" {} \;
 
 if [ "$DISABLE_IPV6" = "true" ]; then
     sed -i "s|ipv6=on;|ipv6=off;|g" /usr/local/nginx/conf/nginx.conf
@@ -728,14 +737,14 @@ if [ "$DISABLE_IPV6" = "true" ]; then
     sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /app/templates/default.conf
     sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\({{ incoming_port }}\)/#listen \[\1\]:\2/g" /app/templates/stream.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" {} \;
-    find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" {} \;
+    find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9-]\+\)/#listen \[\1\]:\2/g" {} \;
 else
     sed -i "s|ipv6=off;|ipv6=on;|g" /usr/local/nginx/conf/nginx.conf
     sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" /app/templates/_listen.conf
     sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" /app/templates/default.conf
     sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\({{ incoming_port }}\)/listen $IPV6_BINDING:\2/g" /app/templates/stream.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" {} \;
-    find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" {} \;
+    find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9-]\+\)/listen $IPV6_BINDING:\2/g" {} \;
 fi
 
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus.conf
@@ -866,7 +875,9 @@ elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/etc/goaccess
 fi
 
-nginxbeautifier -s 4 -r /data/nginx
+if [ "$DISABLE_NGINX_BEAUTIFIER" = "false" ]; then
+    nginxbeautifier -s 4 -r /data/nginx
+fi
 
 #find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s|add_header alt-svc 'h3=\":443\"; ma=86400, h3-29=\":443\"; ma=86400';|add_header Alt-Svc 'h3=\":443\"; ma=86400';|g" {} \;
 #find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s|add_header alt-svc 'h3=\":443\";|add_header Alt-Svc 'h3=\":443\"; ma=86400';|g" {} \;
@@ -903,13 +914,14 @@ if [ "$PUID" != "0" ]; then
         echo "ERROR: Unable to set group against the user properly"
         sleep inf
     fi
-    
-    find /usr/local \
+
+    find /proc/self/fd \
+         /usr/local \
          /data \
          /run \
          /tmp \
-        -not \( -uid "$PUID" -and -gid "$PGID" \) \
-        -exec chown "$PUID:$PGID" {} \;
+         -not \( -uid "$PUID" -and -gid "$PGID" \) \
+         -exec chown "$PUID:$PGID" {} \;
 
     if [ "$PHP82" = "true" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/82/php-fpm.d/www.conf
@@ -926,12 +938,13 @@ if [ "$PUID" != "0" ]; then
     
     exec su-exec "$PUID:$PGID" launch.sh
 else
-    find /usr/local \
+    find /proc/self/fd \
+         /usr/local \
          /data \
          /run \
          /tmp \
-        -not \( -uid 0 -and -gid 0 \) \
-        -exec chown 0:0 {} \;
+         -not \( -uid 0 -and -gid 0 \) \
+         -exec chown 0:0 {} \;
 
     if [ "$PHP82" = "true" ]; then
         sed -i "s|;user =.*|user = root|" /data/php/82/php-fpm.d/www.conf

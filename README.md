@@ -94,7 +94,7 @@ so that the barrier for entry here is low.
 - if you use custom certificates, you need to upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/tls/custom/npm-[certificate-id]` folder
 - some buttons have changed, check if they are still correct
 - please delete all dnspod certs and recreate them OR you manually change the credentialsfile (see [here](https://github.com/ZoeyVid/npmplus/blob/develop/global/certbot-dns-plugins.js) for the template)
-- since this fork has dependency on `network_mode: host`, please don't forget to open port 80 and 443 (and maybe 81) in your firewall
+- since this fork has dependency on `network_mode: host`, please don't forget to open port 80/tcp, 443/tcp and 443/udp (and maybe 81/tcp) in your firewall
 - if you have a healthcheck defined in your compose yaml file, remove it - this fork defines its own healthcheck in the Dockerfile, so you don't need to have it in compose anymore
 
 # Crowdsec

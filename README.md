@@ -15,7 +15,7 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: NO armv7, route53 and aws cloudfront ip ranges support.** <br>
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
 **Note: If you don't use network mode host, which I don't recommend, don't forget to expose port 443 on tcp AND udp (http3/quic needs udp).** <br>
-**Note: If you don't use network mode host, which I don't recommend, don't forget to enable IPv6 in Docker, see [here](https://github.com/nextcloud/all-in-one/blob/main/docker-ipv6-support.md), you only need to edit the daemon.json and restart docker, if you use the bridge network, otherwise please enable IPv6 in your custom docker network!** <br>
+**Note: If you don't use network mode host, which I don't recommend, don't forget to enable IPv6 in Docker, see [here](https://github.com/nextcloud/all-in-one/blob/main/docker-ipv6-support.md), you only need to follow step one and two before deploying NPMplus!** <br>
 **Note: Don't forget to open Port 80 (tcp) and 443 (tcp AND udp, http3/quic needs udp) in your firewall (because of network mode host, you also need to open this ports in ufw, if you use ufw).** <br>
 **Note: ModSecurity overblocking (403 Error)? Please see `/opt/npm/etc/modsecurity`, if you also use CRS please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning).** <br>
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>

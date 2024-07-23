@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.1 AS crowdsec
+FROM --platform="$BUILDPLATFORM" alpine:3.20.2 AS crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG CSNB_VER=v1.0.8
 WORKDIR /src
@@ -21,14 +21,14 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|BOUNCING_ON_TYPE=all|BOUNCING_ON_TYPE=ban|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:297-python
+FROM zoeyvid/nginx-quic:299-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
 COPY src    /app/src
 
-COPY --from=zoeyvid/curl-quic:399    /usr/local/bin/curl          /usr/local/bin/curl
-COPY --from=zoeyvid/valkey-static:22 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
-COPY --from=zoeyvid/valkey-static:22 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
+COPY --from=zoeyvid/curl-quic:404    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/valkey-static:26 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
+COPY --from=zoeyvid/valkey-static:26 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 ARG CRS_VER=v4.4.0
 RUN apk upgrade --no-cache -a && \

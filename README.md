@@ -98,7 +98,7 @@ so that the barrier for entry here is low.
 - if you have a healthcheck defined in your compose yaml file, remove it - this fork defines its own healthcheck in the Dockerfile, so you don't need to have it in compose anymore
 
 # Crowdsec
-1. Install crowdsec using this compose file: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.crowdsec.yaml
+1. Install crowdsec using this compose file: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.crowdsec.yaml and enable LOGROTATE
 2. open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` and fill it with:
 ```yaml
 filenames:

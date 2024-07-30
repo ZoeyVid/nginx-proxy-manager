@@ -119,7 +119,7 @@ labels:
   type: modsecurity
 ---
 listen_addr: 0.0.0.0:7422
-appsec_config: crowdsecurity/virtual-patching
+appsec_config: crowdsecurity/appsec-default
 name: appsec
 source: appsec
 labels:

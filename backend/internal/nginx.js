@@ -32,7 +32,7 @@ const internalNginx = {
 				// We're deleting this config regardless.
 				// Don't throw errors, as the file may not exist at all
 				// Delete the .err file too
-				return internalNginx.deleteConfig(host_type, host, false, true);
+				return internalNginx.deleteConfig(host_type, host);
 			})
 			.then(() => {
 				return internalNginx.generateConfig(host_type, host);
@@ -52,27 +52,11 @@ const internalNginx = {
 							meta: combined_meta,
 						});
 					})
-					.catch((err) => {
-						// Remove the error_log line because it's a docker-ism false positive that doesn't need to be reported.
-						// It will always look like this:
-						//   nginx: [alert] could not open error log file: open() "/dev/null" failed (6: No such device or address)
-
-						const valid_lines = [];
-						const err_lines = err.message.split('\n');
-						err_lines.map(function (line) {
-							if (line.indexOf('/dev/null') === -1) {
-								valid_lines.push(line);
-							}
-						});
-
-						if (config.debug()) {
-							logger.error('Nginx test failed:', valid_lines.join('\n'));
-						}
-
-						// config is bad, update meta and delete config
+					.catch(() => {
+						utils.exec('nginx -t');
 						combined_meta = _.assign({}, host.meta, {
 							nginx_online: false,
-							nginx_err: valid_lines.join('\n'),
+							nginx_err: 'see dockert logs',
 						});
 
 						return model
@@ -83,9 +67,6 @@ const internalNginx = {
 							})
 							.then(() => {
 								internalNginx.renameConfigAsError(host_type, host);
-							})
-							.then(() => {
-								return internalNginx.deleteConfig(host_type, host, true);
 							});
 					});
 			})
@@ -114,17 +95,23 @@ const internalNginx = {
 
 	reload: () => {
 		return internalNginx.test().then(() => {
+			try {
+				utils.exec('certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --quiet --no-reload-webserver');
+			} catch {
+				// do nothing
+			}
 			if (fs.existsSync(NgxPidFilePath)) {
 				const ngxPID = fs.readFileSync(NgxPidFilePath, 'utf8').trim();
 				if (ngxPID.length > 0) {
 					logger.info('Reloading Nginx');
 					utils.exec('nginx -s reload');
 				} else {
-					logger.info('Starting Nginx');
+					utils.execfg('nginx -e stderr');
 					utils.execfg('nginx -e stderr');
 				}
 			} else {
 				logger.info('Starting Nginx');
+				utils.exec('certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --quiet --no-reload-webserver');
 				utils.execfg('nginx -e stderr');
 			}
 		});
@@ -263,20 +250,6 @@ const internalNginx = {
 	},
 
 	/**
-	 * A simple wrapper around unlinkSync that writes to the logger
-	 *
-	 * @param   {String}  filename
-	 */
-	deleteFile: (filename) => {
-		logger.debug('Deleting file: ' + filename);
-		try {
-			fs.unlinkSync(filename);
-		} catch (err) {
-			logger.debug('Could not delete file:', JSON.stringify(err, null, 2));
-		}
-	},
-
-	/**
 	 *
 	 * @param   {String} host_type
 	 * @returns String
@@ -291,15 +264,11 @@ const internalNginx = {
 	 * @param   {Boolean} [delete_err_file]
 	 * @returns {Promise}
 	 */
-	deleteConfig: (host_type, host, delete_err_file) => {
+	deleteConfig: (host_type, host) => {
 		const config_file = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
-		const config_file_err = config_file + '.err';
 
 		return new Promise((resolve /*, reject */) => {
-			internalNginx.deleteFile(config_file);
-			if (delete_err_file) {
-				internalNginx.deleteFile(config_file_err);
-			}
+			fs.rm(config_file, { force: true });
 			resolve();
 		});
 	},
@@ -312,16 +281,11 @@ const internalNginx = {
 	renameConfigAsError: (host_type, host) => {
 		const config_file = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
 		const config_file_err = config_file + '.err';
-
-		return new Promise((resolve /*, reject */) => {
-			fs.unlink(config_file, () => {
-				// ignore result, continue
-				fs.rename(config_file, config_file_err, () => {
-					// also ignore result, as this is a debugging informative file anyway
-					resolve();
-				});
-			});
-		});
+		try {
+			fs.rename(config_file, config_file_err);
+		} catch {
+			// do nothing
+		}
 	},
 
 	/**
@@ -346,7 +310,7 @@ const internalNginx = {
 	bulkDeleteConfigs: (host_type, hosts) => {
 		const promises = [];
 		hosts.map(function (host) {
-			promises.push(internalNginx.deleteConfig(host_type, host, true));
+			promises.push(internalNginx.deleteConfig(host_type, host));
 		});
 
 		return Promise.all(promises);

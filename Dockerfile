@@ -21,7 +21,7 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|BOUNCING_ON_TYPE=all|BOUNCING_ON_TYPE=ban|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:307-python
+FROM zoeyvid/nginx-quic:310-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
 COPY src    /app/src

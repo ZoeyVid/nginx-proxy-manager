@@ -78,6 +78,7 @@ RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
     nodejs \
     bash nano \
+    logrotate \
     openssl apache2-utils \
     lua5.1-lzlib lua5.1-socket \
     coreutils grep findutils jq shadow su-exec \

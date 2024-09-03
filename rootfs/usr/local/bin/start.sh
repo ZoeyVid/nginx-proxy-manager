@@ -433,7 +433,7 @@ if [ -s /data/nginx/default_host/site.conf ]; then
 fi
 
 if [ -s /data/nginx/default_www/index.html ]; then
-    mv -vn /data/nginx/default_www/index.html /data/nginx/html/index.html
+    mv -vn /data/nginx/default_www/index.html /data/etc/html/index.html
 fi
 
 if [ -s /data/nginx/dummycert.pem ]; then

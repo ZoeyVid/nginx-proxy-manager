@@ -460,7 +460,7 @@ if [ -n "$(ls -A /data/nginx/access 2> /dev/null)" ]; then
 fi
 
 if [ -n "$(ls -A /etc/letsencrypt 2> /dev/null)" ]; then
-    mv -vn /etc/letsencrypt/* /data/tls/certbot
+    cp -van /etc/letsencrypt/* /data/tls/certbot
 fi
 
 if [ -n "$(ls -A /data/letsencrypt 2> /dev/null)" ]; then

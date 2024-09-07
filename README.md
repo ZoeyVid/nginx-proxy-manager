@@ -20,6 +20,7 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: ModSecurity overblocking (403 Error)? Please see `/opt/npm/etc/modsecurity`, if you also use CRS please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning).** <br>
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
+**Note: if you remove a cert, which is still used by a host, NPM/NPMplus will crash.** <br>
 
 
 ## Project Goal

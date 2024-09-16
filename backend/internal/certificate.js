@@ -480,14 +480,6 @@ const internalCertificate = {
 					resolve();
 				}
 			});
-
-			fs.writeFile(dir + '/chain.pem', certificate.meta.intermediate_certificate, function (err) {
-				if (err) {
-					reject(err);
-				} else {
-					resolve();
-				}
-			});
 		}).then(() => {
 			return new Promise((resolve, reject) => {
 				fs.writeFile(dir + '/privkey.pem', certificate.meta.certificate_key, function (err) {

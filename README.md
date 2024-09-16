@@ -62,7 +62,6 @@ so that the barrier for entry here is low.
 - Only enables TLSv1.2 and TLSv1.3 protocols
 - Faster creation of TLS certificates can be achieved by eliminating unnecessary Nginx reloads and configuration creations.
 - Uses OCSP Stapling for enhanced security
-  - If using custom certificates, upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/tls/custom/npm-[certificate-id]` folder (manual migration may be needed)
 - Resolved dnspod plugin issue
   - To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
 - Smaller docker image with alpine-based distribution
@@ -92,7 +91,6 @@ so that the barrier for entry here is low.
 
 ## migration
 - **NOTE: migrating back to the original is not possible**, so make first a **backup** before migration, so you can use the backup to switch back
-- if you use custom certificates, you need to upload the CA/Intermediate Certificate (file name: `chain.pem`) in the `/opt/npm/tls/custom/npm-[certificate-id]` folder, or you can instead duplicate the fullchain.pem with this name
 - since many buttons changed, please edit every host you have and click save. (Please also resave it, if all buttons/values are fine, to update the host config to fully fit the NPMplus template)
 - please delete all dnspod certs and recreate them OR you manually change the credentialsfile (see [here](https://github.com/ZoeyVid/npmplus/blob/develop/global/certbot-dns-plugins.js) for the template)
 - since this fork has dependency on `network_mode: host`, please don't forget to open port 80/tcp, 443/tcp and 443/udp (and maybe 81/tcp) in your firewall

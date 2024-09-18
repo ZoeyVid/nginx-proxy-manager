@@ -34,7 +34,7 @@ ARG CRS_VER=v4.5.0
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
     bash nano \
-    openssl apache2-utils \
+    logrotate apache2-utils \
     lua5.1-lzlib lua5.1-socket \
     coreutils grep findutils jq shadow su-exec fcgi \
     luarocks5.1 lua5.1-dev lua5.1-sec build-base git \

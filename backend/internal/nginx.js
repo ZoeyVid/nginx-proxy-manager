@@ -118,13 +118,16 @@ const internalNginx = {
 				const ngxPID = fs.readFileSync(NgxPidFilePath, 'utf8').trim();
 				if (ngxPID.length > 0) {
 					logger.info('Reloading Nginx');
+					utils.exec('certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --quiet --no-reload-webserver');
 					utils.exec('nginx -s reload');
 				} else {
 					logger.info('Starting Nginx');
+					utils.exec('certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --quiet --no-reload-webserver');
 					utils.execfg('nginx -e stderr');
 				}
 			} else {
 				logger.info('Starting Nginx');
+				utils.exec('certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --quiet --no-reload-webserver');
 				utils.execfg('nginx -e stderr');
 			}
 		});

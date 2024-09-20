@@ -198,7 +198,7 @@ You may need to use another IP-Address.
 [https://127.0.0.1:81](https://127.0.0.1:81)
 Default Admin User:
 ```
-Email:    admin@example.com
+Email:    admin@example.org
 Password: iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX9KfmDQiwkLZH1ZDR9xMjiG2QmoHXi
 ```
 Immediately after logging in with this default user you will be asked to modify your details and change your password.

@@ -588,6 +588,8 @@ find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec 
 
 find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "/ssl_stapling/d" {} \;
 find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "/ssl_stapling_verify/d" {} \;
+sed -i "/ssl_stapling/d" /data/nginx/default.conf
+sed -i "/ssl_stapling_verify/d" /data/nginx/default.conf
 
 if [ ! -s /data/etc/modsecurity/modsecurity-default.conf ]; then
       cp -van /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example /data/etc/modsecurity/modsecurity-default.conf

@@ -935,7 +935,7 @@ const internalCertificate = {
 		return utils
 			.exec(mainCmd)
 			.then(async (result) => {
-				await fs.rm('/data/tls/certbot/credentials/credentials-' + certificate.id, { force: true }, err);
+				await fs.rm('/data/tls/certbot/credentials/credentials-' + certificate.id, { force: true }, (err));
 				logger.info(result);
 				return result;
 			})

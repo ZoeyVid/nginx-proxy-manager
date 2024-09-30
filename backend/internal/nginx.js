@@ -268,7 +268,7 @@ const internalNginx = {
 		const config_file = internalNginx.getConfigName(internalNginx.getFileFriendlyHostType(host_type), typeof host === 'undefined' ? 0 : host.id);
 
 		return new Promise((resolve /*, reject */) => {
-			fs.rm(config_file, { force: true });
+			fs.rm(config_file, { force: true }, err);
 			resolve();
 		});
 	},

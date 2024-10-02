@@ -6,13 +6,13 @@ services:
     network_mode: host
     volumes:
       - "/opt/npm:/data"
-#      - "/var/www:/var/www" # optional, if you want to use it as webserver for html/php
-#      - "/opt/npm-letsencrypt:/etc/letsencrypt" # Only needed for first time migration from original nginx-proxy-manager to this fork
+    #      - "/var/www:/var/www" # optional, if you want to use it as webserver for html/php
+    #      - "/opt/npm-letsencrypt:/etc/letsencrypt" # Only needed for first time migration from original nginx-proxy-manager to this fork
     environment:
       - "TZ=Europe/Berlin" # set timezone, required
+# todo move to ui
 #      - "PUID=1000" # set group id, default 0 (root)
 #      - "PGID=1000" # set user id, default 0 (root), requires PUID
-#      - "NIBEP=48694" # internal port of the NOMplus API, always bound to 127.0.0.1, default 48693, you need to change it, if you want to run multiple npm instances in network mode host
 #      - "GOAIWSP=48684" # internal port of goaccess, always bound to 127.0.0.1, default 48683, you need to change it, if you want to run multiple npm with goaccess instances in network mode host
 #      - "NPM_PORT=82" # Port the NPM UI should be bound to, default 81, you need to change it, if you want to run multiple npm instances in network mode host
 #      - "NPM_PORT=92" # Port the goaccess should be bound to, default 91, you need to change it, if you want to run multiple npm with goaccess instances in network mode host

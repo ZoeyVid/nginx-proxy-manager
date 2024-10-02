@@ -3,24 +3,16 @@ on:
   push:
     branches:
       - develop
+      - php
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
 jobs:
   update-and-lint:
     runs-on: ubuntu-latest
-    if: ${{ github.ref_name == 'develop' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 21
-      - name: eslint
-        run: |
-          cd backend
-          yarn install --no-lockfile
-          yarn eslint . --fix
       - name: nginxbeautifier
         run: |
           yarn global add nginxbeautifier

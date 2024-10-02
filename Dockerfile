@@ -1,50 +1,4 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.20.3 AS frontend
-COPY frontend                        /app
-COPY global/certbot-dns-plugins.json /app/certbot-dns-plugins.json
-ARG NODE_ENV=production \
-    NODE_OPTIONS=--openssl-legacy-provider
-WORKDIR /app/frontend
-RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs yarn git python3 py3-pip build-base file && \
-    yarn global add clean-modules && \
-    pip install setuptools --no-cache-dir --break-system-packages && \
-    yarn --no-lockfile install && \
-    yarn --no-lockfile build && \
-    yarn cache clean --all && \
-    clean-modules --yes && \
-    find /app/dist -name "*.node" -type f -exec file {} \;
-COPY darkmode.css /app/dist/css/darkmode.css
-COPY security.txt /app/dist/.well-known/security.txt
-
-
-FROM --platform="$BUILDPLATFORM" alpine:3.20.3 AS build-backend
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-COPY backend                         /app
-COPY global/certbot-dns-plugins.json /app/certbot-dns-plugins.json
-ARG NODE_ENV=production \
-    TARGETARCH
-WORKDIR /app
-RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates nodejs yarn file && \
-    yarn global add clean-modules && \
-    if [ "$TARGETARCH" = "amd64" ]; then \
-     npm_config_arch=x64 npm_config_target_arch=x64 yarn install --no-lockfile && \
-      for file in $(find /app/node_modules -name "*.node" -type f -exec file {} \; | grep -v "x86-64\|x86_64" | grep "aarch64\|arm64" | sed "s|\([^:]\):.*|\1|g"); do rm -v "$file"; done; \
-    elif [ "$TARGETARCH" = "arm64" ]; then \
-      npm_config_arch=arm64 npm_config_target_arch=arm64 yarn install --no-lockfile && \
-      for file in $(find /app/node_modules -name "*.node" -type f -exec file {} \; | grep -v "aarch64\|arm64" | grep "x86-64\|x86_64" | sed "s|\([^:]\):.*|\1|g"); do rm -v "$file"; done; \
-    fi && \
-    yarn cache clean --all && \
-    clean-modules --yes
-FROM alpine:3.20.3 AS strip-backend
-COPY --from=build-backend /app /app
-RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates binutils file && \
-    find /app/node_modules -name "*.node" -type f -exec strip -s {} \; && \
-    find /app/node_modules -name "*.node" -type f -exec file {} \;
-
-
 FROM --platform="$BUILDPLATFORM" alpine:3.20.3 AS crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG CSNB_VER=v1.0.8
@@ -70,55 +24,67 @@ RUN apk upgrade --no-cache -a && \
 FROM zoeyvid/nginx-quic:340-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
-COPY --from=zoeyvid/certbot-docker:51 /usr/local          /usr/local
-COPY --from=zoeyvid/curl-quic:416     /usr/local/bin/curl /usr/local/bin/curl
+COPY src    /app/src
+
+COPY --from=zoeyvid/curl-quic:416    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
+COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 ARG CRS_VER=v4.7.0
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
-    nodejs \
     bash nano \
     logrotate apache2-utils \
     lua5.1-lzlib lua5.1-socket \
-    coreutils grep findutils jq shadow su-exec \
-    luarocks5.1 lua5.1-dev lua5.1-sec build-base git yarn && \
+    coreutils grep findutils jq shadow su-exec fcgi \
+    luarocks5.1 lua5.1-dev lua5.1-sec build-base git \
+    php83-fpm php83-openssl php83-iconv php83-ctype php83-curl php83-session php83-sqlite3 php83-pecl-redis && \
+    \
+    cp -var /etc/php83 /etc/php && \
+    sed -i "s|;\?listen\s*=.*|listen = /run/php.sock|g" /etc/php/php-fpm.d/www.conf && \
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /etc/php/php-fpm.conf && \
+    sed -i "s|;\?include\s*=.*|include = /etc/php/php-fpm.d/*.conf|g" /etc/php/php-fpm.conf && \
+    sed -i "s|;\?session.save_handler\s*=.*|session.save_handler = redis|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.save_path\s*=.*|session.save_path = unix:///run/valkey.sock|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.name\s*=.*|session.name = NPMPLUSSESSIONID|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.auto_start\s*=.*|session.auto_start = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.use_strict_mode\s*=.*|session.use_strict_mode = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_secure\s*=.*|session.cookie_secure = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_httponly\s*=.*|session.cookie_httponly = 1|g" /etc/php/php.ini && \
+    sed -i "s|;\?session.cookie_samesite\s*=.*|session.cookie_samesite = Strict|g" /etc/php/php.ini && \
+    \
+    mv -v /app/src/config.php.example /app/src/config.php && \
+    \
     curl https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh | sh -s -- --install-online --home /usr/local/acme.sh --nocron && \
+    ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
+    \
     curl https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -o /usr/local/bin/certbot-ocsp-fetcher.sh && \
     chmod +x /usr/local/bin/certbot-ocsp-fetcher.sh && \
+    \
     git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
     mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \
     mv -v /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example && \
     mv -v /tmp/coreruleset/plugins /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
     mv -v /tmp/coreruleset/rules /usr/local/nginx/conf/conf.d/include/coreruleset/rules && \
     rm -r /tmp/* && \
+    \
     luarocks-5.1 install lua-cjson && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \
     luarocks-5.1 install lua-resty-openssl && \
-    yarn global add nginxbeautifier && \
-    apk del --no-cache luarocks5.1 lua5.1-dev lua5.1-sec build-base git yarn
+    \
+    apk del --no-cache luarocks5.1 lua5.1-dev lua5.1-sec build-base git
 
-COPY --from=strip-backend  /app                                                       /app
-COPY --from=frontend       /app/dist                                                  /html/frontend
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/lua-mod/lib/plugins            /usr/local/nginx/lib/lua/plugins
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/lua-mod/lib/crowdsec.lua       /usr/local/nginx/lib/lua/crowdsec.lua
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/lua-mod/templates/ban.html     /usr/local/nginx/conf/conf.d/include/ban.html
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/lua-mod/templates/captcha.html /usr/local/nginx/conf/conf.d/include/captcha.html
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf    /usr/local/nginx/conf/conf.d/include/crowdsec.conf
-COPY --from=crowdsec       /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf      /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/lib/plugins            /usr/local/nginx/lib/lua/plugins
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/lib/crowdsec.lua       /usr/local/nginx/lib/lua/crowdsec.lua
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/templates/ban.html     /usr/local/nginx/conf/conf.d/include/ban.html
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/templates/captcha.html /usr/local/nginx/conf/conf.d/include/captcha.html
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf    /usr/local/nginx/conf/conf.d/include/crowdsec.conf
+COPY --from=crowdsec /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf      /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf
 
-RUN ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
-    ln -s /app/password-reset.js /usr/local/bin/password-reset.js && \
-    ln -s /app/sqlite-vaccum.js /usr/local/bin/sqlite-vaccum.js && \
-    ln -s /app/index.js /usr/local/bin/index.js
-
-LABEL com.centurylinklabs.watchtower.monitor-only="true"
-ENV NODE_ENV=production \
-    NODE_CONFIG_DIR=/data/etc/npm \
-    DB_SQLITE_FILE=/data/etc/npm/database.sqlite
+# todo move to ui
 ENV PUID=0 \
     PGID=0 \
-    NIBEP=48693 \
     GOAIWSP=48683 \
     NPM_PORT=81 \
     GOA_PORT=91 \
@@ -153,7 +119,7 @@ ENV PUID=0 \
     PHP82=false \
     PHP83=false
 
-WORKDIR /app
+LABEL com.centurylinklabs.watchtower.monitor-only="true"
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]
 HEALTHCHECK CMD healthcheck.sh
 EXPOSE 80/tcp

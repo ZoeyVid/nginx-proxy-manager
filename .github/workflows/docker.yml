@@ -6,18 +6,12 @@ on:
     paths:
       - .github/workflows/docker.yml
       - Dockerfile
-      - frontend/**
-      - backend/**
-      - global/**
       - rootfs/**
       - src/**
   pull_request:
     paths:
       - .github/workflows/docker.yml
       - Dockerfile
-      - frontend/**
-      - backend/**
-      - global/**
       - rootfs/**
       - src/**
   workflow_dispatch:
@@ -56,9 +50,8 @@ jobs:
       - name: version
         run: |
           version="$(cat .version)+$(git rev-parse --short HEAD)"
-          sed -i "s|\"0.0.0\"|\"$version\"|g" frontend/js/i18n/messages.json
-          sed -i "s|\"0.0.0\"|\"$version\"|g" frontend/package.json
-          sed -i "s|\"0.0.0\"|\"$version\"|g" backend/package.json
+          # todo: embed version somewhere
+          #sed -i "s|\"0.0.0\"|\"$version\"|g" src/
       - name: Build
         uses: docker/build-push-action@v6
         if: ${{ github.event_name != 'pull_request' }}

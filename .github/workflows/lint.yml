@@ -1,0 +1,23 @@
+name: lint
+on:
+  push:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: lint
+        run: |
+          cd src
+          cp -v config.php.example config.php
+          find . -name "*.php" -exec php -l {} \;
+          curl -sSfL https://github.com/wapmorgan/PhpDeprecationDetector/releases/download/"$(git ls-remote --tags https://github.com/wapmorgan/PhpDeprecationDetector | cut -d/ -f3 | grep -v v1 | sort -V | tail -1)"/phpdd-"$(git ls-remote --tags https://github.com/wapmorgan/PhpDeprecationDetector | cut -d/ -f3 | grep -v v1 | sort -V | tail -1)".phar -o phpdd.phar
+          chmod +x phpdd.phar
+          find . -name "*.php" -exec ./phpdd.phar -n {} \;
+          curl -sSfL https://github.com/vimeo/psalm/releases/latest/download/psalm.phar -o psalm.phar
+          chmod +x psalm.phar
+          ./psalm.phar --no-cache

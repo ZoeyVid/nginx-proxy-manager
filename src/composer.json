@@ -1,0 +1,37 @@
+{
+  "name": "zoeyvid/npmplus",
+  "description": "WebUI for NPMplus, which manages nginx and acme.sh",
+  "type": "project",
+  "require": {
+    "phpmailer/phpmailer": "6.9.1",
+    "ext-sqlite3": "*"
+  },
+  "license": "AGPL-3.0",
+  "version": "v0.0.1-alpha",
+  "authors": [
+    {
+      "name": "Zoey",
+      "email": "zoey@z0ey.de",
+      "homepage": "https://z0ey.de"
+    },
+    {
+      "name": "David",
+      "email": "david@davidcraft.de",
+      "homepage": "https://davidcraft.de"
+    },
+    {
+      "name": "ZoeyVid",
+      "email": "zoeyvid@zvcdn.de",
+      "homepage": "https://zoeyvid.de"
+    }
+  ],
+  "minimum-stability": "alpha",
+  "support": {
+    "email": "zoey@z0ey.de",
+    "issues": "https://github.com/ZoeyVid/NPMplus/issues",
+    "forum": "https://github.com/ZoeyVid/NPMplus/discussions",
+    "wiki": "https://github.com/ZoeyVid/NPMplus",
+    "source": "https://github.com/ZoeyVid/NPMplus",
+    "docs": "https://github.com/ZoeyVid/NPMplus"
+  }
+}

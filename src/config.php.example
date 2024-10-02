@@ -1,0 +1,5 @@
+<?php
+function data_path(): string
+{
+    return "/data";
+}

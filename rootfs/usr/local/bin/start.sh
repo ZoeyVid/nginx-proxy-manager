@@ -59,11 +59,6 @@ if [ "$PGID" != "0" ] && [ "$PUID" = "0" ]; then
 fi
 
 
-if ! echo "$NIBEP" | grep -q "^[0-9]\+$"; then
-    echo "NIBEP needs to be a number."
-    sleep inf
-fi
-
 if ! echo "$GOAIWSP" | grep -q "^[0-9]\+$"; then
     echo "GOAIWSP needs to be a number."
     sleep inf
@@ -302,7 +297,6 @@ if [ "$PHP82" = "true" ]; then
     # From https://github.com/nextcloud/all-in-one/pull/1377/files
     if [ -n "$PHP82_APKS" ]; then
         for apk in $(echo "$PHP82_APKS" | tr " " "\n"); do
-
             if ! echo "$apk" | grep -q "^php82-.*$"; then
                 echo "$apk is a non allowed value."
                 echo "It needs to start with \"php82-\"."
@@ -314,15 +308,14 @@ if [ "$PHP82" = "true" ]; then
             if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
                 echo "The apk \"$apk\" was not installed!"
             fi
-
         done
     fi
 
     mkdir -vp /data/php
     cp -varnT /etc/php82 /data/php/82
-    sed -i "s|listen =.*|listen = /run/php82.sock|" /data/php/82/php-fpm.d/www.conf
-    sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/82/php-fpm.conf
-    sed -i "s|include=.*|include=/data/php/82/php-fpm.d/*.conf|g" /data/php/82/php-fpm.conf
+    sed -i "s|;\?listen\s*=.*|listen = /run/php82.sock|g" /data/php/82/php-fpm.d/www.conf
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /data/php/82/php-fpm.conf
+    sed -i "s|;\?include\s*=.*|include = /data/php/82/php-fpm.d/*.conf|g" /data/php/82/php-fpm.conf
 
 elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/php/82
@@ -335,7 +328,6 @@ if [ "$PHP83" = "true" ]; then
     # From https://github.com/nextcloud/all-in-one/pull/1377/files
     if [ -n "$PHP83_APKS" ]; then
         for apk in $(echo "$PHP83_APKS" | tr " " "\n"); do
-
             if ! echo "$apk" | grep -q "^php83-.*$"; then
                 echo "$apk is a non allowed value."
                 echo "It needs to start with \"php83-\"."
@@ -347,28 +339,23 @@ if [ "$PHP83" = "true" ]; then
             if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
                 echo "The apk \"$apk\" was not installed!"
             fi
-
         done
     fi
 
     mkdir -vp /data/php
     cp -varnT /etc/php83 /data/php/83
-    sed -i "s|listen =.*|listen = /run/php83.sock|" /data/php/83/php-fpm.d/www.conf
-    sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/83/php-fpm.conf
-    sed -i "s|include=.*|include=/data/php/83/php-fpm.d/*.conf|g" /data/php/83/php-fpm.conf
+    sed -i "s|;\?listen\s*=.*|listen = /run/php83.sock|g" /data/php/83/php-fpm.d/www.conf
+    sed -i "s|;\?error_log\s*=.*|error_log = /proc/self/fd/2|g" /data/php/83/php-fpm.conf
+    sed -i "s|;\?include\s*=.*|include = /data/php/83/php-fpm.d/*.conf|g" /data/php/83/php-fpm.conf
 
 elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/php/83
 fi
 
 if [ "$PHP82" = "true" ] || [ "$PHP83" = "true" ]; then
-
-    apk add --no-cache fcgi
-
     # From https://github.com/nextcloud/all-in-one/pull/1377/files
     if [ -n "$PHP_APKS" ]; then
         for apk in $(echo "$PHP_APKS" | tr " " "\n"); do
-
             if ! echo "$apk" | grep -q "^php-.*$"; then
                 echo "$apk is a non allowed value."
                 echo "It needs to start with \"php-\"."
@@ -380,7 +367,6 @@ if [ "$PHP82" = "true" ] || [ "$PHP83" = "true" ]; then
             if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
                 echo "The apk \"$apk\" was not installed!"
             fi
-
         done
     fi
 fi
@@ -390,7 +376,7 @@ if [ "$LOGROTATE" = "true" ]; then
     sed -i "s|rotate [0-9]\+|rotate $LOGROTATIONS|g" /etc/logrotate
     touch /data/nginx/access.log \
           /data/nginx/stream.log
-elif [ "$FULLCLEAN" = "true" ]; then
+elif [ "$CLEAN" = "true" ]; then
     rm -vrf /data/etc/logrotate.status \
             /data/nginx/access.log \
             /data/nginx/access.log.* \
@@ -616,9 +602,124 @@ cp -a /usr/local/nginx/conf/conf.d/include/coreruleset/rules/RESPONSE-999-EXCLUS
 
 cp -va /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/* /data/etc/modsecurity/crs-plugins
 
+if [ "$DEFAULT_CERT_ID" = "0" ]; then
+    export DEFAULT_CERT=/data/tls/dummycert.pem
+    export DEFAULT_KEY=/data/tls/dummykey.pem
+    echo "no DEFAULT_CERT_ID set, using dummycerts."
+else
+        if [ -d "/data/tls/certbot/live/npm-$DEFAULT_CERT_ID" ]; then
+            if [ ! -s /data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/fullchain.pem ]; then
+                echo "/data/tls/certbot/live/npm-$DEFAULT_CERT_ID/fullchain.pem does not exist"
+                export DEFAULT_CERT=/data/tls/dummycert.pem
+                export DEFAULT_KEY=/data/tls/dummykey.pem
+                echo "using dummycerts."
+            else
+                export DEFAULT_CERT=/data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/fullchain.pem
+                echo "DEFAULT_CERT set to /data/tls/certbot/live/npm-$DEFAULT_CERT_ID/fullchain.pem"
 
-sed -i "s|48693|$NIBEP|g" /app/index.js
-sed -i "s|48693|$NIBEP|g" /usr/local/nginx/conf/conf.d/npm.conf
+                if [ ! -s /data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/privkey.pem ]; then
+                    echo "/data/tls/certbot/live/npm-$DEFAULT_CERT_ID/privkey.pem does not exist"
+                    export DEFAULT_CERT=/data/tls/dummycert.pem
+                    export DEFAULT_KEY=/data/tls/dummykey.pem
+                    echo "using dummycerts."
+                else
+                    export DEFAULT_KEY=/data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/privkey.pem
+                    echo "DEFAULT_KEY set to /data/tls/certbot/live/npm-$DEFAULT_CERT_ID/privkey.pem"
+
+                    if [ ! -s /data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/chain.pem ]; then
+                        echo "/data/tls/certbot/live/npm-$DEFAULT_CERT_ID/chain.pem does not exist, running without it"
+                    else
+                        export DEFAULT_CHAIN=/data/tls/certbot/live/npm-"$DEFAULT_CERT_ID"/chain.pem
+                        echo "DEFAULT_CHAIN set to /data/tls/certbot/live/npm-$DEFAULT_CERT_ID/chain.pem"
+                    fi
+                fi
+            fi
+
+        elif [ -d "/data/tls/custom/npm-$DEFAULT_CERT_ID" ]; then
+            if [ ! -s /data/tls/custom/npm-"$DEFAULT_CERT_ID"/fullchain.pem ]; then
+                echo "/data/tls/custom/npm-$DEFAULT_CERT_ID/fullchain.pem does not exist"
+                export DEFAULT_CERT=/data/tls/dummycert.pem
+                export DEFAULT_KEY=/data/tls/dummykey.pem
+                echo "using dummycerts."
+            else
+                export DEFAULT_CERT=/data/tls/custom/npm-"$DEFAULT_CERT_ID"/fullchain.pem
+                echo "DEFAULT_CERT set to /data/tls/custom/npm-$DEFAULT_CERT_ID/fullchain.pem"
+
+                if [ ! -s /data/tls/custom/npm-"$DEFAULT_CERT_ID"/privkey.pem ]; then
+                    echo "/data/tls/custom/npm-$DEFAULT_CERT_ID/privkey.pem does not exist"
+                    export DEFAULT_CERT=/data/tls/dummycert.pem
+                    export DEFAULT_KEY=/data/tls/dummykey.pem
+                    echo "using dummycerts."
+                else
+                    export DEFAULT_KEY=/data/tls/custom/npm-"$DEFAULT_CERT_ID"/privkey.pem
+                    echo "DEFAULT_KEY set to /data/tls/custom/npm-$DEFAULT_CERT_ID/privkey.pem"
+
+                    if [ ! -s /data/tls/custom/npm-"$DEFAULT_CERT_ID"/chain.pem ]; then
+                        echo "/data/tls/custom/npm-$DEFAULT_CERT_ID/chain.pem does not exist, running without it"
+                    else
+                        export DEFAULT_CHAIN=/data/tls/custom/npm-"$DEFAULT_CERT_ID"/chain.pem
+                        echo "DEFAULT_CHAIN set to /data/tls/custom/npm-$DEFAULT_CERT_ID/chain.pem"
+                    fi
+                fi
+            fi
+
+        else
+            export DEFAULT_CERT=/data/tls/dummycert.pem
+            export DEFAULT_KEY=/data/tls/dummykey.pem
+            echo "cert with ID $DEFAULT_CERT_ID does not exist, using dummycerts."
+        fi
+fi
+
+if [ "$DEFAULT_CERT" = "/data/tls/dummycert.pem" ] && [ "$DEFAULT_KEY" != "/data/tls/dummykey.pem" ]; then
+    export DEFAULT_CERT=/data/tls/dummycert.pem
+    export DEFAULT_KEY=/data/tls/dummykey.pem
+    echo "something went wrong, using dummycerts."
+fi
+if [ "$DEFAULT_CERT" != "/data/tls/dummycert.pem" ] && [ "$DEFAULT_KEY" = "/data/tls/dummykey.pem" ]; then
+    export DEFAULT_CERT=/data/tls/dummycert.pem
+    export DEFAULT_KEY=/data/tls/dummykey.pem
+    echo "something went wrong, using dummycerts."
+fi
+
+if [ "$DEFAULT_CERT" = "/data/tls/dummycert.pem" ] || [ "$DEFAULT_KEY" = "/data/tls/dummykey.pem" ]; then
+    if [ ! -s /data/tls/dummycert.pem ] || [ ! -s /data/tls/dummykey.pem ]; then
+        rm -vrf /data/tls/dummycert.pem \
+            /data/tls/dummykey.pem
+        openssl req -new -newkey rsa:4096 -days 365000 -nodes -x509 -subj '/CN=*' -sha256 -keyout /data/tls/dummykey.pem -out /data/tls/dummycert.pem
+    fi
+else
+    rm -vrf /data/tls/dummycert.pem \
+            /data/tls/dummykey.pem
+fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /app/templates/default.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /app/templates/default.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /app/templates/default.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/include/default.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/default.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/include/default.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/no-server-name.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/no-server-name.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/no-server-name.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npmplus.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npmplus.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npmplus.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf; fi
+
+sed -i "s|#\?ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/include/goaccess-no-server-name.conf
+sed -i "s|#\?ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/goaccess-no-server-name.conf
+if [ -n "$DEFAULT_CHAIN" ]; then sed -i "s|#\?ssl_trusted_certificate .*|ssl_trusted_certificate $DEFAULT_CHAIN;|g" /usr/local/nginx/conf/conf.d/include/goaccess-no-server-name.conf; fi
+
 
 sed -i "s|48683|$GOAIWSP|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 
@@ -644,15 +745,15 @@ else
     find /data/nginx -type f -name '*.conf' -not -path "/data/nginx/custom/*" -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9-]\+\)/listen $IPV6_BINDING:\2/g" {} \;
 fi
 
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm.conf
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 
 if [ "$NPM_DISABLE_IPV6" = "true" ]; then
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npm.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 else
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm-no-server-name.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus.conf
+    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $NPM_IPV6_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npmplus-no-server-name.conf
 fi
 
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $GOA_IPV4_BINDING:$GOA_PORT/g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
@@ -966,6 +1067,7 @@ if [ "$PUID" != "0" ]; then
         echo "ERROR: Unable to set group against the user properly"
         sleep inf
     fi
+
     find /proc/self/fd \
          /usr/local \
          /data \
@@ -973,6 +1075,7 @@ if [ "$PUID" != "0" ]; then
          /tmp \
          -not \( -uid "$PUID" -and -gid "$PGID" \) \
          -exec chown "$PUID:$PGID" {} \;
+
     if [ "$PHP82" = "true" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/82/php-fpm.d/www.conf
         sed -i "s|group =.*|;group = root|" /data/php/82/php-fpm.d/www.conf
@@ -981,7 +1084,11 @@ if [ "$PUID" != "0" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|group =.*|;group = root|" /data/php/83/php-fpm.d/www.conf
     fi
+    sed -i "s|user =.*|;user = root|" /etc/php/php-fpm.d/www.conf
+    sed -i "s|group =.*|;group = root|" /etc/php/php-fpm.d/www.conf
+    
     sed -i "s|user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
+    
     exec su-exec "$PUID:$PGID" launch.sh
 else
     find /proc/self/fd \
@@ -991,6 +1098,7 @@ else
          /tmp \
          -not \( -uid 0 -and -gid 0 \) \
          -exec chown 0:0 {} \;
+
     if [ "$PHP82" = "true" ]; then
         sed -i "s|;user =.*|user = root|" /data/php/82/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/82/php-fpm.d/www.conf
@@ -999,6 +1107,10 @@ else
         sed -i "s|;user =.*|user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/83/php-fpm.d/www.conf
     fi
+    sed -i "s|;user =.*|user = root|" /etc/php/php-fpm.d/www.conf
+    sed -i "s|;group =.*|group = root|" /etc/php/php-fpm.d/www.conf
+    
     sed -i "s|#user root;|user root;|g"  /usr/local/nginx/conf/nginx.conf
+    
     exec launch.sh
 fi

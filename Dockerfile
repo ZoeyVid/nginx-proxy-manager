@@ -30,7 +30,7 @@ COPY --from=zoeyvid/curl-quic:416    /usr/local/bin/curl          /usr/local/bin
 COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
 COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
-ARG CRS_VER=v4.5.0
+ARG CRS_VER=v4.7.0
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
     bash nano \
@@ -57,6 +57,9 @@ RUN apk upgrade --no-cache -a && \
     \
     curl https://raw.githubusercontent.com/acmesh-official/acme.sh/master/acme.sh | sh -s -- --install-online --home /usr/local/acme.sh --nocron && \
     ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
+    \
+    curl https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -o /usr/local/bin/certbot-ocsp-fetcher.sh && \
+    chmod +x /usr/local/bin/certbot-ocsp-fetcher.sh && \
     \
     git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
     mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \

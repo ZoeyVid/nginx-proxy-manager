@@ -100,7 +100,7 @@ const internalNginx = {
 				return utils.execFile('nginx', ['-s', 'reload']);
 			} else {
 				logger.info('Starting Nginx');
-				return utils.execfg('nginx', ['-e', 'stderr']);
+				utils.execfg('nginx', ['-e', 'stderr']);
 			}
 		});
 	},

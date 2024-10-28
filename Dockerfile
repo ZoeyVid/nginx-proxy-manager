@@ -155,6 +155,7 @@ ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
     SKIP_IP_RANGES=false \
     LOGROTATE=false \
     LOGROTATIONS=3 \
+    LOGROTATETIME=25h \
     CRT=24 \
     IPRT=1 \
     GOA=false \

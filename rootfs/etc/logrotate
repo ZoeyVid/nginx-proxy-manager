@@ -7,6 +7,6 @@
         sharedscripts
         postrotate
             if [ -s /usr/local/nginx/logs/nginx.pid ]; then nginx -s reload; fi
-            kill "$(pgrep goaccess)"
+            pkill goaccess
         endscript
 }

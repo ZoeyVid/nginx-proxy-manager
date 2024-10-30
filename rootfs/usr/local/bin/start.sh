@@ -246,6 +246,11 @@ if [ -n "$LOGROTATE" ] && ! echo "$LOGROTATIONS" | grep -q "^[0-9]\+$"; then
     sleep inf
 fi
 
+if [ -n "$LOGROTATEDELAY" ] && ! echo "$LOGROTATEDELAY" | grep -Pq "^(0?[1-9]|1[0-9]|2[0-5])h"; then
+    echo "LOGOROTATEDELAY needs to be a value between 1h and 25h."
+    sleep inf
+fi
+
 if ! echo "$CRT" | grep -q "^[0-9]\+$"; then
     echo "CRT needs to be a number."
     sleep inf

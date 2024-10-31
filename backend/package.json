@@ -11,7 +11,7 @@
     "batchflow": "0.4.0",
     "bcrypt": "5.1.1",
     "better-sqlite3": "11.5.0",
-    "body-parser": "2.0.1",
+    "body-parser": "2.0.2",
     "compression": "1.7.5",
     "express": "4.21.1",
     "express-fileupload": "1.5.1",

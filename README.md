@@ -11,7 +11,6 @@ running at home or otherwise, including free TLS, without having to know too muc
 <!---
 **Note: To fix [this issue](https://github.com/SpiderLabs/ModSecurity/issues/2848), instead of running `nginx -s reload`, this fork stops nginx and starts it again. This can result in a 502 error when you update your hosts. See https://github.com/ZoeyVid/NPMplus/issues/296 and https://github.com/ZoeyVid/NPMplus/issues/283.** <br>
 --->
-**Note: Reloading the NPMplus UI can cause a 502 error. See https://github.com/ZoeyVid/NPMplus/issues/241.** <br>
 **Note: NO armv7, route53 and aws cloudfront ip ranges support.** <br>
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
 **Note: If you don't use network mode host, which I don't recommend, don't forget to expose port 443 on tcp AND udp (http3/quic needs udp).** <br>
@@ -20,6 +19,7 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: ModSecurity overblocking (403 Error)? Please see `/opt/npm/etc/modsecurity`, if you also use CRS please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning).** <br>
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
+**Note: watchtower does NOT update NPMplus, you need to do it yourself (it will only pull the image, but not update the container itself).** <br>
 
 
 ## Project Goal

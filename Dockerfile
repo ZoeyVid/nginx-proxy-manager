@@ -74,12 +74,9 @@ RUN apk upgrade --no-cache -a && \
 FROM zoeyvid/nginx-quic:351-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
-# until https://github.com/certbot/certbot/issues/9967 is closed
-ENV PYTHONWARNINGS=ignore
-
 COPY                                  rootfs                                                     /
-COPY --from=zoeyvid/certbot-docker:60 /usr/local                                                 /usr/local
-COPY --from=zoeyvid/curl-quic:423     /usr/local/bin/curl                                        /usr/local/bin/curl
+COPY --from=zoeyvid/certbot-docker:63 /usr/local                                                 /usr/local
+COPY --from=zoeyvid/curl-quic:425     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app
 COPY --from=frontend                  /app/dist                                                  /html/frontend

@@ -64,4 +64,4 @@ services:
 #    ports:
 #      - "80:80"
 #    environment:
-#      - "TZ=Europe/Berlin"
+#      - "TZ=your-timezone"

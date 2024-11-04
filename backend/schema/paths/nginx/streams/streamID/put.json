@@ -30,22 +30,22 @@
 					"minProperties": 1,
 					"properties": {
 						"incoming_port": {
-							"$ref": "../../../components/stream-object.json#/properties/incoming_port"
+							"$ref": "../../../../components/stream-object.json#/properties/incoming_port"
 						},
 						"forwarding_host": {
-							"$ref": "../../../components/stream-object.json#/properties/forwarding_host"
+							"$ref": "../../../../components/stream-object.json#/properties/forwarding_host"
 						},
 						"forwarding_port": {
-							"$ref": "../../../components/stream-object.json#/properties/forwarding_port"
+							"$ref": "../../../../components/stream-object.json#/properties/forwarding_port"
 						},
 						"tcp_forwarding": {
-							"$ref": "../../../components/stream-object.json#/properties/tcp_forwarding"
+							"$ref": "../../../../components/stream-object.json#/properties/tcp_forwarding"
 						},
 						"udp_forwarding": {
-							"$ref": "../../../components/stream-object.json#/properties/udp_forwarding"
+							"$ref": "../../../../components/stream-object.json#/properties/udp_forwarding"
 						},
 						"meta": {
-							"$ref": "../../../components/stream-object.json#/properties/meta"
+							"$ref": "../../../../components/stream-object.json#/properties/meta"
 						}
 					}
 				}

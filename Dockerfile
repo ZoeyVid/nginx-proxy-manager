@@ -78,7 +78,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ENV PYTHONWARNINGS=ignore
 
 COPY                                  rootfs                                                     /
-COPY --from=zoeyvid/certbot-docker:60 /usr/local                                                 /usr/local
+COPY --from=zoeyvid/certbot-docker:62 /usr/local                                                 /usr/local
 COPY --from=zoeyvid/curl-quic:423     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app

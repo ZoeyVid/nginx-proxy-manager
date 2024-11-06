@@ -79,7 +79,7 @@ ENV PYTHONWARNINGS=ignore
 
 COPY                                  rootfs                                                     /
 COPY --from=zoeyvid/certbot-docker:62 /usr/local                                                 /usr/local
-COPY --from=zoeyvid/curl-quic:423     /usr/local/bin/curl                                        /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:424     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app
 COPY --from=frontend                  /app/dist                                                  /html/frontend

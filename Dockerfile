@@ -26,7 +26,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
 COPY src    /app/src
 
-COPY --from=zoeyvid/curl-quic:423    /usr/local/bin/curl          /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:424    /usr/local/bin/curl          /usr/local/bin/curl
 COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
 COPY --from=zoeyvid/valkey-static:31 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 

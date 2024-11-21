@@ -525,7 +525,7 @@ if [ -n "$(ls -A /data/ssl 2> /dev/null)" ]; then
     mv -vn /data/ssl/* /data/tls
 fi
 
-if [ -d /data/tls/certbot/live ] && [-d /data/tls/certbot/archive ]; then
+if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
   find /data/tls/certbot/live ! -name "$(printf "*\n*")" -type f -name "*.pem" > tmp
   while IFS= read -r cert
   do
@@ -560,7 +560,7 @@ if [ "$CLEAN" = "true" ]; then
     rm -vf /data/tls/certbot/crs/*.pem
     rm -vf /data/tls/certbot/keys/*.pem
 
-    if [ -d /data/tls/certbot/live ] && [-d /data/tls/certbot/archive ]; then
+    if [ -d /data/tls/certbot/live ] && [ -d /data/tls/certbot/archive ]; then
       certs_in_use="$(find /data/tls/certbot/live -type l -name "*.pem" -exec readlink -f {} \;)"
       export certs_in_use
       # from: https://www.shellcheck.net/wiki/SC2044

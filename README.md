@@ -37,7 +37,7 @@ so that the barrier for entry here is low.
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/NPMplus#crowdsec) to enable it.
 - goaccess included, see compose.yaml to enable, runs by default on https://<ip>:91 (nginx config from [here](https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf))
 - Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npm/etc/modsecurity` folder (no support from me, you need to write the rules yourself - for CRS I can try to help you).
-  - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of ressources to scan big files by ModSecurity
+  - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
   - ModSecurity overblocking (403 Error) with CRS? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npm/etc/modsecurity/crs-setup.conf` file.
   - Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH).
   - Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also affects NPM).
@@ -69,12 +69,12 @@ so that the barrier for entry here is low.
 - Automatic cleaning of old invalid certbot certs (set CLEAN to true)
 - Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`
 - Supports TLS for MariaDB/MySQL; set `DB_MYSQL_TLS` env to true. Self-signed certificates can be uploaded to `/opt/npm/etc/npm/ca.crt` and `DB_MYSQL_CA` set to `/data/etc/npm/ca.crt` (not tested, unsupported)
-- multi lang support, if you want to add an language, see this commit as an example: https://github.com/ZoeyVid/NPMplus/commit/a026b42329f66b89fe1fbe5e6034df5d3fc2e11f (implemenation based on [@lateautumn233](https://github.com/lateautumn233) fork)
+- multi lang support, if you want to add an language, see this commit as an example: https://github.com/ZoeyVid/NPMplus/commit/a026b42329f66b89fe1fbe5e6034df5d3fc2e11f (implementation based on [@lateautumn233](https://github.com/lateautumn233) fork)
 - See the compose file for all available options
 - many env options optimized for network_mode host (ports/ip bindings)
 - allow port range in streams
-- fixed smalles issues/bugs
-- other small changes/improvments
+- fixed smaller issues/bugs
+- other small changes/improvements
 
 ## migration
 - **NOTE: migrating back to the original is not possible**, so make first a **backup** before migration, so you can use the backup to switch back

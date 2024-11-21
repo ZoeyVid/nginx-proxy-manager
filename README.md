@@ -123,6 +123,7 @@ Password: iArhP1j7p1P6TA92FA2FMbbUGYqwcYzxC4AVEe12Wbi94FY9gNN62aKyF1shrvG4NycjjX
 Immediately after logging in with this default user you will be asked to modify your details and change your password.
 
 # Crowdsec
+Note: Using Immich behind NPMplus with enabled appsec causes issues, see here: #1241
 1. Install crowdsec using this compose file: https://github.com/ZoeyVid/NPMplus/blob/develop/compose.crowdsec.yaml and enable LOGROTATE in the NPMplus compose file
 2. open `/opt/crowdsec/conf/acquis.d/npmplus.yaml` and fill it with:
 ```yaml

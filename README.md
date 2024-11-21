@@ -58,7 +58,7 @@ so that the barrier for entry here is low.
 - Supports up to 99 domains per cert
 - Brotli compression can be enabled
 - HTTP/2 always enabled with fixed upload
-- Allows infinite upload size
+- Allows infinite upload size (may be limited if you use ModSecurity)
 - Automatic database vacuum (only sqlite)
 - Automatic cleaning of old invalid certbot certs (set CLEAN to true)
 - Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`

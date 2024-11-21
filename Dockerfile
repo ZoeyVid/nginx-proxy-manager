@@ -71,7 +71,7 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|APPSEC_PROCESS_TIMEOUT=.*|APPSEC_PROCESS_TIMEOUT=10000|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:352-python
+FROM ghcr.io/zoeyvid/nginx-quic:pr-85-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 COPY                                  rootfs                                                     /
@@ -100,12 +100,6 @@ RUN apk upgrade --no-cache -a && \
 #    ln -s /usr/local/acme.sh/acme.sh /usr/local/bin/acme.sh && \
     curl https://raw.githubusercontent.com/tomwassenberg/certbot-ocsp-fetcher/refs/heads/main/certbot-ocsp-fetcher -o /usr/local/bin/certbot-ocsp-fetcher.sh && \
     chmod +x /usr/local/bin/certbot-ocsp-fetcher.sh && \
-    git clone https://github.com/coreruleset/coreruleset --branch "$CRS_VER" /tmp/coreruleset && \
-    mkdir -v /usr/local/nginx/conf/conf.d/include/coreruleset && \
-    mv -v /tmp/coreruleset/crs-setup.conf.example /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example && \
-    mv -v /tmp/coreruleset/plugins /usr/local/nginx/conf/conf.d/include/coreruleset/plugins && \
-    mv -v /tmp/coreruleset/rules /usr/local/nginx/conf/conf.d/include/coreruleset/rules && \
-    rm -r /tmp/* && \
     luarocks-5.1 install lua-cjson && \
     luarocks-5.1 install lua-resty-http && \
     luarocks-5.1 install lua-resty-string && \

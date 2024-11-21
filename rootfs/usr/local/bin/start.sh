@@ -457,8 +457,6 @@ mkdir -vp /data/tls/certbot/credentials \
           /data/etc/html \
           /data/etc/access \
           /data/etc/crowdsec \
-          /data/etc/modsecurity \
-          /data/etc/modsecurity/crs-plugins \
           /data/nginx/redirection_host \
           /data/nginx/proxy_host \
           /data/nginx/dead_host \
@@ -598,8 +596,7 @@ touch /tmp/ip_ranges.conf \
       /data/nginx_custom/stream_top.conf \
       /data/nginx_custom/server_stream.conf \
       /data/nginx_custom/server_stream_tcp.conf \
-      /data/nginx_custom/server_stream_udp.conf \
-      /data/etc/modsecurity/modsecurity-extra.conf
+      /data/nginx_custom/server_stream_udp.conf
 
 find /data/nginx -type f -name '*.conf' -exec sed -i "s|nginx/custom|nginx_custom|g" {} \;
 find /data/nginx -type f -name '*.conf' -exec sed -i "s| http2||g" {} \;
@@ -643,34 +640,10 @@ find /data/nginx -type f -name '*.conf' -exec sed -i "/proxy_http_version/d" {} 
 find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling/d" {} \;
 find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling_verify/d" {} \;
 
+find /data/nginx -type f -name '*.conf' -exec sed -i "/modsecurity/d" {} \;
+
 if [ -s /data/nginx/default.conf ]; then sed -i "/ssl_stapling/d" /data/nginx/default.conf; fi
 if [ -s /data/nginx/default.conf ]; then sed -i "/ssl_stapling_verify/d" /data/nginx/default.conf; fi
-
-if [ ! -s /data/etc/modsecurity/modsecurity-default.conf ]; then
-      cp -van /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example /data/etc/modsecurity/modsecurity-default.conf
-fi
-cp -a /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example /data/etc/modsecurity/modsecurity-default.conf.example
-
-if [ -s /data/etc/modsecurity/modsecurity.conf ]; then
-      mv -v /data/etc/modsecurity/modsecurity.conf /data/etc/modsecurity/modsecurity-extra.conf
-fi
-
-if [ ! -s /data/etc/modsecurity/crs-setup.conf ]; then
-      cp -van /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /data/etc/modsecurity/crs-setup.conf
-fi
-cp -a /usr/local/nginx/conf/conf.d/include/coreruleset/crs-setup.conf.example /data/etc/modsecurity/crs-setup.conf.example
-
-if [ ! -s /data/etc/modsecurity/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example ]; then
-      cp -van /usr/local/nginx/conf/conf.d/include/coreruleset/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example /data/etc/modsecurity/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
-fi
-cp -a /usr/local/nginx/conf/conf.d/include/coreruleset/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example /data/etc/modsecurity/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf.example
-
-if [ ! -s /data/etc/modsecurity/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example ]; then
-      cp -van /usr/local/nginx/conf/conf.d/include/coreruleset/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example /data/etc/modsecurity/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
-fi
-cp -a /usr/local/nginx/conf/conf.d/include/coreruleset/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example /data/etc/modsecurity/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf.example
-
-cp -va /usr/local/nginx/conf/conf.d/include/coreruleset/plugins/* /data/etc/modsecurity/crs-plugins
 
 
 sed -i "s|48693|$NIBEP|g" /app/index.js

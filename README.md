@@ -36,12 +36,6 @@ so that the barrier for entry here is low.
 - Supports HTTP/3 (QUIC) protocol.
 - Supports CrowdSec IPS. Please see [here](https://github.com/ZoeyVid/NPMplus#crowdsec) to enable it.
 - goaccess included, see compose.yaml to enable, runs by default on https://<ip>:91 (nginx config from [here](https://github.com/xavier-hernandez/goaccess-for-nginxproxymanager/blob/main/resources/nginx/nginx.conf))
-- Supports ModSecurity, with coreruleset as an option. You can configure ModSecurity/coreruleset by editing the files in the `/opt/npm/etc/modsecurity` folder (no support from me, you need to write the rules yourself - for CRS I can try to help you).
-  - ModSecurity by default blocks uploads of big files, you need to edit its config to fix this, but it can use a lot of resources to scan big files by ModSecurity
-  - ModSecurity overblocking (403 Error) with CRS? Please see [here](https://coreruleset.org/docs/concepts/false_positives_tuning) and edit the `/opt/npm/etc/modsecurity/crs-setup.conf` file.
-  - Try to whitelist the Content-Type you are sending (for example, `application/activity+json` for Mastodon and `application/dns-message` for DoH).
-  - Try to whitelist the HTTP request method you are using (for example, `PUT` is blocked by default, which also affects NPM).
-  - CRS plugins are supported, you can find a guide in this readme
 - Darkmode button in the footer for comfortable viewing (CSS done by [@theraw](https://github.com/theraw))
 - Fixes proxy to https origin when the origin only accepts TLSv1.3
 - Only enables TLSv1.2 and TLSv1.3 protocols, also ML-KEM support
@@ -64,7 +58,7 @@ so that the barrier for entry here is low.
 - Supports up to 99 domains per cert
 - Brotli compression can be enabled
 - HTTP/2 always enabled with fixed upload
-- Allows infinite upload size (may be limited if you use ModSecurity)
+- Allows infinite upload size
 - Automatic database vacuum (only sqlite)
 - Automatic cleaning of old invalid certbot certs (set CLEAN to true)
 - Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`
@@ -125,12 +119,6 @@ container_name:
 labels:
   type: npmplus
 ---
-source: docker
-container_name:
- - npmplus
-labels:
-  type: modsecurity
----
 listen_addr: 0.0.0.0:7422
 appsec_config: crowdsecurity/appsec-default
 name: appsec
@@ -146,11 +134,6 @@ labels:
 8. save the file
 9. set LOGROTATE to `true` in your `compose.yaml`
 10. redeploy the `compose.yaml`
-
-# coreruleset plugins
-1. Download the plugin (all files inside the `plugins` folder of the git repo), most time: `<plugin-name>-before.conf`, `<plugin-name>-config.conf` and `<plugin-name>-after.conf` and sometimes `<plugin-name>.data` and/or `<plugin-name>.lua` or somilar files
-2. put them into the `/opt/npm/etc/modsecurity/crs-plugins` folder
-3. maybe open the `/opt/npm/etc/modsecurity/crs-plugins/<plugin-name>-config.conf` and configure the plugin
 
 # Use as webserver
 1. Create a new Proxy Host

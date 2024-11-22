@@ -76,7 +76,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 COPY                                  rootfs                                                     /
 COPY --from=zoeyvid/certbot-docker:64 /usr/local                                                 /usr/local
-COPY --from=zoeyvid/curl-quic:425     /usr/local/bin/curl                                        /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:426     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app
 COPY --from=frontend                  /app/dist                                                  /html/frontend
@@ -122,6 +122,8 @@ ENV NODE_ENV=production \
     DB_SQLITE_FILE=/data/etc/npm/database.sqlite
 
 ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
+    ACME_MUST_STAPLE=true \
+    ACME_SERVER_TLS_VERIFY=true \
     PUID=0 \
     PGID=0 \
     NIBEP=48693 \

@@ -9,7 +9,6 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>
 **Note: watchtower does NOT update NPMplus, you need to do it yourself (it will only pull the image, but not update the container itself).** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
-**Note: watchtower does NOT update NPMplus, you need to do it yourself (it will only pull the image, but not update the container itself).** <br>
 
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
 **Note: Don't forget to open Port 80 (tcp) and 443 (tcp AND udp, http3/quic needs udp) in your firewall (because of network mode host, you also need to open this ports in ufw, if you use ufw).** <br>

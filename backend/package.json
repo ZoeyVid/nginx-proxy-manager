@@ -36,7 +36,7 @@
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "globals": "15.12.0",
-    "prettier": "3.3.3"
+    "prettier": "3.4.0"
   },
   "scripts": {
     "validate-schema": "node validate-schema.js"

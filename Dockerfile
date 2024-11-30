@@ -88,7 +88,7 @@ COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/lua-mod/templa
 COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf    /usr/local/nginx/conf/conf.d/include/crowdsec.conf
 COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/nginx/crowdsec_nginx.conf      /usr/local/nginx/conf/conf.d/include/crowdsec_nginx.conf
 
-ARG CRS_VER=v4.8.0
+ARG CRS_VER=v4.9.0
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates tzdata tini \
     bash nano nodejs \

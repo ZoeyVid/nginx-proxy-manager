@@ -76,7 +76,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 COPY                                  rootfs                                                     /
 COPY --from=zoeyvid/certbot-docker:67 /usr/local                                                 /usr/local
-COPY --from=zoeyvid/curl-quic:427     /usr/local/bin/curl                                        /usr/local/bin/curl
+COPY --from=zoeyvid/curl-quic:430     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app
 COPY --from=frontend                  /app/dist                                                  /html/frontend

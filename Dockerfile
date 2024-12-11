@@ -75,7 +75,7 @@ FROM zoeyvid/nginx-quic:362-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 COPY                                  rootfs                                                     /
-COPY --from=zoeyvid/certbot-docker:67 /usr/local                                                 /usr/local
+COPY --from=zoeyvid/certbot-docker:68 /usr/local                                                 /usr/local
 COPY --from=zoeyvid/curl-quic:431     /usr/local/bin/curl                                        /usr/local/bin/curl
 
 COPY --from=strip-backend             /app                                                       /app

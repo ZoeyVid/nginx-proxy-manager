@@ -38,8 +38,8 @@ jobs:
           docker buildx imagetools create --tag ${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.run_number }} ${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
           docker buildx imagetools create --tag ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:latest ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
           docker buildx imagetools create --tag ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.run_number }} ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
-          docker buildx imagetools create --tag forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:latest ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
-          docker buildx imagetools create --tag forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.run_number }} ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
+          docker buildx imagetools create --tag forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:latest forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
+          docker buildx imagetools create --tag forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.run_number }} forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
       - name: Show Nginx version
         run: |
           docker run --rm --entrypoint nginx ${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:latest -V

@@ -77,13 +77,13 @@ jobs:
           tags: |
             ${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
             ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
-            forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
+#            forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }}
       - name: show version
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           docker run --rm --entrypoint nginx ${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }} -V
           docker run --rm --entrypoint nginx ghcr.io/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }} -V
-          docker run --rm --entrypoint nginx forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }} -V
+#          docker run --rm --entrypoint nginx forgejo.zvcdn.de/${{ steps.un.outputs.un }}/${{ steps.rn.outputs.rn }}:${{ github.ref_name }} -V
       - name: Set PR-Number (PR)
         if: ${{ github.event_name == 'pull_request' }}
         id: pr

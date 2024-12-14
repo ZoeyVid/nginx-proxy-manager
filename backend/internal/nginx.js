@@ -146,6 +146,7 @@ const internalNginx = {
 						locationCopy.forward_host = split.shift();
 						locationCopy.forward_path = `/${split.join('/')}`;
 					}
+					locationCopy.env = process.env;
 
 					renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
 				}
@@ -205,6 +206,8 @@ const internalNginx = {
 			} else {
 				locationsPromise = Promise.resolve();
 			}
+
+			host.env = process.env;
 
 			locationsPromise.then(() => {
 				renderEngine

@@ -4,17 +4,19 @@ services:
     image: zoeyvid/npmplus
     restart: always
     network_mode: host
+#    privileged: true # required if you set NGINX_QUIC_BPF to true
     volumes:
       - "/opt/npm:/data"
 #      - "/var/www:/var/www" # optional, if you want to use it as webserver for html/php
 #      - "/opt/npm-letsencrypt:/etc/letsencrypt" # Only needed for first time migration from original nginx-proxy-manager to this fork
     environment:
       - "TZ=your-timezone" # set timezone, required, set it to one of the values from the "TZ identifier" https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
-      - "ACME_EMAIL=your-email" # email address which should be used for acme, currently optional, may be required in the future, so I recommend you to enter your email here
-#      - "ACME_SERVER=https://dv.acme-v02.api.pki.goog/directory" # acme server to used when requesting/renewing certs using certbot, default is (currently, may change later) set to: https://acme-v02.api.letsencrypt.org/directory (letsencrypt)
-#      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server
-#      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server
-#      - "ACME_MUST_STAPLE=false" # enables must-staple, default true (will change soon, see https://github.com/ZoeyVid/NPMplus/discussions/1285), I recommend you to enable this if your CA supports it
+      - "ACME_EMAIL=your-email" # email address which should be used for acme, currently optional, may be required in the future, so I recommend you to enter your email here, optional for letsencrypt, but required for zerossl and google public ca
+#      - "ACME_SERVER=https://dv.acme-v02.api.pki.goog/directory (google public ca) / https://acme.zerossl.com/v2/DV90 (zerossl)" # acme server used when requesting/renewing certs using certbot, default is set to: https://acme-v02.api.letsencrypt.org/directory (letsencrypt)
+#      - "ACME_EAB_KID=123456789abcdef" # Key Identifier for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_EAB_HMAC_KEY=123456789abcdef" # HMAC key for External Account Binding for the acme server, not supported by letsencrypt, optional for zerossl (Login on theier site => Developer), but required for google public ca: https://cloud.google.com/certificate-manager/docs/public-ca-tutorial?hl=de#request-key-hmac
+#      - "ACME_MUST_STAPLE=true" # enables must-staple, default false, I recommend you to enable this if your CA supports it, supported by zerossl, google public ca ignores this, unsupported by letsencrypt (will fail)
+#      - "ACME_OCSP_STAPLING=true" # enables ocsp stapling, default false, I recommend you to enable this if your CA supports it, supported by zerossl and google public ca, unsupported by letsencrypt (will create warning in your log)
 #      - "ACME_SERVER_TLS_VERIFY=false" # enables checking if ACME_SERVER has a valid TLS cert, default true
 #      - "PUID=1000" # set group id, default 0 (root)
 #      - "PGID=1000" # set user id, default 0 (root), requires PUID
@@ -36,6 +38,7 @@ services:
 #      - "DEFAULT_CERT_ID=1" # ID of cert, which should be used instead of dummycerts, default 0/unset/dummycerts
 #      - "DISABLE_HTTP=true" # disables nginx to listen on port 80, default false
 #      - "DISABLE_H3_QUIC=true" # disables nginx to listen on port 443 udp for default and your hosts, this will disable HTTP/3 and QUIC, default false
+#      - "NGINX_QUIC_BPF=true" # enables nginxs quic_bpf (https://nginx.org/en/docs/http/ngx_http_v3_module.html#quic_bpf), you also need to to give the NPMplus container privileged permissions to use this, default false
 #      - "NGINX_LOG_NOT_FOUND=true" # Allow logging of 404 errors, default false
 #      - "NGINX_404_REDIRECT=true" # Redirect to / instead of showing a 404 error page, default false
 #      - "NGINX_DISABLE_PROXY_BUFFERING=true" # Disables the proxy_buffering/proxy_request_buffering options of nginx, default false, may not work if you use crowdsec/appsec

@@ -83,6 +83,11 @@ if ! echo "$ACME_MUST_STAPLE" | grep -q "^true$\|^false$"; then
     sleep inf
 fi
 
+if ! echo "$ACME_OCSP_STAPLING" | grep -q "^true$\|^false$"; then
+    echo "ACME_OCSP_STAPLING needs to be true or false."
+    sleep inf
+fi
+
 if ! echo "$ACME_SERVER_TLS_VERIFY" | grep -q "^true$\|^false$"; then
     echo "ACME_SERVER_TLS_VERIFY needs to be true or false."
     sleep inf
@@ -90,17 +95,32 @@ fi
 
 
 if ! echo "$PUID" | grep -q "^[0-9]\+$"; then
-    echo "PUID needs to be a number."
+    echo "PUID needs to be a number greater or equal to 1000, or equal to 0."
+    sleep inf
+fi
+
+if [ "$PUID" -lt "1000" ]; then
+    echo "PUID needs to be a number greater or equal to 1000, or equal to 0."
     sleep inf
 fi
 
 if ! echo "$PGID" | grep -q "^[0-9]\+$"; then
-    echo "PGID needs to be a number."
+    echo "PGID needs to be a number greater or equal to 1000, or equal to 0."
+    sleep inf
+fi
+
+if [ "$PGID" -lt "1000" ]; then
+    echo "PGID needs to be a number greater or equal to 1000, or equal to 0."
     sleep inf
 fi
 
 if [ "$PGID" != "0" ] && [ "$PUID" = "0" ]; then
     echo "You've set PGID but not PUID. Which is required."
+    sleep inf
+fi
+
+if [ "$PGID" = "0" ] && [ "$PUID" != "0" ]; then
+    echo "You've set PUID but not PGID. Are you sure that this is what you wanted?"
     sleep inf
 fi
 
@@ -208,6 +228,11 @@ fi
 
 if ! echo "$DISABLE_H3_QUIC" | grep -q "^true$\|^false$"; then
     echo "DISABLE_H3_QUIC needs to be true or false."
+    sleep inf
+fi
+
+if ! echo "$NGINX_QUIC_BPF" | grep -q "^true$\|^false$"; then
+    echo "NGINX_QUIC_BPF needs to be true or false."
     sleep inf
 fi
 
@@ -783,6 +808,12 @@ else
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
     find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*quic\)|\1|g" {} \;
     find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
+fi
+
+if [ "$NGINX_QUIC_BPF" = "true" ]; then
+    sed -i "s|quic_bpf.*|quic_bpf on;|g" /usr/local/nginx/conf/nginx.conf
+else
+    sed -i "s|quic_bpf.*|quic_bpf off;|g" /usr/local/nginx/conf/nginx.conf
 fi
 
 if [ "$NGINX_LOG_NOT_FOUND" = "true" ]; then

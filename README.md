@@ -9,11 +9,12 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: Other Databases like MariaDB may work, but are unsupported.** <br>
 **Note: watchtower does NOT update NPMplus, you need to do it yourself (it will only pull the image, but not update the container itself).** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
+**Note: no support for the CF-Connecting-IPv6 header when using [Cloudflares Pseudo IPv4](https://developers.cloudflare.com/network/pseudo-ipv4)** <br>
+**Note: Setups running inside LXC (running a Container in a Container makes no sense) or Unraid (bad container implementation) are not supported, if you want to report something please reproduce it somewhere else before reporting.** <br>
 
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
 **Note: Don't forget to open Port 80 (tcp) and 443 (tcp AND udp, http3/quic needs udp) in your firewall (because of network mode host, you also need to open this ports in ufw, if you use ufw).** <br>
 **Note: If you don't use network mode host, which I don't recommend, don't forget to also expose port 443/udp (http3/quic needs udp) and to enable IPv6 in Docker see step 1 and 2 [here](https://github.com/nextcloud/all-in-one/blob/main/docker-ipv6-support.md).** <br>
-**MOZILLA_PKIX_ERROR_REQUIRED_TLS_FEATURE_MISSING: please see/read/use the ACME_MUST_STAPLE env option of the compose.yaml** <br>
 
 
 ## Project Goal
@@ -47,7 +48,7 @@ so that the barrier for entry here is low.
 - Fixes proxy to https origin when the origin only accepts TLSv1.3
 - Only enables TLSv1.2 and TLSv1.3 protocols, also ML-KEM support
 - Faster creation of TLS certificates is achieved by eliminating unnecessary nginx reloads and configuration creations.
-- Uses OCSP Stapling for enhanced security (manual certs not supported)
+- Supports OCSP Stapling/Must-Staple for enhanced security (manual certs not supported, see compose.yaml for details)
 - Resolved dnspod plugin issue
   - To migrate manually, delete all dnspod certs and recreate them OR change the credentials file as per the template given [here](https://github.com/ZoeyVid/NPMplus/blob/develop/global/certbot-dns-plugins.js)
 - Smaller docker image with alpine-based distribution
@@ -88,8 +89,8 @@ so that the barrier for entry here is low.
 - please report all (migration) issues you may have
 
 # Quick Setup
-1. Install Docker and Docker Compose (or portainer)
-- [Docker Install documentation](https://docs.docker.com/engine)
+1. Install Docker and Docker Compose (podman or docker rootless may also work)
+- [Docker Install documentation](https://docs.docker.com/engine/install)
 - [Docker Compose Install documentation](https://docs.docker.com/compose/install/linux)
 2. Download this [compose.yaml](https://raw.githubusercontent.com/ZoeyVid/NPMplus/refs/heads/develop/compose.yaml) (or use its content as a portainer stack)
 3. adjust TZ and ACME_EMAIL to your values and maybe adjust other env options to your needs.
@@ -195,10 +196,11 @@ if you need to run scripts before NPMplus launches put them under: `/opt/npm/etc
 you need to create this folder yourself - **NOTE:** I won't help you creating those patches/scripts if you need them you also need to know how to create them
 
 ## Contributing
-All are welcome to create pull requests for this project.
+All are welcome to create pull requests for this project, but this does not mean it will be merged.
 
 # Please report Bugs first to this fork before reporting them to the upstream Repository
 ## Getting Help
-1. [Support/Questions](https://github.com/ZoeyVid/NPMplus/discussions)
-2. [Reddit](https://reddit.com/r/NPMplus)
-3. [Bugs](https://github.com/ZoeyVid/NPMplus/issues)
+1. Setups running inside LXC (running a Container in a Container makes no sense) or Unraid (bad container implementation) are not supported, if you want to report something please reproduce it somewhere else before reporting.
+2. [Support/Questions](https://github.com/ZoeyVid/NPMplus/discussions)
+3. [Reddit](https://reddit.com/r/NPMplus)
+4. [Bugs](https://github.com/ZoeyVid/NPMplus/issues)

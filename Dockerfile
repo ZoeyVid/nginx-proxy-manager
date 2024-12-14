@@ -26,13 +26,12 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 COPY rootfs /
 COPY src    /app/src
 
-COPY --from=zoeyvid/curl-quic:431    /usr/local/bin/curl          /usr/local/bin/curl
 COPY --from=zoeyvid/valkey-static:34 /usr/local/bin/valkey-cli    /usr/local/bin/valkey-cli
 COPY --from=zoeyvid/valkey-static:34 /usr/local/bin/valkey-server /usr/local/bin/valkey-server
 
 ARG CRS_VER=v4.7.0
 RUN apk upgrade --no-cache -a && \
-    apk add --no-cache ca-certificates tzdata tini \
+    apk add --no-cache ca-certificates tzdata tini curl \
     bash nano \
     logrotate apache2-utils \
     lua5.1-lzlib lua5.1-socket \

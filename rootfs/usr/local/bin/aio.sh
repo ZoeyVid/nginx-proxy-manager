@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 if [ "$NC_AIO" = "true" ] && [ ! -f /data/etc/aio.lock ]; then
     while [ "$(healthcheck.sh)" != "OK" ]; do sleep 10s; done

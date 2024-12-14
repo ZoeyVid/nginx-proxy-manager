@@ -73,6 +73,7 @@ const setupDefaultUser = () => {
  * @returns {Promise}
  */
 const setupDefaultSettings = () => {
+	let defaultp = process.env.INITIAL_DEFAULT_PAGE || 'congratulations';
 	return settingModel
 		.query()
 		.select(settingModel.raw('COUNT(`id`) as `count`'))
@@ -86,7 +87,7 @@ const setupDefaultSettings = () => {
 						id: 'default-site',
 						name: 'Default Site',
 						description: 'What to show when Nginx is hit with an unknown Host',
-						value: 'congratulations',
+						value: defaultp,
 						meta: {},
 					})
 					.then(() => {

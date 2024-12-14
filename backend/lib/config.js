@@ -49,15 +49,14 @@ const configure = () => {
 		return;
 	}
 
-	const envSqliteFile = process.env.DB_SQLITE_FILE || '/data/etc/npm/database.sqlite';
-	logger.info(`Using Sqlite: ${envSqliteFile}`);
+	logger.info('Using Sqlite: /data/etc/npm/database.sqlite');
 	instance = {
 		database: {
 			engine: 'knex-native',
 			knex: {
 				client: 'better-sqlite3',
 				connection: {
-					filename: envSqliteFile,
+					filename: '/data/etc/npm/database.sqlite',
 				},
 				useNullAsDefault: true,
 			},

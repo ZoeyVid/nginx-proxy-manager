@@ -79,14 +79,18 @@ const internalNginx = {
 	 * @returns {Promise}
 	 */
 	test: () => {
-		return utils
-			.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/certbot', '-o', '/data/tls/certbot/live', '--no-reload-webserver', '--quiet'])
-			.then(() => {
-				return utils.execFile('nginx', ['-tq']);
-			})
-			.catch(() => {
-				return utils.execFile('nginx', ['-tq']);
-			});
+		if (process.env.ACME_OCSP_STAPLING === 'true') {
+			return utils
+				.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/certbot', '-o', '/data/tls/certbot/live', '--no-reload-webserver', '--quiet'])
+				.then(() => {
+					return utils.execFile('nginx', ['-tq']);
+				})
+				.catch(() => {
+					return utils.execFile('nginx', ['-tq']);
+				});
+		} else {
+			return utils.execFile('nginx', ['-tq']);
+		}
 	},
 
 	/**
@@ -146,6 +150,7 @@ const internalNginx = {
 						locationCopy.forward_host = split.shift();
 						locationCopy.forward_path = `/${split.join('/')}`;
 					}
+					locationCopy.env = process.env;
 
 					renderedLocations += await renderEngine.parseAndRender(template, locationCopy);
 				}
@@ -205,6 +210,8 @@ const internalNginx = {
 			} else {
 				locationsPromise = Promise.resolve();
 			}
+
+			host.env = process.env;
 
 			locationsPromise.then(() => {
 				renderEngine

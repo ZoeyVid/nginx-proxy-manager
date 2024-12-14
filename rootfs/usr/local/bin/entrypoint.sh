@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 if [ -n "$(ls -A /data/etc/prerun 2> /dev/null)" ]; then
     for script in /data/etc/prerun/*.sh; do

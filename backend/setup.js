@@ -7,6 +7,13 @@ const authModel = require('./models/auth');
 const settingModel = require('./models/setting');
 const certbot = require('./lib/certbot');
 
+const proxyModel = require('./models/proxy_host');
+const redirectModel = require('./models/redirection_host');
+const deadModel = require('./models/dead_host');
+const streamModel = require('./models/stream');
+const internalNginx = require('./internal/nginx');
+const utils = require('./lib/utils');
+
 /**
  * Creates a default admin users if one doesn't already exist in the database
  *
@@ -73,6 +80,7 @@ const setupDefaultUser = () => {
  * @returns {Promise}
  */
 const setupDefaultSettings = () => {
+	let defaultp = process.env.INITIAL_DEFAULT_PAGE || 'congratulations';
 	return settingModel
 		.query()
 		.select(settingModel.raw('COUNT(`id`) as `count`'))
@@ -86,7 +94,7 @@ const setupDefaultSettings = () => {
 						id: 'default-site',
 						name: 'Default Site',
 						description: 'What to show when Nginx is hit with an unknown Host',
-						value: 'congratulations',
+						value: defaultp,
 						meta: {},
 					})
 					.then(() => {
@@ -116,10 +124,7 @@ const setupCertbotPlugins = () => {
 						if (plugins.indexOf(certificate.meta.dns_provider) === -1) {
 							plugins.push(certificate.meta.dns_provider);
 						}
-
-						const credentialsLocation = '/data/tls/certbot/credentials/credentials-' + certificate.id;
-						fs.mkdirSync('/data/tls/certbot/credentials', { recursive: true });
-						fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
+						fs.writeFileSync('/tmp/certbot-credentials/credentials-' + certificate.id, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 					}
 				});
 
@@ -134,6 +139,82 @@ const setupCertbotPlugins = () => {
 		});
 };
 
+/**
+ * regenerate all hosts if needed
+ *
+ * @returns {Promise}
+ */
+const regenerateAllHosts = () => {
+	if (process.env.REGENERATE_ALL === 'true') {
+		const promises = [];
+
+		promises.push(
+			proxyModel
+				.query()
+				.where('is_deleted', 0)
+				.andWhere('enabled', 1)
+				.then((rows) => {
+					if (rows && rows.length) {
+						internalNginx.bulkGenerateConfigs('proxy_host', rows);
+					}
+				}),
+		);
+
+		promises.push(
+			redirectModel
+				.query()
+				.where('is_deleted', 0)
+				.andWhere('enabled', 1)
+				.then((rows) => {
+					if (rows && rows.length) {
+						internalNginx.bulkGenerateConfigs('redirection_host', rows);
+					}
+				}),
+		);
+
+		promises.push(
+			deadModel
+				.query()
+				.where('is_deleted', 0)
+				.andWhere('enabled', 1)
+				.then((rows) => {
+					if (rows && rows.length) {
+						internalNginx.bulkGenerateConfigs('dead_host', rows);
+					}
+				}),
+		);
+
+		promises.push(
+			streamModel
+				.query()
+				.where('is_deleted', 0)
+				.andWhere('enabled', 1)
+				.then((rows) => {
+					if (rows && rows.length) {
+						internalNginx.bulkGenerateConfigs('stream', rows);
+					}
+				}),
+		);
+
+		promises.push(
+			settingModel
+				.query()
+				.where('id', 'default-site')
+				.first()
+				.then((row) => {
+					internalNginx.generateConfig('default', row);
+				}),
+		);
+
+		// Execute all promises and then write the hash
+		return Promise.all(promises).then(() => {
+			utils.writeHash();
+		});
+	}
+
+	return Promise.resolve(); // Return resolved promise if REGENERATE_ALL is not true
+};
+
 module.exports = function () {
-	return setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins);
+	return setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(regenerateAllHosts);
 };

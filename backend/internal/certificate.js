@@ -783,7 +783,6 @@ const internalCertificate = {
 		logger.info(`Requesting Certbot certificates via ${dnsPlugin.name} for Cert #${certificate.id}: ${certificate.domain_names.join(', ')}`);
 
 		const credentialsLocation = '/data/tls/certbot/credentials/credentials-' + certificate.id;
-		fs.mkdirSync('/data/tls/certbot/credentials', { recursive: true });
 		fs.writeFileSync(credentialsLocation, certificate.meta.dns_provider_credentials, { mode: 0o600 });
 
 		try {
@@ -889,16 +888,6 @@ const internalCertificate = {
 		return utils
 			.execFile(certbotCommand, [...certbotArgs, 'revoke', '--cert-name', `npm-${certificate.id}`, '--no-delete-after-revoke'])
 			.then(async (result) => {
-				fs.rm('/data/tls/certbot/credentials/credentials-' + certificate.id, { force: true }, (err) => {
-					if (err) {
-						logger.error('Error deleting credentials:', err.message);
-						if (throw_errors) {
-							throw err;
-						}
-					} else {
-						logger.info('Credentials file deleted successfully');
-					}
-				});
 				logger.info(result);
 				return result;
 			})

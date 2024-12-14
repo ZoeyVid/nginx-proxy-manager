@@ -1,15 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 echo "
 -------------------------------------
- _ _  ___  __ __       _
-| \ || . \|  \  \ ___ | | _ _  ___
-|   ||  _/|     || . \| || | |[_-[
-|_\_||_|  |_|_|_||  _/|_| \__|/__/
-                 |_|
--------------------------------------
-Version:  $(jq -r .version /app/package.json)
-Date:     $(date)
 User:     $(whoami)
 PUID:     $PUID
 User ID:  $(id -u)
@@ -32,6 +24,13 @@ fi
 if [ "$PHP83" = "true" ]; then
     if ! PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FORt > /dev/null 2>&1; then
         PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FORt
+        sleep inf
+    fi
+fi
+
+if [ "$PHP84" = "true" ]; then
+    if ! PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FORt > /dev/null 2>&1; then
+        PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FORt
         sleep inf
     fi
 fi
@@ -70,10 +69,18 @@ if [ ! -d /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^https\?://
     fi
 fi
 
+if [ "$ACME_OCSP_STAPLING" = "true" ]; then
+    rm -vf /data/tls/certbot/live/npm-*.der
+    certbot-ocsp-fetcher.sh -c /data/tls/certbot -o /data/tls/certbot/live --no-reload-webserver || true
+else
+    rm -vf /data/tls/certbot/live/npm-*.der
+fi
 touch /data/etc/logrotate.lock
+echo "Starting services..."
 
 if [ "$PHP82" = "true" ]; then PHP_INI_SCAN_DIR=/data/php/82/conf.d php-fpm82 -c /data/php/82 -y /data/php/82/php-fpm.conf -FOR; fi &
 if [ "$PHP83" = "true" ]; then PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FOR; fi &
+if [ "$PHP84" = "true" ]; then PHP_INI_SCAN_DIR=/data/php/84/conf.d php-fpm84 -c /data/php/84 -y /data/php/84/php-fpm.conf -FOR; fi &
 if [ "$LOGROTATE" = "true" ]; then while true; do touch /data/etc/logrotate.lock; logrotate --verbose --state /data/etc/logrotate.state /etc/logrotate; rm /data/etc/logrotate.lock; sleep 25h; done; fi &
 # shellcheck disable=SC2086
 if [ "$GOA" = "true" ]; then while true; do if [ -f /data/nginx/access.log ] && [ ! -f /data/etc/logrotate.lock ]; then goaccess --no-global-config --num-tests=0 --tz="$TZ" --date-format="%d/%b/%Y" --time-format="%H:%M:%S" --log-format='[%d:%t %^] %v %h %T "%r" %s %b %b %R %u' --no-ip-validation \

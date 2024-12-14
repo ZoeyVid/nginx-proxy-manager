@@ -72,9 +72,9 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|APPSEC_PROCESS_TIMEOUT=.*|APPSEC_PROCESS_TIMEOUT=10000|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:368-python
+FROM zoeyvid/nginx-quic:371-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-ARG CRS_VER=v4.9.0
+ARG CRS_VER=v4.10.0
 COPY rootfs /
 COPY --from=strip-backend /app /app
 
@@ -113,20 +113,20 @@ COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/lua-mod/templa
 COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/lua-mod/lib/crowdsec.lua       /usr/local/nginx/lib/lua/crowdsec.lua
 COPY --from=crowdsec                  /src/crowdsec-nginx-bouncer/lua-mod/lib/plugins            /usr/local/nginx/lib/lua/plugins
 COPY --from=frontend                  /app/dist                                                  /html/frontend
-COPY --from=zoeyvid/certbot-docker:69 /usr/local                                                 /usr/local
 
 LABEL com.centurylinklabs.watchtower.monitor-only="true"
-ENV NODE_ENV=production \
-    NODE_CONFIG_DIR=/data/etc/npm \
-    DB_SQLITE_FILE=/data/etc/npm/database.sqlite
 
-ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
-    ACME_MUST_STAPLE=true \
+ENV NODE_ENV=production \
+    TV=1 \
+    ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
+    ACME_MUST_STAPLE=false \
+    ACME_OCSP_STAPLING=false \
+    ACME_KEY_TYPE=rsa \
     ACME_SERVER_TLS_VERIFY=true \
     PUID=0 \
     PGID=0 \
-    NIBEP=48693 \
-    GOAIWSP=48683 \
+    NIBEP=48683 \
+    GOAIWSP=48693 \
     NPM_PORT=81 \
     GOA_PORT=91 \
     IPV4_BINDING=0.0.0.0 \
@@ -136,16 +136,19 @@ ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
     NPM_IPV6_BINDING=[::] \
     GOA_IPV6_BINDING=[::] \
     DISABLE_IPV6=false \
-    NPM_DISABLE_IPV6=false \
-    GOA_DISABLE_IPV6=false \
     NPM_LISTEN_LOCALHOST=false \
     GOA_LISTEN_LOCALHOST=false \
     DEFAULT_CERT_ID=0 \
+    HTTP_PORT=80 \
+    HTTPS_PORT=443 \
     DISABLE_HTTP=false \
     DISABLE_H3_QUIC=false \
+    NGINX_QUIC_BPF=false \
     NGINX_ACCESS_LOG=false \
     NGINX_LOG_NOT_FOUND=false \
     NGINX_404_REDIRECT=false \
+    NGINX_HSTS_SUBDMAINS=true \
+    X_FRAME_OPTIONS=deny \
     NGINX_DISABLE_PROXY_BUFFERING=false \
     DISABLE_NGINX_BEAUTIFIER=false \
     CLEAN=true \
@@ -158,7 +161,8 @@ ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
     GOA=false \
     GOACLA="--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string" \
     PHP82=false \
-    PHP83=false
+    PHP83=false \
+    PHP84=false
 
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]

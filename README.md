@@ -10,7 +10,7 @@ running at home or otherwise, including free TLS, without having to know too muc
 **Note: watchtower does NOT update NPMplus, you need to do it yourself (it will only pull the image, but not update the container itself).** <br>
 **Note: access.log/stream.log, logrotate and goaccess are NOT enabled by default bceuase of GDPR, you can enable them in the compose.yaml.** <br>
 **Note: no support for the CF-Connecting-IPv6 header when using [Cloudflares Pseudo IPv4](https://developers.cloudflare.com/network/pseudo-ipv4)** <br>
-**Note: Setups running inside LXC (running a Container in a Container makes no sense) or Unraid (bad container implementation) are not supported, if you want to report something please reproduce it somewhere else before reporting.** <br>
+**Note: Setups running inside LXC (running a Container in a Container makes no sense), Unraid (bad container implementation) or Synology (Port 80/443 blocked) are not recommended, if you want to report something please reproduce it somewhere else before reporting.** <br>
 
 **Note: add `net.ipv4.ip_unprivileged_port_start=0` at the end of `/etc/sysctl.conf` to support PUID/PGID in network mode host.** <br>
 **Note: Don't forget to open Port 80 (tcp) and 443 (tcp AND udp, http3/quic needs udp) in your firewall (because of network mode host, you also need to open this ports in ufw, if you use ufw).** <br>
@@ -61,7 +61,7 @@ so that the barrier for entry here is low.
 - access.log is disabled by default, unified and moved to `/opt/npm/nginx/access.log`
 - Error Log written to console
 - `Server` response header hidden
-- PHP 8.2/8.3 optional, with option to add extensions; available packages can added using envs in the compose file
+- PHP optional, with option to add extensions; available packages can added using envs in the compose file
 - Allows different acme servers using env
 - Supports up to 99 domains per cert
 - Brotli compression can be enabled
@@ -70,7 +70,6 @@ so that the barrier for entry here is low.
 - Automatic database vacuum (only sqlite)
 - Automatic cleaning of old invalid certbot certs (set CLEAN to true)
 - Password reset (only sqlite) using `docker exec -it npmplus password-reset.js USER_EMAIL PASSWORD`
-- Supports TLS for MariaDB/MySQL; set `DB_MYSQL_TLS` env to true. Self-signed certificates can be uploaded to `/opt/npm/etc/npm/ca.crt` and `DB_MYSQL_CA` set to `/data/etc/npm/ca.crt` (not tested, unsupported)
 - multi lang support, if you want to add an language, see this commit as an example: https://github.com/ZoeyVid/NPMplus/commit/a026b42329f66b89fe1fbe5e6034df5d3fc2e11f (implementation based on [@lateautumn233](https://github.com/lateautumn233) fork)
 - See the compose file for all available options
 - many env options optimized for network_mode host (ports/ip bindings)
@@ -83,8 +82,8 @@ so that the barrier for entry here is low.
 - please delete all dnspod certs and recreate them after migration OR you manually change the credentialsfile (see [here](https://github.com/ZoeyVid/npmplus/blob/develop/global/certbot-dns-plugins.json) for the template)
 - stop nginx-proxy-manager download the latest compose.yaml, adjust your paths (of /etc/letsencrypt and /data) to the ones you used with nginx-proxy-manager and adjust the env of the compose file how you like it and then deploy it
 - you can now remove the /etc/letsencrypt mount, since it was moved to /data while migration and redeploy the compose file
-- since this fork uses  `network_mode: host` by default (and all guides are written for this mode), please don't forget to open port 80/tcp, 443/tcp and 443/udp (and maybe 81/tcp) in your firewall
-- since many buttons changed, please edit every host you have and click save. (Please also resave it, if all buttons/values are fine, to update the host config to fully fit the NPMplus template)
+- since this fork uses `network_mode: host` by default (and all guides are written for this mode), please don't forget to open port 80/tcp, 443/tcp and 443/udp (and maybe 81/tcp) in your firewall
+- since many buttons changed, please check if they are still correct for every host you have.
 - maybe setup crowdsec (see below)
 - please report all (migration) issues you may have
 
@@ -200,7 +199,7 @@ All are welcome to create pull requests for this project, but this does not mean
 
 # Please report Bugs first to this fork before reporting them to the upstream Repository
 ## Getting Help
-1. Setups running inside LXC (running a Container in a Container makes no sense) or Unraid (bad container implementation) are not supported, if you want to report something please reproduce it somewhere else before reporting.
+1. Setups running inside LXC (running a Container in a Container makes no sense) or Unraid (bad container implementation) are not recommended, if you want to report something please reproduce it somewhere else before reporting.
 2. [Support/Questions](https://github.com/ZoeyVid/NPMplus/discussions)
 3. [Reddit](https://reddit.com/r/NPMplus)
 4. [Bugs](https://github.com/ZoeyVid/NPMplus/issues)

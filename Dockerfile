@@ -160,7 +160,8 @@ ENV ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
     GOA=false \
     GOACLA="--agent-list --real-os --double-decode --anonymize-ip --anonymize-level=1 --keep-last=30 --with-output-resolver --no-query-string" \
     PHP82=false \
-    PHP83=false
+    PHP83=false \
+    PHP84=false
 
 WORKDIR /app
 ENTRYPOINT ["tini", "--", "entrypoint.sh"]

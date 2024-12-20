@@ -19,11 +19,6 @@ touch /data/.env
 . /data/.env
 
 
-if [ -n "$NPM_CERT_ID" ]; then
-    echo "NPM_CERT_ID env is replaced by DEFAULT_CERT_ID, please change it to DEFAULT_CERT_ID"
-    sleep inf
-fi
-
 if [ -n "$LE_SERVER" ]; then
     echo "LE_SERVER env is replaced by ACME_SERVER, please change it to ACME_SERVER"
     sleep inf
@@ -41,18 +36,6 @@ fi
 
 if [ -n "$LE_STAGING" ]; then
     echo "LE_STAGING env is unsopported, please use ACME_SERVER."
-    sleep inf
-fi
-
-if [ -n "$PHP81" ]; then
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|fastcgi_pass php81;|fastcgi_pass php82;|g" {} \;
-    echo "PHP81 was removed, please use PHP82 or PHP83"
-    sleep inf
-fi
-
-if [ -n "$PHP81_APKS" ]; then
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|fastcgi_pass php81;|fastcgi_pass php82;|g" {} \;
-    echo "PHP81_APKS was removed, please use PHP82_APKS or PHP83_APKS"
     sleep inf
 fi
 
@@ -320,8 +303,8 @@ if [ -n "$GOACLA" ] && ! echo "$GOACLA" | grep -q "^-[a-zA-Z0-9 =/_.-]\+$"; then
 fi
 
 
-if [ -n "$PHP_APKS" ] && [ "$PHP82" = "false" ] && [ "$PHP83" = "false" ]; then
-    echo "PHP_APKS is set, but PHP82 and PHP83 is disabled."
+if [ -n "$PHP_APKS" ] && [ "$PHP82" = "false" ] && [ "$PHP83" = "false" ] && [ "$PHP84" = "false" ]; then
+    echo "PHP_APKS is set, but PHP82, PHP83 and PHP84 is disabled."
     sleep inf
 fi
 
@@ -354,6 +337,22 @@ fi
 
 if [ -n "$PHP83_APKS" ] && ! echo "$PHP83_APKS" | grep -q "^[a-z0-9 _-]\+$"; then
     echo "PHP83_APKS can consist of lower letters a-z, numbers 0-9, spaces, underscores and hyphens."
+    sleep inf
+fi
+
+
+if ! echo "$PHP84" | grep -q "^true$\|^false$"; then
+    echo "PHP84 needs to be true or false."
+    sleep inf
+fi
+
+if [ -n "$PHP84_APKS" ] && [ "$PHP84" = "false" ]; then
+    echo "PHP84_APKS is set, but PHP84 is disabled."
+    sleep inf
+fi
+
+if [ -n "$PHP84_APKS" ] && ! echo "$PHP84_APKS" | grep -q "^[a-z0-9 _-]\+$"; then
+    echo "PHP84_APKS can consist of lower letters a-z, numbers 0-9, spaces, underscores and hyphens."
     sleep inf
 fi
 
@@ -453,7 +452,40 @@ elif [ "$FULLCLEAN" = "true" ]; then
     rm -vrf /data/php/83
 fi
 
-if { [ "$PHP82" = "true" ] || [ "$PHP83" = "true" ]; } && [ -n "$PHP_APKS" ]; then
+if [ "$PHP84" = "true" ]; then
+
+    apk add --no-cache php84-fpm
+
+    # From https://github.com/nextcloud/all-in-one/pull/1377/files
+    if [ -n "$PHP84_APKS" ]; then
+        for apk in $(echo "$PHP84_APKS" | tr " " "\n"); do
+
+            if ! echo "$apk" | grep -q "^php84-.*$"; then
+                echo "$apk is a non allowed value."
+                echo "It needs to start with \"php84-\"."
+                echo "It is set to \"$apk\"."
+                sleep inf
+            fi
+
+            echo "Installing $apk via apk..."
+            if ! apk add --no-cache "$apk" > /dev/null 2>&1; then
+                echo "The apk \"$apk\" was not installed!"
+            fi
+
+        done
+    fi
+
+    mkdir -vp /data/php
+    cp -varnT /etc/php84 /data/php/84
+    sed -i "s|listen =.*|listen = /run/php84.sock|" /data/php/84/php-fpm.d/www.conf
+    sed -i "s|;error_log =.*|error_log = /proc/self/fd/2|g" /data/php/84/php-fpm.conf
+    sed -i "s|include=.*|include=/data/php/84/php-fpm.d/*.conf|g" /data/php/84/php-fpm.conf
+
+elif [ "$FULLCLEAN" = "true" ]; then
+    rm -vrf /data/php/84
+fi
+
+if { [ "$PHP82" = "true" ] || [ "$PHP83" = "true" ] || [ "$PHP84" = "true" ]; } && [ -n "$PHP_APKS" ]; then
     # From https://github.com/nextcloud/all-in-one/pull/1377/files
     for apk in $(echo "$PHP_APKS" | tr " " "\n"); do
         if ! echo "$apk" | grep -q "^php-.*$"; then
@@ -492,6 +524,10 @@ if [ -d /data/nginx/custom ]; then
     mv -vn /data/nginx/custom /data/nginx_custom
 fi
 
+if [ -d /data/nginx/nginx_custom ]; then
+    mv -vn /data/nginx/nginx_custom /data/custom_nginx
+fi
+
 mkdir -vp /data/tls/certbot/credentials \
           /data/tls/certbot/renewal \
           /data/tls/custom \
@@ -505,7 +541,7 @@ mkdir -vp /data/tls/certbot/credentials \
           /data/nginx/proxy_host \
           /data/nginx/dead_host \
           /data/nginx/stream \
-          /data/nginx_custom
+          /data/custom_nginx
 
 if [ -s /data/database.sqlite ] && [ "$DB_SQLITE_FILE" != "/data/database.sqlite" ]; then
     mv -vn /data/database.sqlite "$DB_SQLITE_FILE"
@@ -535,8 +571,8 @@ if [ -s /data/nginx/dummykey.pem ]; then
     mv -vn /data/nginx/dummykey.pem /data/tls/dummykey.pem
 fi
 
-if [ -f /data/nginx_custom/root.conf ]; then
-    mv -vn /data/nginx_custom/root.conf /data/nginx_custom/root_top.conf
+if [ -f /data/custom_nginx/root.conf ]; then
+    mv -vn /data/custom_nginx/root.conf /data/custom_nginx/root_top.conf
 fi
 
 if [ -n "$(ls -A /data/nginx/html 2> /dev/null)" ]; then
@@ -622,71 +658,30 @@ if [ -s "$DB_SQLITE_FILE" ]; then
 fi
 
 if [ "$FULLCLEAN" = "true" ]; then
-    if [ "$PHP82" != "true" ] && [ "$PHP83" != "true" ]; then
+    if [ "$PHP82" != "true" ] && [ "$PHP83" != "true" ] && [ "$PHP84" != "true" ]; then
         rm -vrf /data/php
     fi
 fi
 
 touch /tmp/ip_ranges.conf \
       /data/etc/html/index.html \
-      /data/nginx_custom/events.conf \
-      /data/nginx_custom/http.conf \
-      /data/nginx_custom/http_top.conf \
-      /data/nginx_custom/root_top.conf \
-      /data/nginx_custom/server_dead.conf \
-      /data/nginx_custom/server_proxy.conf \
-      /data/nginx_custom/server_redirect.conf \
-      /data/nginx_custom/stream.conf \
-      /data/nginx_custom/stream_top.conf \
-      /data/nginx_custom/server_stream.conf \
-      /data/nginx_custom/server_stream_tcp.conf \
-      /data/nginx_custom/server_stream_udp.conf \
+      /data/custom_nginx/events.conf \
+      /data/custom_nginx/http.conf \
+      /data/custom_nginx/http_top.conf \
+      /data/custom_nginx/root_top.conf \
+      /data/custom_nginx/server_dead.conf \
+      /data/custom_nginx/server_proxy.conf \
+      /data/custom_nginx/server_redirect.conf \
+      /data/custom_nginx/stream.conf \
+      /data/custom_nginx/stream_top.conf \
+      /data/custom_nginx/server_stream.conf \
+      /data/custom_nginx/server_stream_tcp.conf \
+      /data/custom_nginx/server_stream_udp.conf \
       /data/etc/modsecurity/modsecurity-extra.conf
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|nginx/custom|nginx_custom|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s| http2||g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|\(listen .*\) http3|\1 quic|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|quic reuseport;|quic;|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|security_headers on;|include conf.d/include/hsts.conf;|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|more_set_headers \"Alt-Svc: h3=':443'; ma=86400\";|more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/access|/data/nginx/access|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/nginx/access|/data/etc/access|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/nginx/html/|/data/etc/html/|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/custom_ssl|/data/tls/custom|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/letsencrypt|/data/tls/certbot|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/data/ssl|/data/tls|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|ssl_certificate_key /data/nginx/dummykey.pem;|ssl_certificate_key /data/tls/dummykey.pem;|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|ssl_certificate /data/nginx/dummycert.pem;|ssl_certificate /data/tls/dummycert.pem;|g" {} \;
 
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/ssl|/data/tls|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/etc/letsencrypt|/data/tls/certbot|g" {} \;
 find /data/tls/certbot/renewal -type f -name '*.conf' -exec sed -i "s|/data/letsencrypt|/data/tls/certbot|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "/block-exploits.conf/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|/html/404|/html/dead|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/acme-challenge.conf;|include conf.d/include/always.conf;|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/letsencrypt-acme-challenge.conf;|include conf.d/include/always.conf;|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/force-ssl.conf;|include conf.d/include/force-tls.conf;|g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s|include conf.d/include/ssl-ciphers.conf;|include conf.d/include/tls-ciphers.conf;|g" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "/http3/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "/Asset Caching/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "/assets.conf/d" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "/error_log/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "/access_log/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "/proxy_http_version/d" {} \;
-
-find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling/d" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "/ssl_stapling_verify/d" {} \;
-
-if [ -s /data/nginx/default.conf ]; then sed -i "/ssl_stapling/d" /data/nginx/default.conf; fi
-if [ -s /data/nginx/default.conf ]; then sed -i "/ssl_stapling_verify/d" /data/nginx/default.conf; fi
 
 if [ ! -s /data/etc/modsecurity/modsecurity-default.conf ]; then
       cp -van /usr/local/nginx/conf/conf.d/include/modsecurity.conf.example /data/etc/modsecurity/modsecurity-default.conf
@@ -720,26 +715,14 @@ sed -i "s|48693|$NIBEP|g" /usr/local/nginx/conf/conf.d/npm.conf
 
 sed -i "s|48683|$GOAIWSP|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" /app/templates/_listen.conf
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" /app/templates/default.conf
-sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\({{ incoming_port }}\)/listen $IPV4_BINDING:\2/g" /app/templates/stream.conf
 find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $IPV4_BINDING:\2/g" {} \;
-find /data/nginx -type f -name '*.conf' -exec sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9-]\+\)/listen $IPV4_BINDING:\2/g" {} \;
 
 if [ "$DISABLE_IPV6" = "true" ]; then
     sed -i "s|ipv6=on;|ipv6=off;|g" /usr/local/nginx/conf/nginx.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /app/templates/_listen.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" /app/templates/default.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\({{ incoming_port }}\)/#listen \[\1\]:\2/g" /app/templates/stream.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/#listen \[\1\]:\2/g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9-]\+\)/#listen \[\1\]:\2/g" {} \;
 else
     sed -i "s|ipv6=off;|ipv6=on;|g" /usr/local/nginx/conf/nginx.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" /app/templates/_listen.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" /app/templates/default.conf
-    sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\({{ incoming_port }}\)/listen $IPV6_BINDING:\2/g" /app/templates/stream.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9]\+\)/listen $IPV6_BINDING:\2/g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s/#\?listen \[\([0-9a-f:]\+\)\]:\([0-9-]\+\)/listen $IPV6_BINDING:\2/g" {} \;
 fi
 
 sed -i "s/#\?listen \([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:\)\?\([0-9]\+\)/listen $NPM_IPV4_BINDING:$NPM_PORT/g" /usr/local/nginx/conf/conf.d/npm.conf
@@ -765,49 +748,22 @@ else
 fi
 
 if [ "$DISABLE_HTTP" = "true" ]; then
-    sed -i "s|#\?\(listen.*80\)|#\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen.*80\)|#\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*80\)|#\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*80\)|#\1|g" {} \;
 elif [ "$DISABLE_IPV6" = "true" ]; then
-    sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:80\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:80\)|\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:80\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+:80\)|\1|g" {} \;
 else
-    sed -i "s|#\?\(listen.*80\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen.*80\)|\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*80\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*80\)|\1|g" {} \;
 fi
 
 if [ "$DISABLE_H3_QUIC" = "true" ]; then
-    sed -i "s|#\?\(listen.*quic\)|#\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|#\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen.*quic\)|#\1|g" /app/templates/default.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|#\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*quic\)|#\1|g" {} \;
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|#\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*quic\)|#\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|#\1|g" {} \;
 elif [ "$DISABLE_IPV6" = "true" ]; then
-    sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+.*quic\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+.*quic\)|\1|g" /app/templates/default.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+.*quic\)|\1|g" {} \;
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen [0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+.*quic\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
 else
-    sed -i "s|#\?\(listen.*quic\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" /app/templates/_listen.conf
-    sed -i "s|#\?\(listen.*quic\)|\1|g" /app/templates/default.conf
-    sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" /app/templates/default.conf
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*quic\)|\1|g" {} \;
     find /usr/local/nginx/conf/conf.d -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(listen.*quic\)|\1|g" {} \;
-    find /data/nginx -type f -name '*.conf' -exec sed -i "s|#\?\(more_set_headers 'Alt-Svc: h3=\":443\"; ma=86400';\)|\1|g" {} \;
 fi
 
 if [ "$NGINX_QUIC_BPF" = "true" ]; then
@@ -1094,6 +1050,10 @@ if [ "$PUID" != "0" ]; then
         sed -i "s|user =.*|;user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|group =.*|;group = root|" /data/php/83/php-fpm.d/www.conf
     fi
+    if [ "$PHP84" = "true" ]; then
+        sed -i "s|user =.*|;user = root|" /data/php/84/php-fpm.d/www.conf
+        sed -i "s|group =.*|;group = root|" /data/php/84/php-fpm.d/www.conf
+    fi
     sed -i "s|#\?user root;|#user root;|g" /usr/local/nginx/conf/nginx.conf
     exec su-exec "$PUID:$PGID" launch.sh
 else
@@ -1111,6 +1071,10 @@ else
     if [ "$PHP83" = "true" ]; then
         sed -i "s|;user =.*|user = root|" /data/php/83/php-fpm.d/www.conf
         sed -i "s|;group =.*|group = root|" /data/php/83/php-fpm.d/www.conf
+    fi
+    if [ "$PHP84" = "true" ]; then
+        sed -i "s|;user =.*|user = root|" /data/php/84/php-fpm.d/www.conf
+        sed -i "s|;group =.*|group = root|" /data/php/84/php-fpm.d/www.conf
     fi
     sed -i "s|#user root;|user root;|g"  /usr/local/nginx/conf/nginx.conf
     exec launch.sh

@@ -78,6 +78,7 @@ if [ ! -d /data/tls/certbot/accounts/"$(echo "$ACME_SERVER" | sed "s|^https\?://
 fi
 
 touch /data/etc/logrotate.lock
+echo "Starting services..."
 
 if [ "$PHP82" = "true" ]; then PHP_INI_SCAN_DIR=/data/php/82/conf.d php-fpm82 -c /data/php/82 -y /data/php/82/php-fpm.conf -FOR; fi &
 if [ "$PHP83" = "true" ]; then PHP_INI_SCAN_DIR=/data/php/83/conf.d php-fpm83 -c /data/php/83 -y /data/php/83/php-fpm.conf -FOR; fi &

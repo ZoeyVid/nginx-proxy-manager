@@ -74,7 +74,7 @@ RUN apk upgrade --no-cache -a && \
 
 FROM zoeyvid/nginx-quic:369-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-ARG CRS_VER=v4.9.0
+ARG CRS_VER=v4.10.0
 COPY rootfs /
 COPY --from=strip-backend /app /app
 

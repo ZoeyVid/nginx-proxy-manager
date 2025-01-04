@@ -811,21 +811,18 @@ fi
 sed -i "s|ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /app/templates/default.conf
 sed -i "s|ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /app/templates/default.conf
 if [ -n "$DEFAULT_STAPLING_FILE" ] && [ "$ACME_OCSP_STAPLING" = "true" ]; then
-    sed -i "s|tls-ciphers-no-stapling.conf;|tls-ciphers.conf;|g" /app/templates/default.conf
     sed -i "s|#\?ssl_stapling_file .*|ssl_stapling_file $DEFAULT_STAPLING_FILE;|g" /app/templates/default.conf
 fi
 
 sed -i "s|ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/npm.conf
 sed -i "s|ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/npm.conf
 if [ -n "$DEFAULT_STAPLING_FILE" ] && [ "$ACME_OCSP_STAPLING" = "true" ]; then
-    sed -i "s|tls-ciphers-no-stapling.conf;|tls-ciphers.conf;|g" /usr/local/nginx/conf/conf.d/npm.conf
     sed -i "s|#\?ssl_stapling_file .*|ssl_stapling_file $DEFAULT_STAPLING_FILE;|g" /usr/local/nginx/conf/conf.d/npm.conf
 fi
 
 sed -i "s|ssl_certificate .*|ssl_certificate $DEFAULT_CERT;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 sed -i "s|ssl_certificate_key .*|ssl_certificate_key $DEFAULT_KEY;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 if [ -n "$DEFAULT_STAPLING_FILE" ] && [ "$ACME_OCSP_STAPLING" = "true" ]; then
-    sed -i "s|tls-ciphers-no-stapling.conf;|tls-ciphers.conf;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
     sed -i "s|#\?ssl_stapling_file .*|ssl_stapling_file $DEFAULT_STAPLING_FILE;|g" /usr/local/nginx/conf/conf.d/include/goaccess.conf
 fi
 

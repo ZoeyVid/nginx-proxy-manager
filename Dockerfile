@@ -117,7 +117,7 @@ COPY --from=frontend                  /app/dist                                 
 LABEL com.centurylinklabs.watchtower.monitor-only="true"
 
 ENV NODE_ENV=production \
-    TV=1 \
+    TV=2 \
     ACME_SERVER="https://acme-v02.api.letsencrypt.org/directory" \
     ACME_MUST_STAPLE=false \
     ACME_OCSP_STAPLING=true \

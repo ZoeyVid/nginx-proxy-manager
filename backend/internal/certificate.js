@@ -60,7 +60,7 @@ const internalCertificate = {
 						.where('is_deleted', 0)
 						.andWhere('provider', 'letsencrypt')
 						.then((certificates) => {
-							if (certificates && certificates.length) {
+							if (certificates && certificates.length > 0) {
 								const promises = [];
 
 								certificates.map(function (certificate) {

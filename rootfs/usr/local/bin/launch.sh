@@ -84,5 +84,6 @@ if [ "$LOGROTATE" = "true" ]; then while true; do touch /data/logrotate.lock; lo
 # shellcheck disable=SC2086
 if [ "$GOA" = "true" ]; then while true; do if [ -f /data/nginx/access.log ] && [ ! -f /data/logrotate.lock ]; then goaccess --no-global-config --num-tests=0 --tz="$TZ" --date-format="%d/%b/%Y" --time-format="%H:%M:%S" --log-format='[%d:%t %^] %v %h %T "%r" %s %b %b %R %u' --no-ip-validation \
                         --addr=127.0.0.1 --port="$GOAIWSP" -f /data/nginx/access.log --real-time-html -o /tmp/goa/index.html --persist --restore --db-path=/data/goaccess/data -b /etc/goaccess/browsers.list -b /etc/goaccess/podcast.list $GOACLA; else sleep 10s; fi; done; fi &
+nginx -e stderr &
 aio.sh &
 index.js

@@ -72,7 +72,7 @@ RUN apk upgrade --no-cache -a && \
     sed -i "s|APPSEC_PROCESS_TIMEOUT=.*|APPSEC_PROCESS_TIMEOUT=10000|g" /src/crowdsec-nginx-bouncer/lua-mod/config_example.conf
 
 
-FROM zoeyvid/nginx-quic:371-python
+FROM zoeyvid/nginx-quic:372-python
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG CRS_VER=v4.10.0
 COPY rootfs /

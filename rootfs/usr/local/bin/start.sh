@@ -585,7 +585,8 @@ touch /data/modsecurity/modsecurity-extra.conf \
       /data/custom_nginx/stream_top.conf \
       /data/custom_nginx/server_stream.conf \
       /data/custom_nginx/server_stream_tcp.conf \
-      /data/custom_nginx/server_stream_udp.conf
+      /data/custom_nginx/server_stream_udp.conf/data/crowdsec/crowdsec.conf
+
 
 
 if [ -s /data/keys.json ]; then
@@ -614,6 +615,7 @@ fi
 if [ -n "$(ls -A /data/etc 2> /dev/null)" ]; then
     mv -vn /data/etc/* /data
 fi
+sed -i "s|/data/etc|/data|g" /data/crowdsec/crowdsec.conf
 
 #tmp
 if [ -n "$(ls -A /data/npm 2> /dev/null)" ]; then

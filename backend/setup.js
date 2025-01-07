@@ -101,6 +101,15 @@ const setupDefaultSettings = () => {
 						logger.info('Default settings added');
 					});
 			}
+		})
+		.then(() => {
+			settingModel
+				.query()
+				.where('id', 'default-site')
+				.first()
+				.then((row) => {
+					internalNginx.generateConfig('default', row);
+				});
 		});
 };
 
@@ -115,7 +124,7 @@ const setupCertbotPlugins = () => {
 		.where('is_deleted', 0)
 		.andWhere('provider', 'letsencrypt')
 		.then((certificates) => {
-			if (certificates && certificates.length) {
+			if (certificates && certificates.length > 0) {
 				const plugins = [];
 				const promises = [];
 
@@ -129,7 +138,7 @@ const setupCertbotPlugins = () => {
 				});
 
 				return certbot.installPlugins(plugins).then(() => {
-					if (promises.length) {
+					if (promises.length > 0) {
 						return Promise.all(promises).then(() => {
 							logger.info('Added Certbot plugins ' + plugins.join(', '));
 						});
@@ -145,76 +154,56 @@ const setupCertbotPlugins = () => {
  * @returns {Promise}
  */
 const regenerateAllHosts = () => {
-	settingModel
-		.query()
-		.where('id', 'default-site')
-		.first()
-		.then((row) => {
-			internalNginx.generateConfig('default', row);
-		})
-		.then(() => {
-			if (process.env.REGENERATE_ALL === 'true') {
-				const promises = [];
-
-				promises.push(
-					proxyModel
-						.query()
-						.where('is_deleted', 0)
-						.andWhere('enabled', 1)
-						.withGraphFetched('[access_list.[clients, items], certificate]')
-						.then((rows) => {
-							if (rows && rows.length) {
-								internalNginx.bulkGenerateConfigs('proxy_host', rows);
-							}
-						}),
-				);
-
-				promises.push(
-					redirectModel
-						.query()
-						.where('is_deleted', 0)
-						.andWhere('enabled', 1)
-						.withGraphFetched('[certificate]')
-						.then((rows) => {
-							if (rows && rows.length) {
-								internalNginx.bulkGenerateConfigs('redirection_host', rows);
-							}
-						}),
-				);
-
-				promises.push(
-					deadModel
-						.query()
-						.where('is_deleted', 0)
-						.andWhere('enabled', 1)
-						.withGraphFetched('[certificate]')
-						.then((rows) => {
-							if (rows && rows.length) {
-								internalNginx.bulkGenerateConfigs('dead_host', rows);
-							}
-						}),
-				);
-
-				promises.push(
-					streamModel
-						.query()
-						.where('is_deleted', 0)
-						.andWhere('enabled', 1)
-						.then((rows) => {
-							if (rows && rows.length) {
-								internalNginx.bulkGenerateConfigs('stream', rows);
-							}
-						}),
-				);
-
-				// Execute all promises and then write the hash
-				return Promise.all(promises).then(() => {
-					utils.writeHash();
-				});
-			}
-		});
-
-	return Promise.resolve(); // Return resolved promise if REGENERATE_ALL is not true
+	if (process.env.REGENERATE_ALL === 'true') {
+		return proxyModel
+			.query()
+			.where('is_deleted', 0)
+			.andWhere('enabled', 1)
+			.withGraphFetched('[access_list.[clients, items], certificate]')
+			.then((rows) => {
+				if (rows && rows.length > 0) {
+					internalNginx.bulkGenerateConfigs('proxy_host', rows);
+				}
+			})
+			.then(() => {
+				return redirectModel
+					.query()
+					.where('is_deleted', 0)
+					.andWhere('enabled', 1)
+					.withGraphFetched('[certificate]')
+					.then((rows) => {
+						if (rows && rows.length > 0) {
+							internalNginx.bulkGenerateConfigs('redirection_host', rows);
+						}
+					});
+			})
+			.then(() => {
+				return deadModel
+					.query()
+					.where('is_deleted', 0)
+					.andWhere('enabled', 1)
+					.withGraphFetched('[certificate]')
+					.then((rows) => {
+						if (rows && rows.length > 0) {
+							internalNginx.bulkGenerateConfigs('dead_host', rows);
+						}
+					});
+			})
+			.then(() => {
+				return streamModel
+					.query()
+					.where('is_deleted', 0)
+					.andWhere('enabled', 1)
+					.then((rows) => {
+						if (rows && rows.length > 0) {
+							internalNginx.bulkGenerateConfigs('stream', rows);
+						}
+					});
+			})
+			.then(() => {
+				utils.writeHash();
+			});
+	}
 };
 
 module.exports = function () {

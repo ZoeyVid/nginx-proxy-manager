@@ -80,22 +80,12 @@ const internalNginx = {
 	reload: () => {
 		if (process.env.ACME_OCSP_STAPLING === 'true') {
 			return utils.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/certbot', '-o', '/data/tls/certbot/live', '--no-reload-webserver', '--quiet']).finally(() => {
-				if (fs.existsSync('/usr/local/nginx/logs/nginx.pid') && fs.readFileSync('/usr/local/nginx/logs/nginx.pid', 'utf8').trim().length > 0) {
-					logger.info('Reloading Nginx');
-					return utils.execFile('nginx', ['-s', 'reload']);
-				} else {
-					logger.info('Starting Nginx');
-					utils.execfg('nginx', ['-e', 'stderr']);
-				}
-			});
-		} else {
-			if (fs.existsSync('/usr/local/nginx/logs/nginx.pid') && fs.readFileSync('/usr/local/nginx/logs/nginx.pid', 'utf8').trim().length > 0) {
 				logger.info('Reloading Nginx');
 				return utils.execFile('nginx', ['-s', 'reload']);
-			} else {
-				logger.info('Starting Nginx');
-				utils.execfg('nginx', ['-e', 'stderr']);
-			}
+			});
+		} else {
+			logger.info('Reloading Nginx');
+			return utils.execFile('nginx', ['-s', 'reload']);
 		}
 	},
 
@@ -276,13 +266,14 @@ const internalNginx = {
 	 * @param   {Array}   hosts
 	 * @returns {Promise}
 	 */
-	bulkGenerateConfigs: (host_type, hosts) => {
-		const promises = [];
-		hosts.map(function (host) {
-			promises.push(internalNginx.generateConfig(host_type, host));
+	bulkGenerateConfigs: (model, host_type, hosts) => {
+		let promise = Promise.resolve();
+
+		hosts.forEach((host) => {
+			promise = promise.then(() => internalNginx.generateConfig(model, host_type, host));
 		});
 
-		return Promise.all(promises);
+		return promise;
 	},
 
 	/**

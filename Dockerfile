@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-FROM --platform="$BUILDPLATFORM" alpine:3.21.1 AS frontend
+FROM --platform="$BUILDPLATFORM" alpine:3.21.2 AS frontend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production \
     NODE_OPTIONS=--openssl-legacy-provider
@@ -19,7 +19,7 @@ COPY darkmode.css /app/dist/css/darkmode.css
 COPY security.txt /app/dist/.well-known/security.txt
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.21.1 AS build-backend
+FROM --platform="$BUILDPLATFORM" alpine:3.21.2 AS build-backend
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG NODE_ENV=production \
     TARGETARCH
@@ -38,7 +38,7 @@ RUN apk upgrade --no-cache -a && \
     fi && \
     yarn cache clean --all && \
     clean-modules --yes
-FROM alpine:3.21.1 AS strip-backend
+FROM alpine:3.21.2 AS strip-backend
 COPY --from=build-backend /app /app
 RUN apk upgrade --no-cache -a && \
     apk add --no-cache ca-certificates binutils file && \
@@ -46,7 +46,7 @@ RUN apk upgrade --no-cache -a && \
     find /app/node_modules -name "*.node" -type f -exec file {} \;
 
 
-FROM --platform="$BUILDPLATFORM" alpine:3.21.1 AS crowdsec
+FROM --platform="$BUILDPLATFORM" alpine:3.21.2 AS crowdsec
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG CSNB_VER=v1.0.8
 WORKDIR /src

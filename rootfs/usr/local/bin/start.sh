@@ -160,7 +160,7 @@ if ! echo "$PUID" | grep -q "^[0-9]\+$"; then
     sleep inf
 fi
 
-if [ "$PUID" -lt "1000" ] && [ "$PUID" != "0" ]; then
+if [ "$PUID" -lt "100" ] && [ "$PUID" != "0" ]; then
     echo "PUID needs to be a number greater or equal to 1000, or equal to 0."
     sleep inf
 fi
@@ -170,7 +170,7 @@ if ! echo "$PGID" | grep -q "^[0-9]\+$"; then
     sleep inf
 fi
 
-if [ "$PGID" -lt "1000" ] && [ "$PGID" != "0" ]; then
+if [ "$PGID" -lt "100" ] && [ "$PGID" != "0" ]; then
     echo "PGID needs to be a number greater or equal to 1000, or equal to 0."
     sleep inf
 fi

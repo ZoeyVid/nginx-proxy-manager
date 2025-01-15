@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const fs = require('fs');
 const crypto = require('crypto');
-const spawn = require('child_process').spawn;
 const execFile = require('child_process').execFile;
 const { Liquid } = require('liquidjs');
 const logger = require('../logger').global;

@@ -46,33 +46,6 @@ module.exports = {
 	},
 
 	/**
-	 * @param   {String} cmd
-	 * @param   {Array}  args
-	 */
-	execfg: function (cmd, args) {
-		return new Promise((resolve, reject) => {
-			logger.debug('CMD: ' + cmd + ' ' + (args ? args.join(' ') : ''));
-			const childProcess = spawn(cmd, args, {
-				shell: true,
-				detached: true,
-				stdio: 'inherit',
-			});
-
-			childProcess.on('error', (err) => {
-				reject(err);
-			});
-
-			childProcess.on('close', (code) => {
-				if (code !== 0) {
-					reject(new Error(`Command '${cmd}' exited with code ${code}`));
-				} else {
-					resolve();
-				}
-			});
-		});
-	},
-
-	/**
 	 * Used in objection query builder
 	 *
 	 * @param   {Array}  omissions

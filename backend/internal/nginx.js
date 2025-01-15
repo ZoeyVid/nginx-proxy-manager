@@ -82,10 +82,10 @@ const internalNginx = {
 			return utils
 				.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/certbot/live', '-o', '/data/tls/certbot/live', '--no-reload-webserver', '--quiet'])
 				.catch(() => {})
-            .then(() => {
-                return utils.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/custom', '-o', '/data/tls/custom', '--no-reload-webserver', '--quiet']);
-            })
-            .catch(() => {})
+				.then(() => {
+					return utils.execFile('certbot-ocsp-fetcher.sh', ['-c', '/data/tls/custom', '-o', '/data/tls/custom', '--no-reload-webserver', '--quiet']);
+				})
+				.catch(() => {})
 				.finally(() => {
 					logger.info('Reloading Nginx');
 					return utils.execFile('nginx', ['-s', 'reload']);
